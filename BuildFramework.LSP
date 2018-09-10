@@ -7,7 +7,7 @@
 ;Data
 (defun DCLAndDataHandler()
 	(setq sdt 0)
-  	(setq id(load_dialog "G:\\工程二处\\CAD脚本\\BuildFrameWorkDCL.dcl"))
+  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\BuildFrameWorkDCL.dcl"))
 	(if (not (new_dialog "framework" id))(exit))
   	(action_tile "startBtn" "(configStartBtn) (done_dialog 1)")
 	(action_tile "DFBtn" "(configDFBtn)  (done_dialog 2)")
