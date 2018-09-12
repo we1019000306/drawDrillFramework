@@ -13,7 +13,9 @@
 	(action_tile "DFBtn" "(configDFBtn)  (done_dialog 2)")
 	(action_tile "DLBtn" "(configDLBtn)  (done_dialog 3)")
 	(action_tile "DDBtn" "(configDDBtn)  (done_dialog 4)")
+	(action_tile "DRBtn" "(configDRBtn)  (done_dialog 5)")
 	(action_tile "HoleNumber_List" "(configHolePopListAction)")
+	(action_tile "RockType_List" "(configRockPopListAction)")
 	(action_tile "cancelBtn" "(done_dialog -1)")
 	;存储上次输入记录
   	(storageLastDCLValue)
@@ -53,7 +55,7 @@
 					
 					((= std 5)
 						(progn
-
+							(drawRock)
 						  	(c:buildFramework)
 						)
 					)
@@ -76,8 +78,8 @@
   	(if (null mc) (print "nil") (set_tile "MC" (rtos mc 2 2)))
   	(if (null wl) (print "nil") (set_tile "WL" (rtos wl 2 2)))
 	;曲线绘制
-	(if (null columnOne) (print "nil") (set_tile "columnOne" columnOne))
-  	(if (null columnTwo) (print "nil") (set_tile "columnTwo" columnTwo))
+	(if (null columnPLineOne) (print "nil") (set_tile "columnPLineOne" columnPLineOne))
+  	(if (null columnPLineTwo) (print "nil") (set_tile "columnPLineTwo" columnPLineTwo))
   	(if (null lineNameNum) (print "nil") (set_tile "LineName_List" (itoa lineNameNum)))
   	(if (null lineTypeNum) (print "nil") (set_tile "LineType_List" (itoa lineTypeNum)))
   	(if (null lineWeightNum) (print "nil") (set_tile "LineWeight_List" (itoa lineWeightNum)))
@@ -122,6 +124,38 @@
 					)
 				)	 
 	)
+	;柱状图
+	(if (null rockTypeNum) (print "nil") (set_tile "RockType_List" (itoa rockTypeNum)))
+	(if (null columnRockOne) (print "nil") (set_tile "columnRockOne" columnRockOne))
+  	(if (null columnRockTwo) (print "nil") (set_tile "columnRockTwo" columnRockTwo))
+	(if (null columnRockThree) (print "nil") (set_tile "columnRockThree" columnRockThree))
+	(if (null columnRockFour) (print "nil") (set_tile "columnRockFour" columnRockFour))
+	(if (null columnRockFive) (print "nil") (set_tile "columnRockFive" columnRockFive))
+  	(if (null rockTextSize) (print "nil") (set_tile "RockTextSize_List" (itoa rockTextSize)))
+	(cond ((= rockTypeNum 0)  
+				(progn
+					(mode_tile  "columnRockOne" 0)
+					(mode_tile  "columnRockTwo" 0)
+					(mode_tile  "columnRockThree" 0)
+					(mode_tile  "columnRockFour" 0)
+					(mode_tile  "columnRockFive" 0)
+				) 
+			)
+		   ((= rockTypeNum 1)
+				(progn 
+					(mode_tile  "columnRockOne" 0)
+					(mode_tile  "columnRockTwo" 0)
+					(mode_tile  "columnRockThree" 1)
+					(mode_tile  "columnRockFour" 1)
+					(mode_tile  "columnRockFive" 1)
+				)
+			)
+		   ((= rockTypeNum 2)  
+				(progn 
+					(print "待开发")
+				)
+			)
+	)
 )
 
 (defun configStartBtn()
@@ -140,9 +174,10 @@
 ;配置画线按钮属性
 (defun configDLBtn()
 	(setq PLFactor 1)
-	(setq columnOne  (get_tile "columnOne"))
-	(setq columnTwo  (get_tile "columnTwo"))
+	(setq columnPLineOne  (get_tile "columnPLineOne"))
+	(setq columnPLineTwo  (get_tile "columnPLineTwo"))
 	(setq lineNameNum  (atoi(get_tile "LineName_List")))
+	(setq PLXOffset -445)
 	(cond ((= lineNameNum 0)  
 					(progn
 						(setq PLFactor (caculateFactor 12 (caculateMaxNum dt)))
@@ -213,6 +248,47 @@
 		       ((= HoleNum 2)  
 					(progn 
 							
+					)
+				)
+	)
+)
+
+;配置井柱状图按钮属性
+(defun configDRBtn()
+	
+	(setq columnRockOne  (get_tile "columnRockOne"))
+	(setq columnRockTwo  (get_tile "columnRockTwo"))
+	(setq columnRockThree  (get_tile "columnRockThree"))
+	(setq columnRockFour (get_tile "columnRockFour"))
+	(setq columnRockFive  (get_tile "columnRockFive"))
+	(setq rockTypeNum (atoi(get_tile "RockType_List")))
+	(setq rockTextSizeNum (atoi(get_tile "RockTextSize_List")))
+	(setq rockTextSize 3)
+	(setq RockXOffset -245)
+	(cond ((= rockTextSizeNum 0)  
+					(progn
+						(setq rockTextSize 3)
+					) 
+				)
+			   ((= rockTextSizeNum 1)
+					(progn 
+						(setq rockTextSize 2)
+					)
+				)
+		       ((= rockTextSizeNum 2)  
+					(progn 
+						(setq rockTextSize 1)	
+					)
+				)
+	)
+	(cond ((= rockTypeNum 0)  
+					(progn
+						(setq RockXOffset -245)
+					) 
+				)
+			   ((= rockTypeNum 1)
+					(progn 
+						(setq RockXOffset -255)
 					)
 				)
 	)
@@ -289,6 +365,35 @@
 
 )
 
+;配置岩性柱状图popList动作属性
+(defun configRockPopListAction()
+    (setq rockTypeNum  (atoi(get_tile "RockType_List")))
+	(cond ((= rockTypeNum 0)  
+					(progn
+						(mode_tile  "columnRockOne" 0)
+						(mode_tile  "columnRockTwo" 0)
+						(mode_tile  "columnRockThree" 0)
+						(mode_tile  "columnRockFour" 0)
+						(mode_tile  "columnRockFive" 0)
+					) 
+				)
+			   ((= rockTypeNum 1)
+					(progn 
+						(mode_tile  "columnRockOne" 0)
+						(mode_tile  "columnRockTwo" 0)
+						(mode_tile  "columnRockThree" 1)
+						(mode_tile  "columnRockFour" 1)
+						(mode_tile  "columnRockFive" 1)
+					)
+				)
+		       ((= rockTypeNum 2)  
+					(progn 
+						(print "待开发")
+					)
+				)
+	)
+
+)
 
 
 ;UI
@@ -296,6 +401,40 @@
 (defun drawFrame()
 		(drawFrameLine)
 		(drawFrameTextLabel)
+)
+
+(defun drawRock()
+		(vl-load-com)
+		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
+		(Vlax-Put-Property EXCEL 'Visible -1 )
+		(setq cells (Vlax-Get excel 'Cells ))
+		(setq rockDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockOne))
+		(setq rockDataThickness (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockTwo))
+		(setq rockDataName (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockThree))
+		(setq rockDataDescription (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFour))
+		(setq rockDataNumber (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFive))
+		(setq rockLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Value2))))
+
+	 
+		(setq indexA 1)
+		(setq rockListLength (length rockLst))
+		(setq rockListPT '())
+		(while (<= indexA rockListLength)
+			(if (> indexA 0)
+				  (progn
+				  	 	(setq rockDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Item indexA)) 'Value2))
+						(setq rockThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataThickness 'Item indexA)) 'Value2))
+						(setq rockName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataName 'Item indexA)) 'Value2))
+						(setq rockDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataDescription 'Item indexA)) 'Value2))
+						(setq rockNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataNumber 'Item indexA)) 'Value2))
+					;(drawRockLine)
+					;(drawRockTextLabel)
+					(hatchRock rockName)
+				)
+			)
+			(setq indexA (1+ indexA))
+		)
+
 )
 
 (defun drawDrillStructure()
@@ -311,23 +450,23 @@
 	(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
 	(Vlax-Put-Property EXCEL 'Visible -1 )
 	(setq cells (Vlax-Get excel 'Cells ))
-	(setq dataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnOne))
-	(setq dataRangeOfX (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnTwo))
-	(setq lst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property dataRangeOfY 'Value2))))
+	(setq plineDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnPLineOne))
+	(setq plineDataRangeOfX (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnPLineTwo))
+	(setq plineLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property plineDataRangeOfY 'Value2))))
  
 	(setq indexA 1)
-  	(setq ListLength (length lst))
-	(setq ListPT '())
-	(while (<= indexA ListLength)
-			(print (Vlax-Get (vlax-variant-value (Vlax-Get-Property dataRangeOfY 'Item indexA )) 'Value2 ))
+  	(setq plineListLength (length plineLst))
+	(setq plineListPT '())
+	(while (<= indexA plineListLength)
+			(print (Vlax-Get (vlax-variant-value (Vlax-Get-Property plineDataRangeOfY 'Item indexA )) 'Value2 ))
 		(if (> indexA 0)
 			  (progn
-				(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property dataRangeOfY 'Item indexA)) 'Value2))
-				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property dataRangeOfX 'Item indexA)) 'Value2))
+				(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property plineDataRangeOfY 'Item indexA)) 'Value2))
+				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property plineDataRangeOfX 'Item indexA)) 'Value2))
 				(setq pyA (* pyA -5))
 				(setq pxA (+ (* pxA PLFactor) PLXOffset))
 				(setq ptA (strcat (strcat (strcat (strcat "(" (rtos pxA 2 6)) " ") (rtos pyA 2 6)) ")"))
-				(setq listPT (cons (read ptA) listPT))
+				(setq plineListPT (cons (read ptA) plineListPT))
 			)
 		)
 		(setq indexA (1+ indexA))
@@ -340,14 +479,14 @@
 						(list '(0 . "LWPOLYLINE")
 							 '(100 . "AcDbEntity")
 							 '(100 . "AcDbPolyline")
-							 (cons 90 (length listPT)) ; 顶点个数
+							 (cons 90 (length plineListPT)) ; 顶点个数
 							'(70 . 0) ; 1 闭合 0 不闭合 不是必须，默认为0
 						)
-						(mapcar '(lambda (x) (cons 10 x)) listPT)
+						(mapcar '(lambda (x) (cons 10 x)) plineListPT)
 				 ;二维坐标列表 加组码 10
 					)    ;append end
 				)
-  	(print listPT)
+  	(print plineListPT)
 )
 
 
@@ -440,6 +579,26 @@
 )
 
 
+(defun drawRockLine()		
+	;处理划线数据
+	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Item indexA)) 'Value2))
+	(setq pyA (* pyA -5))
+	(setq pxA  RockXOffset)
+	(cond ((= rockTypeNum 0)  
+					(progn
+						(setq pxB (+ RockXOffset 185))
+					) 
+				)
+			   ((= rockTypeNum 1)
+					(progn 
+						(setq pxB (- RockXOffset 50))
+					)
+				)
+	)
+	(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+	(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+	(command "line" ptA ptB "")			
+)
 
 (defun drawDrillStructureLine()
 	;HoleNumFactor
@@ -513,12 +672,12 @@
 	(command "mtext" (list -434 25) "h" "3" "w" "60" "钻   时   曲   线" " " "     (min/m)" "")
   	(command "mtext" (list -375 27) "h" "2.5" "w" "60" "简 易 水 文 观 测" "")
   	(command "mtext" (list -374 18) "h" "2.5" "w" "60" "消 耗 量 （m /h）" "")
-  	(command "text" "C" (list -351.5 17) 1 0 "3")
-  	(command "text" "C" (list -359 5) 2.5 0 "水     位 （m）")
-  	(command "text" "C" (list -320 24) 2.8 0 "地 层 单 位")
- 	(command "text" "C" (list -330 10) 2.8 0 "系")
-  	(command "text" "C" (list -320 10) 2.8 0 "统")
-  	(command "text" "C" (list -310 10) 2.8 0 "组")
+  	(command "text" "J" "C" (list -351.5 17) 1 0 "3")
+  	(command "text" "J" "C" (list -359 5) 2.5 0 "水     位 （m）")
+  	(command "text" "J" "C" (list -320 24) 2.8 0 "地 层 单 位")
+ 	(command "text" "J" "C" (list -330 10) 2.8 0 "系")
+  	(command "text" "J" "C" (list -320 10) 2.8 0 "统")
+  	(command "text" "J" "C" (list -310 10) 2.8 0 "组")
   	(command "mtext" (list -300 27) "h" "2.8" "w" "10" "层" " " "厚" " " "(m)" "")
   	(command "mtext" (list -285 27) "h" "2.8" "w" "10" "深" " " "度" " " "(m)" "")
   	(command "mtext" (list -267 27) "h" "2.8" "w" "10" "测 井" " " "柱 状" " " "1:200" "")
@@ -528,11 +687,11 @@
   	(command "mtext" (list -205 27) "h" "2.8" "w" "10" "深" " " "度" " " "(m)" "")
   	(command "mtext" (list -192 27) "h" "2.8" "w" "10" "层" " " " " " " "号" "")
   	(command "mtext" (list -178 23) "h" "2.8" "w" "20" "岩  石" " " "名  称" " " "")
-	(command "text" "C" (list -110 15) 3.0 0 "岩       性     （屑）     描     述")
-  	(command "text" "C" (list -30 15) 3.0 0 "完   井   结   构")
-  	(command "text" "C" (list 12.5 17) 2.8 0 "井斜(°)/方位(°)")
-  	(command "text" "C" (list 12.5 11) 2.8 0 "井深(m)")
-  	(command "text" "C" (list 40 15) 3.0 0 "备      注")
+	(command "text" "J" "C" (list -110 15) 3.0 0 "岩       性     （屑）     描     述")
+  	(command "text" "J" "C" (list -30 15) 3.0 0 "完   井   结   构")
+  	(command "text" "J" "C" (list 12.5 17) 2.8 0 "井斜(°)/方位(°)")
+  	(command "text" "J" "C" (list 12.5 11) 2.8 0 "井深(m)")
+  	(command "text" "J" "C" (list 40 15) 3.0 0 "备      注")
 		
 	(drawDTTextLabel (caculateMaxNum dt))
 	(drawWLTextLabel (caculateMaxNum wl))
@@ -542,31 +701,53 @@
 )
 
 (defun drawDTTextLabel(maxNumDivFive)
-	(command "text" "C" (list -433 4) 3 0 (rtos maxNumDivFive 2 0))
-	(command "text" "C" (list -421 4) 3 0 (rtos (* maxNumDivFive 2) 2 0))
-	(command "text" "C" (list -409 4) 3 0 (rtos (* maxNumDivFive 3) 2 0))
-	(command "text" "C" (list -397 4) 3 0 (rtos (* maxNumDivFive 4) 2 0))
+	(command "text" "J" "C" (list -433 4) 3 0 (rtos maxNumDivFive 2 0))
+	(command "text" "J" "C" (list -421 4) 3 0 (rtos (* maxNumDivFive 2) 2 0))
+	(command "text" "J" "C" (list -409 4) 3 0 (rtos (* maxNumDivFive 3) 2 0))
+	(command "text" "J" "C" (list -397 4) 3 0 (rtos (* maxNumDivFive 4) 2 0))
 )
 
 (defun drawMCTextLabel(maxNumDivFive)
-	(command "text" "C" (list -375 12) 2 0 (rtos maxNumDivFive 2 2))
-	(command "text" "C" (list -365 12) 2 0 (rtos (* maxNumDivFive 2) 2 2))
-	(command "text" "C" (list -355 12) 2 0 (rtos (* maxNumDivFive 3) 2 2))
-	(command "text" "C" (list -345 12) 2 0 (rtos (* maxNumDivFive 4) 2 2))
+	(command "text" "J" "C" (list -375 12) 2 0 (rtos maxNumDivFive 2 2))
+	(command "text" "J" "C" (list -365 12) 2 0 (rtos (* maxNumDivFive 2) 2 2))
+	(command "text" "J" "C" (list -355 12) 2 0 (rtos (* maxNumDivFive 3) 2 2))
+	(command "text" "J" "C" (list -345 12) 2 0 (rtos (* maxNumDivFive 4) 2 2))
 )
 
 (defun drawWLTextLabel(maxNumDivFive)
-	(command "text" "C" (list -375 2) 2 0 (rtos maxNumDivFive 2 0))
-	(command "text" "C" (list -365 2) 2 0 (rtos (* maxNumDivFive 2) 2 0))
-	(command "text" "C" (list -355 2) 2 0 (rtos (* maxNumDivFive 3) 2 0))
-	(command "text" "C" (list -345 2) 2 0 (rtos (* maxNumDivFive 4) 2 0))
+	(command "text" "J" "C" (list -375 2) 2 0 (rtos maxNumDivFive 2 0))
+	(command "text" "J" "C" (list -365 2) 2 0 (rtos (* maxNumDivFive 2) 2 0))
+	(command "text" "J" "C" (list -355 2) 2 0 (rtos (* maxNumDivFive 3) 2 0))
+	(command "text" "J" "C" (list -345 2) 2 0 (rtos (* maxNumDivFive 4) 2 0))
+)
+
+(defun drawRockTextLabel()
+	
+
+	(cond ((= rockTypeNum 0)  
+					(progn
+						(command "text" "J" "L" (list -224 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
+						(command "text" "J" "L" (list -209 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
+						(command "text" "J" "L" (list -194 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
+						(command "text" "J" "L" (list -184 (+ (* rockDeep -5) 0.5)) rockTextSize 0 rockName)
+						(command "mtext" (list -159 (+ (* rockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
+					) 
+				)
+			   ((= rockTypeNum 1)
+					(progn 
+						(command "text" "J" "L" (list -304 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
+						(command "text" "J" "L" (list -289 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
+					)
+				)
+	)
+	
 )
 
 (defun drawDrillStructureTextLabel()
-	(command "text" "C" (list -30 (+ (* holeArtificialDeep -5) 2)) 3 0 (strcat (rtos  holeArtificialDeep 2 2) "m"))
-	(command "text" "C" (list -30 (+ (* holeDamperLocation -5) 2)) 3 0 (strcat (rtos  holeDamperLocation 2 2) "m"))
-	(command "text" "C" (list -30 (+ (* BushShoes -5) 2)) 3 0 (strcat (rtos  BushShoes 2 2) "m"))
-	(command "text" "C" (list -30 (+ (* d -5) 2)) 3 0 (strcat (rtos d 2 2) "m"))
+	(command "text" "J" "C" (list -30 (+ (* holeArtificialDeep -5) 2)) 3 0 (strcat (rtos  holeArtificialDeep 2 2) "m"))
+	(command "text" "J" "C" (list -30 (+ (* holeDamperLocation -5) 2)) 3 0 (strcat (rtos  holeDamperLocation 2 2) "m"))
+	(command "text" "J" "C" (list -30 (+ (* BushShoes -5) 2)) 3 0 (strcat (rtos  BushShoes 2 2) "m"))
+	(command "text" "J" "C" (list -30 (+ (* d -5) 2)) 3 0 (strcat (rtos d 2 2) "m"))
 )
 
 ;UI-Dimlinear
@@ -578,18 +759,18 @@
 						(command "dimasz" 2.5)
 						;一开标注
 						(command "dimlinear" (strcat "-49," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2)) (strcat "-11," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2))) ;
-						(command "text" "C" (list -29.5 (+ (/ (* 1 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneDrillDiameterStr)
-						(command "text" "C" (list -29.5 (- (/ (* 1 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0 (strcat (rtos holeOneDeep 2 2) "m"))
+						(command "text" "J" "C" (list -29.5 (+ (/ (* 1 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneDrillDiameterStr)
+						(command "text" "J" "C" (list -29.5 (- (/ (* 1 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0 (strcat (rtos holeOneDeep 2 2) "m"))
 						(command "dimlinear" (strcat "-46," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2)) (strcat "-14," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2))) ;
-						(command "text" "C" (list -29.5 (+ (/ (* 2 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneBushDiameterStr)
-						(command "text" "C" (list -29.5 (- (/ (* 2 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0  (strcat (rtos holeOneDeep 2 2) "m"))
+						(command "text" "J" "C" (list -29.5 (+ (/ (* 2 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneBushDiameterStr)
+						(command "text" "J" "C" (list -29.5 (- (/ (* 2 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0  (strcat (rtos holeOneDeep 2 2) "m"))
 						;二开标注
 						(command "dimlinear" (strcat "-43," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2)) (strcat "-17," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2))) ;
-						(command "text" "C" (list -29.5 (+ (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoDrillDiameterStr)
-						(command "text" "C" (list -29.5 (- (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 3.5)) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
+						(command "text" "J" "C" (list -29.5 (+ (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoDrillDiameterStr)
+						(command "text" "J" "C" (list -29.5 (- (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 3.5)) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
 						(command "dimlinear" (strcat "-40," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) (strcat "-20," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2))) ;
-						(command "text" "C" (list -29.5 (+ (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 1.5) 2.5 0 holeTwoBushDiameterStr)
-						(command "text" "C" (list -29.5 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 3.5) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
+						(command "text" "J" "C" (list -29.5 (+ (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 1.5) 2.5 0 holeTwoBushDiameterStr)
+						(command "text" "J" "C" (list -29.5 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 3.5) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
 						
 					 ))
 				
@@ -600,31 +781,126 @@
 						(command "dimasz" 2.5)
 						;一开标注
 						(command "dimlinear" (strcat "-55," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2)) (strcat "-5," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2))) ;
-						(command "text" "C" (list -30 (+ (/ (* 1 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneDrillDiameterStr)
-						(command "text" "C" (list -30 (- (/ (* 1 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0 (strcat (rtos holeOneDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (+ (/ (* 1 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneDrillDiameterStr)
+						(command "text" "J" "C" (list -30 (- (/ (* 1 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0 (strcat (rtos holeOneDeep 2 2) "m"))
 						(command "dimlinear" (strcat "-52," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2)) (strcat "-8," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2))) ;
-						(command "text" "C" (list -30 (+ (/ (* 2 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneBushDiameterStr)
-						(command "text" "C" (list -30 (- (/ (* 2 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0  (strcat (rtos holeOneDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (+ (/ (* 2 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneBushDiameterStr)
+						(command "text" "J" "C" (list -30 (- (/ (* 2 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0  (strcat (rtos holeOneDeep 2 2) "m"))
 						;二开标注
 						(command "dimlinear" (strcat "-49," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2)) (strcat "-11," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2))) ;
-						(command "text" "C" (list -30 (+ (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoDrillDiameterStr)
-						(command "text" "C" (list -30 (- (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 3.5)) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (+ (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoDrillDiameterStr)
+						(command "text" "J" "C" (list -30 (- (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 3.5)) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
 						(command "dimlinear" (strcat "-46," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) (strcat "-14," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2))) ;
-						(command "text" "C" (list -30 (+ (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoBushDiameterStr)
-						(command "text" "C" (list -30 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3.5)) 2.5 0  (strcat (rtos HoleTwoDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (+ (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoBushDiameterStr)
+						(command "text" "J" "C" (list -30 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3.5)) 2.5 0  (strcat (rtos HoleTwoDeep 2 2) "m"))
 						;三开标注
 						(command "dimlinear" (strcat "-43," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2)) (strcat "-17," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2))) ;
-						(command "text" "C" (list -30 (+ (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 1.5)) 2.5 0 holeThreeDrillDiameterStr)
-						(command "text" "C" (list -30 (- (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5)3.5)) 2.5 0 (strcat (rtos HoleThreeDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (+ (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 1.5)) 2.5 0 holeThreeDrillDiameterStr)
+						(command "text" "J" "C" (list -30 (- (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5)3.5)) 2.5 0 (strcat (rtos HoleThreeDeep 2 2) "m"))
 						(command "dimlinear" (strcat "-40," (rtos (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 2 2)) (strcat "-20," (rtos (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 2 2))) ;
-						(command "text" "C" (list -30 (+ (*(+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 1.5)) 2.5 0 holeThreeBushDiameterStr)
-						(command "text" "C" (list -30 (- (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 3.5)) 2.5 0  (strcat (rtos HoleThreeDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (+ (*(+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 1.5)) 2.5 0 holeThreeBushDiameterStr)
+						(command "text" "J" "C" (list -30 (- (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 3.5)) 2.5 0  (strcat (rtos HoleThreeDeep 2 2) "m"))
 					))
 	)
 )
 
 
 ;UI-Hatch
+(defun hatchRock(rockName)
+	(cond ((= rockName "黄土")  
+					(progn
+						(print "黄土")
+							
+					) 
+				)
+			   ((= rockName "粉砂岩")
+					(progn 
+						(print "粉砂岩")
+					)
+				)  
+				((= rockName "细粒砂岩")
+					(progn 
+						(print "细粒砂岩")
+					)
+				)  
+				((= rockName "中粒砂岩")
+					(progn 
+						(print "中粒砂岩")
+					)
+				)  
+				((= rockName "粗粒砂岩")
+					(progn 
+						(print "粗粒砂岩")
+					)
+				)  
+				((= rockName "粉砂质泥岩")
+					(progn 
+						(print "粉砂质泥岩")
+					)
+				)  
+				((= rockName "泥质粉砂岩")
+					(progn 
+						(print "泥质粉砂岩")
+					)
+				)  
+				((= rockName "砂砾岩")
+					(progn 
+						(print "砂砾岩")
+					)
+				)  
+				((= rockName "泥岩")
+					(progn 
+						(print "泥岩")
+					)
+				)  
+				((= rockName "煤层")
+					(progn 
+						(print "煤层")
+					)
+				)  
+				((= rockName "炭质泥岩")
+					(progn 
+						(print "炭质泥岩")
+					)
+				)  
+				((= rockName "砂质泥岩")
+					(progn 
+						(print "砂质泥岩")
+					)
+				)  
+				((= rockName "泥质砂岩")
+					(progn 
+						(print "泥质砂岩")
+					)
+				)  
+				((= rockName "石灰岩")
+					(progn 
+						(print "石灰岩")
+					)
+				)  
+				((= rockName "泥质灰岩")
+					(progn 
+						(print "泥质灰岩")
+					)
+				)  
+				((= rockName "铝土质泥岩")
+					(progn 
+						(print "铝土质泥岩")
+					)
+				)  
+				((= rockName "假整合")
+					(progn 
+						(print "假整合")
+					)
+				)  
+				((= rockName "角度不整合")
+					(progn 
+						(print "角度不整合")
+					)
+				)  
+	)
+)
+
 (defun hatchDrillStructure()
 	(cond ((= HoleNumFactor 1)  
 						(progn
@@ -756,10 +1032,10 @@
 ;;;			  	(setq maxNumDivFive (/ maxNum 5))
 ;;;			  	(setq factor (/ 12 maxNumDivFive))
 ;;;				
-;;;			  	(command "text" "C" (list -433 4) 3 0 maxNumDivFive)
-;;;			  	(command "text" "C" (list -421 4) 3 0 (* maxNumDivFive 2))
-;;;			  	(command "text" "C" (list -409 4) 3 0 (* maxNumDivFive 3))
-;;;			  	(command "text" "C" (list -397 4) 3 0 (* maxNumDivFive 4))
+;;;			  	(command "text" "J" "C" (list -433 4) 3 0 maxNumDivFive)
+;;;			  	(command "text" "J" "C" (list -421 4) 3 0 (* maxNumDivFive 2))
+;;;			  	(command "text" "J" "C" (list -409 4) 3 0 (* maxNumDivFive 3))
+;;;			  	(command "text" "J" "C" (list -397 4) 3 0 (* maxNumDivFive 4))
 ;;;			)
 ;;;		)
 ;;;	)
