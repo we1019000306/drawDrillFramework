@@ -818,7 +818,6 @@
 (defun drawFrameBaseBlock()
 	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	(drawShaLiYan)
-	(drawShaZhiNiYan)
   	(command)
 
 )
@@ -835,238 +834,38 @@
 					)
 				)
 	)
+	
 	(cond ((> rockThickness 1)  
 							(progn
 										(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 										(setq rockFactor (/ rockThickness rockMaxThickness))
-										(cond ((= rockName "黄土")  
-															(progn
-																(print "黄土")
-																	
-															) 
-														)
-													   ((= rockName "粉砂岩")
-															(progn 
-																(print "粉砂岩")
-															)
-														)  
-														((= rockName "细粒砂岩")
-															(progn 
-																(print "细粒砂岩")
-															)
-														)  
-														((= rockName "中粒砂岩")
-															(progn 
-																(print "中粒砂岩")
-															)
-														)  
-														((= rockName "粗粒砂岩")
-															(progn 
-																(print "粗粒砂岩")
-															)
-														)  
-														((= rockName "粉砂质泥岩")
-															(progn 
-																(print "粉砂质泥岩")
-															)
-														)  
-														((= rockName "泥质粉砂岩")
-															(progn 
-																(print "泥质粉砂岩")
-															)
-														)  
-														((= rockName "砂砾岩")
-															(progn 
-																(print "砂砾岩");-316,-3984.5
-																(setq Selectionset (ssget "C" (list -329 (- (* d -5) 40.75)) (list -316 (- (* d -5) 45.25)))) 
-																(creatBlockOrCheckBlock rockName (list -322.5 (- (* d -5) 45)) Selectionset)
-																(configBoldHatch)
-															) 
-														)					
-														((= rockName "泥岩")
-															(progn 
-																(print "泥岩")
-															)
-														)  
-														((= rockName "煤层")
-															(progn 
-																(print "煤层")
-															)
-														)  
-														((= rockName "炭质泥岩")
-															(progn 
-																(print "炭质泥岩")
-															)
-														)  
-														((= rockName "砂质泥岩")
-															(progn 
-																(print "砂质泥岩")
-																(setq Selectionset (ssget "C" (list -129 (- (* d -5) 40.75)) (list -116 (- (* d -5) 45.25))))
-																(creatBlockOrCheckBlock rockName (list -122.5 (- (* d -5) 45)) Selectionset)
-																(configBoldHatch)
-															)
-														)  
-														((= rockName "泥质砂岩")
-															(progn 
-																(print "泥质砂岩")
-															)
-														)  
-														((= rockName "石灰岩")
-															(progn 
-																(print "石灰岩")
-															)
-														)  
-														((= rockName "泥质灰岩")
-															(progn 
-																(print "泥质灰岩")
-															)
-														)  
-														((= rockName "铝土质泥岩")
-															(progn 
-																(print "铝土质泥岩")
-															)
-														)  
-														((= rockName "假整合")
-															(progn 
-																(print "假整合")
-															)
-														)  
-														((= rockName "角度不整合")
-															(progn 
-																(print "角度不整合")
-															)
-														)  
-											)
+										(setq Selectionset (ssget "C" (list -329 (- (* d -5) 40.75)) (list -316 (- (* d -5) 45.25)))) ;
 										(command)
-					
+										(creatBlockOrCheckBlock rockName (list -322.5 (- (* d -5) 45)) Selectionset)
+										(command)
+										;过薄计算需要找到插图框格的中位线
+										(hatchRockWithMInsert rockName (list RockHatchXOffset (* rockDeep -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
+										(command)
 										
 							))
 							 ((<= rockThickness 1)  
 							(progn
-										(cond ((= rockName "黄土")  
-															(progn
-																(print "黄土")
-																	
-															) 
-														)
-													   ((= rockName "粉砂岩")
-															(progn 
-																(print "粉砂岩")
-															)
-														)  
-														((= rockName "细粒砂岩")
-															(progn 
-																(print "细粒砂岩")
-															)
-														)  
-														((= rockName "中粒砂岩")
-															(progn 
-																(print "中粒砂岩")
-															)
-														)  
-														((= rockName "粗粒砂岩")
-															(progn 
-																(print "粗粒砂岩")
-															)
-														)  
-														((= rockName "粉砂质泥岩")
-															(progn 
-																(print "粉砂质泥岩")
-															)
-														)  
-														((= rockName "泥质粉砂岩")
-															(progn 
-																(print "泥质粉砂岩")
-															)
-														)  
-														((= rockName "砂砾岩")
-															(progn 
-																(print "砂砾岩");-316,-3984.5
-																(setq Selectionset (ssget "C" (list -329 (- (* d -5) 40.75)) (list -316 (- (* d -5) 42)))) 
-																(command)
-																(creatBlockOrCheckBlock rockName (list -322.5 (- (* d -5) 45)) Selectionset)
-																(command)
-																(configThickHatch)
-															) 
-														)					
-														((= rockName "泥岩")
-															(progn 
-																(print "泥岩")
-															)
-														)  
-														((= rockName "煤层")
-															(progn 
-																(print "煤层")
-															)
-														)  
-														((= rockName "炭质泥岩")
-															(progn 
-																(print "炭质泥岩")
-															)
-														)  
-														((= rockName "砂质泥岩")
-															(progn 
-																(print "砂质泥岩")
-																(setq Selectionset (ssget "C" (list -129 (- (* d -5) 40.75)) (list -116 (- (* d -5) 42)))) 
-																(creatBlockOrCheckBlock rockName (list -122.5 (- (* d -5) 45)) Selectionset)
-																(configThickHatch)
-															)
-														)  
-														((= rockName "泥质砂岩")
-															(progn 
-																(print "泥质砂岩")
-															)
-														)  
-														((= rockName "石灰岩")
-															(progn 
-																(print "石灰岩")
-															)
-														)  
-														((= rockName "泥质灰岩")
-															(progn 
-																(print "泥质灰岩")
-															)
-														)  
-														((= rockName "铝土质泥岩")
-															(progn 
-																(print "铝土质泥岩")
-															)
-														)  
-														((= rockName "假整合")
-															(progn 
-																(print "假整合")
-															)
-														)  
-														((= rockName "角度不整合")
-															(progn 
-																(print "角度不整合")
-															)
-														)  
-											)
-							
-										
+										(setq Selectionset (ssget "C" (list -329 (- (* d -5) 40.75)) (list -316 (- (* d -5) 42)))) 
+										(command)
+										(creatBlockOrCheckBlock rockName (list -322.5 (- (* d -5) 45)) Selectionset)
+										(command)
+										(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (+ rockDeep (/ rockThickness 4)) -5)) 1 rockThickness 1 0)
+										(command)
 							))
 	)
 						
 	
 )
 
-(defun configBoldHatch()
-;过薄计算需要找到插图框格的中位线
-	(hatchRockWithMInsert rockName (list RockHatchXOffset (* rockDeep -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
-	(command)
-)
-
-(defun configThickHatch()
-	(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (+ rockDeep (/ rockThickness 4)) -5)) 1 rockThickness 1 0)
-	(command)
-)
-
 ;Tool-Hatch
 (defun hatchRockWithMInsert(BlockName InsertPoint xFactor yFactor rowCount rowSpace)  ;定义函数 
  (vl-load-com)  ;加载Vlisp函数  
-  ;选择加密对象
- 			(command "zoom" "C" (list -222.5 (* d -5)) "250")
+  ;选择加密对象 		
 			(command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace);用block命令制作块，然后用minsert命令制作多重引用块
 		  ;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
 			(command)
@@ -1074,7 +873,7 @@
 			(vla-put-name (vla-item (vla-get-blocks (vla-get-activedocument (vlax-get-acad-object))) (vla-get-name (vlax-ename->vla-object (entlast)))) "*U") 
 			(command)
 					;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
-			(princ "\n加密完成")
+					(princ "\n加密完成")
 			(command "zoom" "C" (list -222.5 (* d -5)) "250")
   			;加密完成后恢复参考图形
   			(cond ((= BlockName "黄土")  
@@ -1521,102 +1320,102 @@
 ;;;								(command "hatch" "DOTS" 15 0 "w" strBushShoesPtA strHoleDamperLocationPtB "")
 ;;;								(command "_.Erase" eDamperArtificialName "")
 ;;;)
-;;;
-;;;(defun hatchBeiyongPanduan()
-;;;(cond ((= rockName "黄土")  
-;;;					(progn
-;;;						(print "黄土")
-;;;							
-;;;					) 
-;;;				)
-;;;			   ((= rockName "粉砂岩")
-;;;					(progn 
-;;;						(print "粉砂岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "细粒砂岩")
-;;;					(progn 
-;;;						(print "细粒砂岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "中粒砂岩")
-;;;					(progn 
-;;;						(print "中粒砂岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "粗粒砂岩")
-;;;					(progn 
-;;;						(print "粗粒砂岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "粉砂质泥岩")
-;;;					(progn 
-;;;						(print "粉砂质泥岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "泥质粉砂岩")
-;;;					(progn 
-;;;						(print "泥质粉砂岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "砂砾岩")
-;;;					(progn 
-;;;						(print "砂砾岩");-316,-3984.5
-;;;					  
-;;;						
-;;;					) 
-;;;				)					
-;;;				((= rockName "泥岩")
-;;;					(progn 
-;;;						(print "泥岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "煤层")
-;;;					(progn 
-;;;						(print "煤层")
-;;;					)
-;;;				)  
-;;;				((= rockName "炭质泥岩")
-;;;					(progn 
-;;;						(print "炭质泥岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "砂质泥岩")
-;;;					(progn 
-;;;						(print "砂质泥岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "泥质砂岩")
-;;;					(progn 
-;;;						(print "泥质砂岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "石灰岩")
-;;;					(progn 
-;;;						(print "石灰岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "泥质灰岩")
-;;;					(progn 
-;;;						(print "泥质灰岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "铝土质泥岩")
-;;;					(progn 
-;;;						(print "铝土质泥岩")
-;;;					)
-;;;				)  
-;;;				((= rockName "假整合")
-;;;					(progn 
-;;;						(print "假整合")
-;;;					)
-;;;				)  
-;;;				((= rockName "角度不整合")
-;;;					(progn 
-;;;						(print "角度不整合")
-;;;					)
-;;;				)  
-;;;	)
-;;;
-;;;
-;;;)
+
+(defun hatchBeiyongPanduan()
+(cond ((= rockName "黄土")  
+					(progn
+						(print "黄土")
+							
+					) 
+				)
+			   ((= rockName "粉砂岩")
+					(progn 
+						(print "粉砂岩")
+					)
+				)  
+				((= rockName "细粒砂岩")
+					(progn 
+						(print "细粒砂岩")
+					)
+				)  
+				((= rockName "中粒砂岩")
+					(progn 
+						(print "中粒砂岩")
+					)
+				)  
+				((= rockName "粗粒砂岩")
+					(progn 
+						(print "粗粒砂岩")
+					)
+				)  
+				((= rockName "粉砂质泥岩")
+					(progn 
+						(print "粉砂质泥岩")
+					)
+				)  
+				((= rockName "泥质粉砂岩")
+					(progn 
+						(print "泥质粉砂岩")
+					)
+				)  
+				((= rockName "砂砾岩")
+					(progn 
+						(print "砂砾岩");-316,-3984.5
+					  
+						
+					) 
+				)					
+				((= rockName "泥岩")
+					(progn 
+						(print "泥岩")
+					)
+				)  
+				((= rockName "煤层")
+					(progn 
+						(print "煤层")
+					)
+				)  
+				((= rockName "炭质泥岩")
+					(progn 
+						(print "炭质泥岩")
+					)
+				)  
+				((= rockName "砂质泥岩")
+					(progn 
+						(print "砂质泥岩")
+					)
+				)  
+				((= rockName "泥质砂岩")
+					(progn 
+						(print "泥质砂岩")
+					)
+				)  
+				((= rockName "石灰岩")
+					(progn 
+						(print "石灰岩")
+					)
+				)  
+				((= rockName "泥质灰岩")
+					(progn 
+						(print "泥质灰岩")
+					)
+				)  
+				((= rockName "铝土质泥岩")
+					(progn 
+						(print "铝土质泥岩")
+					)
+				)  
+				((= rockName "假整合")
+					(progn 
+						(print "假整合")
+					)
+				)  
+				((= rockName "角度不整合")
+					(progn 
+						(print "角度不整合")
+					)
+				)  
+	)
+
+
+)
