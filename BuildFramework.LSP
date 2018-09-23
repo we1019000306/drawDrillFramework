@@ -56,8 +56,8 @@
 					
 					((= std 5)
 						(progn
-							;(drawRock)
-							(vla-SendCommand thisdrawing (strcat "(drawRock)" " "))
+							(drawRock)
+							;(vla-SendCommand thisdrawing (strcat "(drawRock)" " "))
 						  	(c:buildFramework)
 						)
 					)
@@ -404,7 +404,7 @@
   		(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(drawFrameLine)
 		(drawFrameTextLabel)
-		(command)
+		
 		(drawFrameBaseBlock)
 )
 
@@ -432,11 +432,11 @@
 						(setq rockName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataName 'Item indexA)) 'Value2))
 						(setq rockDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataDescription 'Item indexA)) 'Value2))
 						(setq rockNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataNumber 'Item indexA)) 'Value2))
-					;(drawRockLine)
-					;(drawRockTextLabel)
+					(drawRockLine)
+					(drawRockTextLabel)
 					(hatchRock rockName rockDeep rockThickness)
 					;(vla-SendCommand thisdrawing (strcat "(hatchRock" " " "rockName" " " "rockDeep" " " "rockThickness)" " " ))
-					(command)
+					
 				)
 			)
 			(setq indexA (1+ indexA))
@@ -859,16 +859,17 @@
 														((= rockName "œ∏¡£…∞—“")
 															(progn 
 																(print "œ∏¡£…∞—“")
-																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2))))
+																(setq rockBottomDist (- rockThickness (atoi  (rtos rockThickness 2 2))))
+																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 																(setq rockFactor (/ rockThickness rockMaxThickness))
 																(drawXiLiShaYanTop)
 																(setq Selectionset (ssget "C" (list -294.5 (- (* d -5) 6.75)) (list -280.5 (- (* d -5) 10.25)))) 
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -287.5 (- (* d -5) 9.75))" " " "Selectionset)" " " ))
-																;(command)
+																;
 																(creatBlockOrCheckBlock rockName (list -287.5 (- (* d -5) 9.75)) Selectionset)
 																;(vla-SendCommand thisdrawing (strcat "(hatchRockWithMInsert" " " "rockName" " " "(list RockHatchXOffset (+ (* rockDeep -5) 0.5))" " " "1" " " "rockFactor" " " "rockMaxThickness" " " "(* 5 rockFactor))" " "))
-																;(command)
-																(hatchRockWithMInsert rockName (list RockHatchXOffset (+ (* rockDeep -5) 0.5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
+																;
+																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
 
 										
 															)
@@ -900,10 +901,10 @@
 																(setq Selectionset (ssget "C" (list -344 (- (* d -5) 40.75)) (list -331 (- (* d -5) 45.25)))) 
 																(creatBlockOrCheckBlock rockName (list -337.5 (- (* d -5) 45)) Selectionset)
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -337.5 (- (* d -5) 45))" " " "Selectionset)" " " ))
-																;(command)
+																;
 														
 																(configBoldHatch)
-																(command)
+																
 															) 
 														)					
 														((= rockName "ƒ‡—“")
@@ -929,9 +930,9 @@
 																
 																(creatBlockOrCheckBlock rockName (list -137.5 (- (* d -5) 45)) Selectionset)
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* d -5) 45))" " " "Selectionset)" " " ))
-																;(command)
+																;
 																(configBoldHatch)
-																(command)
+																
 															)
 														)  
 														((= rockName "ƒ‡÷ …∞—“")
@@ -967,7 +968,7 @@
 															)
 														)  
 											)
-										(command)
+										
 					
 										
 							))
@@ -989,12 +990,13 @@
 																(print "œ∏¡£…∞—“")
 																(drawXiLiShaYanOne)
 																(setq Selectionset (ssget "C" (list -292.5 (- (* d -5) 6.75)) (list -282.5 (- (* d -5) 7.75)))) 
-																(creatBlockOrCheckBlock rockName (list -287.5 (- (* d -5) 9.75)) Selectionset)
+																(creatBlockOrCheckBlock rockName (list -287.5 (- (* d -5) 7.25)) Selectionset)
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -287.5 (- (* d -5) 9.75))" " " "Selectionset)" " " ))
-																;(command)
+																;
 																;(vla-SendCommand thisdrawing (strcat "(hatchRockWithMInsert" " " "rockName" " " "(list RockHatchXOffset  (* (+ rockDeep (/ rockThickness 3)) -5))" " " "1" " " "1" " " "1" " " "0)" " "))
-																;(command)
-																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (+ rockDeep (/ rockThickness 3)) -5)) 1 1 1 0)
+																;
+																(configThickHatch)
+																
 															)
 														)  
 														((= rockName "÷–¡£…∞—“")
@@ -1022,12 +1024,12 @@
 																(print "…∞¿˘—“");-316,-3984.5
 																(drawShaLiYanOne)
 																(setq Selectionset (ssget "C" (list -344 (- (* d -5) 40.75)) (list -331 (- (* d -5) 42)))) 
-																;(command)
+																;
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -337.5 (- (* d -5) 45))" " " "Selectionset)" " " ))
-																;(command)
-																(creatBlockOrCheckBlock rockName (list -337.5 (- (* d -5) 45)) Selectionset)
+																;
+																(creatBlockOrCheckBlock rockName (list -337.5 (- (* d -5) 41.25)) Selectionset)
 																(configThickHatch)
-																;(command)
+																;
 															) 
 														)					
 														((= rockName "ƒ‡—“")
@@ -1051,10 +1053,8 @@
 																(drawShaZhiNiYanOne)
 																(setq Selectionset (ssget "C" (list -144 (- (* d -5) 40.75)) (list -131 (- (* d -5) 42)))) 
 															;	(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* d -5) 45))" " " "Selectionset)" " " ))
-																;(command)
-																(creatBlockOrCheckBlock rockName (list -137.5 (- (* d -5) 45)) Selectionset)
+																(creatBlockOrCheckBlock rockName (list -137.5 (- (* d -5) 41.25)) Selectionset)
 																(configThickHatch)
-																;(command)
 															)
 														)  
 														((= rockName "ƒ‡÷ …∞—“")
@@ -1108,7 +1108,7 @@
 ;π˝±°º∆À„–Ë“™’“µΩ≤ÂÕºøÚ∏Òµƒ÷–Œªœﬂ
 	
 	;(vla-SendCommand thisdrawing (strcat "(hatchRockWithMInsert" " " "rockName" " " "(list RockHatchXOffset (* rockDeep -5))" " " "1" " " "1" " " "1" " " "0)" " "))
-	(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (+ rockDeep (/ rockThickness 4)) -5)) 1 1 1 0)
+	(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 1 1 0)
 )
 
 ;Tool-Hatch
@@ -1267,19 +1267,19 @@
  (defun drawShaLiYanOne()
    	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	(command "circle" (strcat "-337.5," (rtos (- (* d -5) 41.25) 2 2)) 0.35)
-	(command)
+	
 	(command "circle" (strcat "-340," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-341," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-335," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-334," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
 	  (command "-hatch" "S" (ssget "W" (list -341.5 (- (* d -5) 40.75)) (list -339.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* d -5) 40.75)) (list -333.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
  )
  
  (defun drawShaLiYanTopVla()
@@ -1289,49 +1289,49 @@
 (defun drawShaLiYanTop()
   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	(command "line" (strcat "-345," (rtos (- (* d -5) 42.5) 2 2)) (strcat "-330," (rtos (- (* d -5) 42.5) 2 2)) "")
-  	(command)
+  	
 	(command "line" (strcat "-345," (rtos (- (* d -5) 45) 2 2)) (strcat "-330," (rtos (- (* d -5) 45) 2 2)) "")
-	(command)
+	
 	;rowOne
 	(command "circle" (strcat "-337.5," (rtos (- (* d -5) 41.25) 2 2)) 0.35)
-	(command)
+	
 	(command "circle" (strcat "-340," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-341," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-335," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-334," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
 	
 	(command "-hatch" "S" (ssget "W" (list -341.5 (- (* d -5) 40.75)) (list -339.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* d -5) 40.75)) (list -333.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	;rowTwo
 	(command "circle" (strcat "-340.5," (rtos (- (* d -5) 43.75) 2 2)) 0.35)
-	(command)
+	
 	(command "circle" (strcat "-334.5," (rtos (- (* d -5) 43.75) 2 2)) 0.35)
-	(command)
+	
 	(command "circle" (strcat "-338," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-337," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-332.5," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-331.5," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-342.5," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-343.5," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command)
+	
 
 	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* d -5) 43.25)) (list -336.5 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -333 (- (* d -5) 43.25)) (list -331 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -344 (- (* d -5) 43.25)) (list -342 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 )
 
  (defun drawShaLiYanBottomVla()
@@ -1341,51 +1341,51 @@
  (defun drawShaLiYanBottom()
    	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	(command "Rectang" (strcat "-345," (rtos (- (* d -5) 40) 2 2)) (strcat "-330," (rtos (- (* d -5) 50) 2 2)) " ")
-	(command)
+	
 	(command "line" (strcat "-345," (rtos (- (* d -5) 47.5) 2 2)) (strcat "-330," (rtos (- (* d -5) 47.5) 2 2)) "")
-	(command)
+	
 	;rowThree
 	(command "circle" (strcat "-337.5," (rtos (- (* d -5) 46.25) 2 2)) 0.35)
-	(command)
+	
 	(command "circle" (strcat "-340," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-341," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-335," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-334," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command)
+	
 	
 	(command "-hatch" "S" (ssget "W" (list -341.5 (- (* d -5) 45.75)) (list -339.5 (- (* d -5) 46.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* d -5) 45.75)) (list -333.5 (- (* d -5) 46.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	;rowFour
 	(command "circle" (strcat "-340.5," (rtos (- (* d -5) 48.75) 2 2)) 0.35)
-	(command)
+	
 	(command "circle" (strcat "-334.5," (rtos (- (* d -5) 48.75) 2 2)) 0.35)
-	(command)
+	
 	(command "circle" (strcat "-338," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-337," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-332.5," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-331.5," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-342.5," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-343.5," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command)
+	
    	(command "text" "J" "C" (list -337.5 (- (* d -5) 58.25)) 3 0 "…∞¿˘—“")
-   	(command)
+   	
 
 	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* d -5) 48.25)) (list -336.5 (- (* d -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -333 (- (* d -5) 48.25)) (list -331 (- (* d -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -344 (- (* d -5) 48.25)) (list -342 (- (* d -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 
  ) 
 
@@ -1411,13 +1411,13 @@
  (defun drawShaZhiNiYanOne()
 	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	(command "line" (strcat "-141," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-139.5," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command)
+	
 	(command "line" (strcat "-135.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-134," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command)
+	
 	(command "circle" (strcat "-137.5," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
   	(command "-hatch" "S" (ssget "W" (list -138 (- (* d -5) 40.75)) (list -137 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
  )
  
 (defun drawShaZhiNiYanTopVla()
@@ -1428,32 +1428,32 @@
 (defun drawShaZhiNiYanTop()
   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	(command "line" (strcat "-145," (rtos (- (* d -5) 42.5) 2 2)) (strcat "-130," (rtos (- (* d -5) 42.5) 2 2)) "")
-  	(command)
+  	
 	(command "line" (strcat "-145," (rtos (- (* d -5) 45) 2 2)) (strcat "-130," (rtos (- (* d -5) 45) 2 2)) "")
-	(command)
+	
 	;rowOne
 	(command "line" (strcat "-141," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-139.5," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command)
+	
 	(command "line" (strcat "-135.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-134," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command)
+	
 	(command "circle" (strcat "-137.5," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command)
+	
   	(command "-hatch" "S" (ssget "W" (list -138 (- (* d -5) 40.75)) (list -137 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	;rowTwo
 	(command "line" (strcat "-142.5," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-144," (rtos (- (* d -5) 43.75) 2 2)) "")
 	(command "line" (strcat "-136.75," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-138.25," (rtos (- (* d -5) 43.75) 2 2)) "")
 	(command "line" (strcat "-132.75," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-131.25," (rtos (- (* d -5) 43.75) 2 2)) "")
-	(command)
+	
 	(command "circle" (strcat "-140.25," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-134.75," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command)
+	
 
 	(command "-hatch" "S" (ssget "W" (list -135.5 (- (* d -5) 43.25)) (list -133.5 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* d -5) 43.25)) (list -139.5 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 )
 
 (defun drawShaZhiNiYanBottomVla()
@@ -1464,37 +1464,37 @@
 (defun drawShaZhiNiYanBottom()
   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	(command "Rectang" (strcat "-145," (rtos (- (* d -5) 40) 2 2)) (strcat "-130," (rtos (- (* d -5) 50) 2 2)) " ")
-	(command)
+	
 	(command "line" (strcat "-145," (rtos (- (* d -5) 47.5) 2 2)) (strcat "-130," (rtos (- (* d -5) 47.5) 2 2)) "")
-  	(command)
+  	
 	(command "line" (strcat "-145," (rtos (- (* d -5) 50) 2 2)) (strcat "-130," (rtos (- (* d -5) 50) 2 2)) "")
-	(command)
+	
 	;rowOne
 	(command "line" (strcat "-141," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-139.5," (rtos (- (* d -5) 46.25) 2 2)) "")
-	(command)
+	
 	(command "line" (strcat "-135.5," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-134," (rtos (- (* d -5) 46.25) 2 2)) "")
-	(command)
+	
 	(command "circle" (strcat "-137.5," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command)
+	
   	(command "-hatch" "S" (ssget "W" (list -138 (- (* d -5) 46.75)) (list -137 (- (* d -5) 45.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	;rowTwo
 	(command "line" (strcat "-142.5," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-144," (rtos (- (* d -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-136.75," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-138.25," (rtos (- (* d -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-132.75," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-131.25," (rtos (- (* d -5) 48.75) 2 2)) "")
-	(command)
+	
 	(command "circle" (strcat "-140.25," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-134.75," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command)
+	
 	
 	(command "-hatch" "S" (ssget "W" (list -135.5 (- (* d -5) 49.25)) (list -133.5 (- (* d -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* d -5) 49.25)) (list -139.5 (- (* d -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 	
 	(command "text" "J" "C" (list -137.5 (- (* d -5) 58.25)) 3 0 "…∞÷ ƒ‡—“")
-   	(command)
+   	
 )
 
 
@@ -1519,19 +1519,19 @@
  (defun drawXiLiShaYanOne()
    	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	(command "circle" (strcat "-291.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-290.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-289.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-285.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-284.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-283.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* d -5) 7.75)) (list -282.5 (- (* d -5) 6.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
  )
  
   (defun drawXiLiShaYanTopVla()
@@ -1543,40 +1543,40 @@
   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	;rowOne
 	(command "circle" (strcat "-291.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-290.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-289.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-285.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-284.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-283.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command)
+	
 	
 	;rowTwo
 	(command "circle" (strcat "-287.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-286.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-288.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-291.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-292.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-293.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-283.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-282.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-281.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command)
+	
 
 	(command "-hatch" "S" (ssget "W" (list -294.5 (- (* d -5) 6.75)) (list -280.5 (- (* d -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 
 )
 
@@ -1587,25 +1587,25 @@
  (defun drawXiLiShaYanBottom()
    	(command "zoom" "C" (list -222.5 (* d -5)) "250")
 	(command "Rectang" (strcat "-295," (rtos (- (* d -5) 5) 2 2)) (strcat "-280," (rtos (- (* d -5) 15) 2 2)) " ")
-	(command)
+	
 	;rowThree
 	(command "circle" (strcat "-291.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-290.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-289.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-285.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-284.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	(command)
+	
 	(command "circle" (strcat "-283.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	(command)
+	
 	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* d -5) 11.75)) (list -282.5 (- (* d -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
+	
 
 	(command "text" "J" "C" (list -287.5 (- (* d -5) 23.5)) 3 0 "œ∏¡£…∞—“")
-   	(command)
+   	
  ) 
 
 
