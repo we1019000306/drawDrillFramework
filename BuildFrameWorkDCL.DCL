@@ -285,11 +285,11 @@ framework:dialog{ //定义名字为yuan的对话框
 				}//编辑框5引用结束
 	
 				
-				:popup_list{label="文字大小：";
-						edit_width = 15;
-						list="3.00\n\2.00\n1.00\n待开发";
-						key= "RockTextSize_List";
-				}		
+				//:popup_list{label="文字大小：";
+					//	edit_width = 15;
+						//list="3.00\n\2.00\n1.00\n待开发";
+						//key= "RockTextSize_List";
+				//}		
 					
 				:button{
 				  key = "DRBtn";  //DrawRockButton
