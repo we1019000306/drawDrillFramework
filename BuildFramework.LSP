@@ -8,13 +8,14 @@
 ;Data
 (defun DCLAndDataHandler()
 	(setq sdt 0)
-  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\BuildFrameWorkDCL.dcl"))
+  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\testDCL.DCL"));BuildFrameWorkDCL testDCL
 	(if (not (new_dialog "framework" id))(exit))
   	(action_tile "startBtn" "(configStartBtn) (done_dialog 1)")
 	(action_tile "DFBtn" "(configDFBtn)  (done_dialog 2)")
 	(action_tile "DLBtn" "(configDLBtn)  (done_dialog 3)")
 	(action_tile "DDBtn" "(configDDBtn)  (done_dialog 4)")
-	(action_tile "DRBtn" "(configDRBtn)  (done_dialog 5)")
+	(action_tile "DRSBtn" "(configDRSBtn)  (done_dialog 5)")
+	(action_tile "DRBtn" "(configDRBtn)  (done_dialog 6)")
 	(action_tile "HoleNumber_List" "(configHolePopListAction)")
 	(action_tile "RockType_List" "(configRockPopListAction)")
 	(action_tile "cancelBtn" "(done_dialog -1)")
@@ -73,16 +74,21 @@
 					
 					((= std 5)
 						(progn
-							(drawRock)
-							;(vla-SendCommand thisdrawing (strcat "(drawRock)" " "))
+							(drawRockStructure)
 						  	(c:buildFramework)
 						)
 					)
-  					((= std -1)
-					(progn
-						(alert "你就这样离开我了么？？亚麻得！！")
-
+					((= std 6)
+						(progn
+							(drawRock)
+							(c:buildFramework)
+						)
 					)
+  					((= std -1)
+						(progn
+							(alert "你就这样离开我了么？？亚麻得！！")
+
+						)
 					)
 	)
  	
@@ -116,7 +122,45 @@
   	(if (null lineTypeNum) (print "nil") (set_tile "LineType_List" (itoa lineTypeNum)))
   	(if (null lineWeightNum) (print "nil") (set_tile "LineWeight_List" (itoa lineWeightNum)))
   	(if (null HoleNum) (print "nil") (set_tile "HoleNumber_List" (itoa HoleNum)))
-	;完井结构
+	;系统组
+	(if (null rockStructureTypeNum) (print "nil") (set_tile "RockStructureType_List" (itoa rockStructureTypeNum)))
+	(if (null columnRockStructureOne) (print "nil") (set_tile "columnRockStructureOne" columnRockStructureOne))
+  	(if (null columnRockStructureTwo) (print "nil") (set_tile "columnRockStructureTwo" columnRockStructureTwo))
+	(if (null columnRockStructureThree) (print "nil") (set_tile "columnRockStructureThree" columnRockStructureThree))
+	(if (null columnRockStructureFour) (print "nil") (set_tile "columnRockStructureFour" columnRockStructureFour))
+	;测井钻井柱状图
+	(if (null rockTypeNum) (print "nil") (set_tile "RockType_List" (itoa rockTypeNum)))
+	(if (null columnRockOne) (print "nil") (set_tile "columnRockOne" columnRockOne))
+  	(if (null columnRockTwo) (print "nil") (set_tile "columnRockTwo" columnRockTwo))
+	(if (null columnRockThree) (print "nil") (set_tile "columnRockThree" columnRockThree))
+	(if (null columnRockFour) (print "nil") (set_tile "columnRockFour" columnRockFour))
+	(if (null columnRockFive) (print "nil") (set_tile "columnRockFive" columnRockFive))
+  	;(if (null rockTextSize) (print "nil") (set_tile "RockTextSize_List" (itoa rockTextSize)))
+	(cond ((= rockTypeNum 0)  
+				(progn
+					(mode_tile  "columnRockOne" 0)
+					(mode_tile  "columnRockTwo" 0)
+					(mode_tile  "columnRockThree" 0)
+					(mode_tile  "columnRockFour" 0)
+					(mode_tile  "columnRockFive" 0)
+				) 
+			)
+		   ((= rockTypeNum 1)
+				(progn 
+					(mode_tile  "columnRockOne" 0)
+					(mode_tile  "columnRockTwo" 0)
+					(mode_tile  "columnRockThree" 0)
+					(mode_tile  "columnRockFour" 1)
+					(mode_tile  "columnRockFive" 1)
+				)
+			)
+		   ((= rockTypeNum 2)  
+				(progn 
+					(print "待开发")
+				)
+			)
+	)
+		;完井结构
 	(if (null holeOneDrillDiameter) (print "nil") (set_tile "HoleOneDrillDiameter" holeOneDrillDiameterStr))
 	(if (null holeOneDeep) (print "nil") (set_tile "HoleOneDeep" (rtos holeOneDeep 2 2)))
 	(if (null holeOneBushDiameter) (print "nil") (set_tile "HoleOneBushDiameter" holeOneBushDiameterStr))
@@ -155,38 +199,6 @@
 						(setq HoleNumFactor 2)
 					)
 				)	 
-	)
-	;柱状图
-	(if (null rockTypeNum) (print "nil") (set_tile "RockType_List" (itoa rockTypeNum)))
-	(if (null columnRockOne) (print "nil") (set_tile "columnRockOne" columnRockOne))
-  	(if (null columnRockTwo) (print "nil") (set_tile "columnRockTwo" columnRockTwo))
-	(if (null columnRockThree) (print "nil") (set_tile "columnRockThree" columnRockThree))
-	(if (null columnRockFour) (print "nil") (set_tile "columnRockFour" columnRockFour))
-	(if (null columnRockFive) (print "nil") (set_tile "columnRockFive" columnRockFive))
-  	;(if (null rockTextSize) (print "nil") (set_tile "RockTextSize_List" (itoa rockTextSize)))
-	(cond ((= rockTypeNum 0)  
-				(progn
-					(mode_tile  "columnRockOne" 0)
-					(mode_tile  "columnRockTwo" 0)
-					(mode_tile  "columnRockThree" 0)
-					(mode_tile  "columnRockFour" 0)
-					(mode_tile  "columnRockFive" 0)
-				) 
-			)
-		   ((= rockTypeNum 1)
-				(progn 
-					(mode_tile  "columnRockOne" 0)
-					(mode_tile  "columnRockTwo" 0)
-					(mode_tile  "columnRockThree" 0)
-					(mode_tile  "columnRockFour" 1)
-					(mode_tile  "columnRockFive" 1)
-				)
-			)
-		   ((= rockTypeNum 2)  
-				(progn 
-					(print "待开发")
-				)
-			)
 	)
 )
 
@@ -280,6 +292,36 @@
 		       ((= HoleNum 2)  
 					(progn 
 							
+					)
+				)
+	)
+)
+
+;配置系统组按钮属性
+(defun configDRSBtn()
+	
+	(setq columnRockStructureOne  (get_tile "columnRockStructureOne"))
+	(setq columnRockStructureTwo  (get_tile "columnRockStructureTwo"))
+	(setq columnRockStructureThree  (get_tile "columnRockStructureThree"))
+	(setq columnRockStructureFour (get_tile "columnRockStructureFour"))
+	(setq rockStructureTypeNum (atoi(get_tile "RockStructureType_List")))
+	;(setq rockTextSizeNum (atoi(get_tile "RockTextSize_List")))
+	(setq rockStructureTextSize 3)
+	(setq RockStructureXOffset -330)
+
+	(cond ((= rockStructureTypeNum 0)  
+					(progn
+						(setq RockStructureXOffset -330)
+					) 
+				)
+			   ((= rockStructureTypeNum 1)
+					(progn 
+						(setq RockStructureXOffset -320)
+					)
+				)
+				 ((= rockStructureTypeNum 2)
+					(progn 
+						(setq RockStructureXOffset -310)
 					)
 				)
 	)
@@ -421,6 +463,38 @@
 		(drawFrameTextLabel)
 )
 
+;绘制系统组
+(defun drawRockStructure()
+  		(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
+		(vl-load-com)
+		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
+		(Vlax-Put-Property EXCEL 'Visible -1 )
+		(setq cells (Vlax-Get excel 'Cells ))
+		(setq rockStructureDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockStructureOne))
+		(setq rockStructureDataThickness (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockStructureTwo))
+		(setq rockStructureDataHoleName (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockStructureThree))
+		(setq rockStructureDataSimpleName (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockStructureFour))
+		(setq rockStructureLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Value2))))
+
+	 
+		(setq indexA 1)
+		(setq rockStructureListLength (length rockStructureLst))
+		(while (<= indexA rockStructureListLength)
+			(if (> indexA 0)
+				  (progn
+				  	 	(setq rockStructureDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Item indexA)) 'Value2))
+						(setq rockStructureThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataThickness 'Item indexA)) 'Value2))
+						(setq rockStructureHoleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataHoleName 'Item indexA)) 'Value2))
+						(setq rockStructureSimpleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataSimpleName 'Item indexA)) 'Value2))
+						(drawRockStructureLineAndTextLabel)
+					
+				)
+			)
+			(setq indexA (1+ indexA))
+		)
+)
+
+;绘制钻井和测井柱状图
 (defun drawRock()
   		(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(vl-load-com)
@@ -446,7 +520,6 @@
 						(setq rockDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataDescription 'Item indexA)) 'Value2))
 						(setq rockNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataNumber 'Item indexA)) 'Value2))
 					(drawRockLineAndTextLabel)
-					;(drawRockTextLabel)
 					(hatchRock rockName rockDeep rockThickness)
 					
 				)
@@ -615,6 +688,59 @@
   	(command "line" "55,30" (strcat "55," strThinTopPy) "");备注分界线
 )
 
+(defun drawRockStructureLineAndTextLabel()
+	(print 111111111111)
+	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Item indexA)) 'Value2))
+	(setq pyA (* pyA -5))
+	(setq pxA  RockStructureXOffset)
+	(setq holeNameLength (/ (strlen  rockStructureHoleName) 2)) ;strlen中文单位为2
+	(setq indexRockStructure 1.0)
+	(command "line" (strcat (strcat (rtos (- RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) (strcat (strcat (rtos (+ RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) "")
+	
+	(if (<= rockStructureThickness (* (+ holeNameLength 2) 4))
+		(progn
+			(if (<= rockStructureThickness 8)
+				(progn
+					(command "text" "J" "C" (list pxA  (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 rockStructureSimpleName)
+
+				)
+				(progn
+					(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 8)) (- rockStructureTextSize 1) 0 rockStructureHoleName)
+					(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) (- rockStructureTextSize 1) 0 rockStructureSimpleName)
+
+				)
+			)
+		)
+		(progn
+			(while (<= indexRockStructure holeNameLength)
+				(if (> indexRockStructure 0)
+						(progn
+							(cond ((= indexRockStructure 1)
+								(progn
+									;0.75*5 约等于4
+									(command "text" "J" "C" (list pxA (- (* (- rockStructureDeep rockStructureThickness) -5) 10)) rockStructureTextSize 0 (substr rockStructureHoleName 1 2))
+
+								))
+								((and (> indexRockStructure 1) (< indexRockStructure holeNameLength))
+								(progn
+									(command "text" "J" "C" (list pxA  (* (- rockStructureDeep (* rockStructureThickness (- 1 (/ (- indexRockStructure 1) (- holeNameLength 1))))) -5)) rockStructureTextSize 0 (substr rockStructureHoleName (+ 1 (* 2 (- (fix indexRockStructure) 1))) 2))
+									
+								))
+								((= indexRockStructure holeNameLength)   
+								(progn
+									(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 10)) rockStructureTextSize 0 (substr rockStructureHoleName (+ 1 (* 2 (- (fix indexRockStructure) 1))) 2))
+									(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 2)) (- rockStructureTextSize 1) 0 rockStructureSimpleName)
+
+								))
+							)
+						)
+				)
+				(setq indexRockStructure (1+ indexRockStructure))
+
+			)
+		)
+	)
+)
 
 (defun drawRockLineAndTextLabel()		
 	;处理划线数据

@@ -88,6 +88,109 @@ framework:dialog{ //定义名字为yuan的对话框
 
 	
     	}//加框列引用结束
+		//
+		:boxed_column{//引用加框列5
+				label="根据EXCEL绘制系统组";//加框列的标签
+    
+				:popup_list{label="系统组：";
+						edit_width = 15;
+						list="系\n\统\n\组";
+						key= "RockStructureType_List";
+				}		    
+	
+				:edit_box{ //引用编辑框1
+					label = "深度列(eg A1:A10)："; //编辑框1的标签
+					edit_width = 8; //编辑框1的宽度
+					key = "columnRockStructureOne";//编辑框1的关键字 
+					value = "A1:A10";//默认A1
+				}//编辑框1引用结束
+				:edit_box{ //引用编辑框2
+					label = "厚度列(eg A1:A10)：";
+					edit_width = 8; //编辑框2的宽度
+					key = "columnRockStructureTwo";//编辑框5的关键字 
+					value = "B1：B10";
+				}//编辑框2引用结束
+				:edit_box{ //引用编辑框3
+					label = "全称列(eg A1:A10)："; 
+					edit_width = 8; //编辑框2的宽度
+					key = "columnRockStructureThree";//编辑框3的关键字 
+					value = "C1：C10";
+				}//编辑框3引用结束
+				:edit_box{ //引用编辑框4
+					label = "简称列(eg A1:A10)：";
+					edit_width = 8; 
+					key = "columnRockStructureFour";
+					value = "D1：D10";
+				}//编辑框4引用结束
+	
+					
+				:button{
+				  key = "DRSBtn";  //DrawRockStructureButton
+				  label = "绘制";
+				  fixed_width = true;
+				  alignment=right;             
+				}
+
+	
+			}//加框列引用结束
+		
+		:boxed_column{//引用加框列5
+				label="根据EXCEL绘制井柱状图";//加框列的标签
+    
+				:popup_list{label="柱状图类型：";
+						edit_width = 15;
+						list="钻井柱状图\n\测井柱状图\n待开发";
+						key= "RockType_List";
+				}		    
+	
+				:edit_box{ //引用编辑框1
+					label = "深度列(eg A1:A10)："; //编辑框1的标签
+					edit_width = 8; //编辑框1的宽度
+					key = "columnRockOne";//编辑框1的关键字 
+					value = "A1:A10";//默认A1
+				}//编辑框1引用结束
+				:edit_box{ //引用编辑框2
+					label = "层厚列(eg A1:A10)：";
+					edit_width = 8; //编辑框2的宽度
+					key = "columnRockTwo";//编辑框5的关键字 
+					value = "B1：B10";
+				}//编辑框2引用结束
+				:edit_box{ //引用编辑框3
+					label = "岩性名称列(eg A1:A10)："; 
+					edit_width = 8; //编辑框2的宽度
+					key = "columnRockThree";//编辑框3的关键字 
+					value = "C1：C10";
+				}//编辑框3引用结束
+				:edit_box{ //引用编辑框4
+					label = "岩性描述列(eg A1:A10)：";
+					edit_width = 8; 
+					key = "columnRockFour";
+					value = "D1：D10";
+				}//编辑框4引用结束
+				:edit_box{ //引用编辑框5
+					label = "层号列(eg A1:A10)："; 
+					edit_width = 8; //
+					key = "columnRockFive";//编辑框5的关键字 
+					value = "E1：E10";
+				}//编辑框5引用结束
+	
+				
+				//:popup_list{label="文字大小：";
+					//	edit_width = 15;
+						//list="3.00\n\2.00\n1.00\n待开发";
+						//key= "RockTextSize_List";
+				//}		
+					
+				:button{
+				  key = "DRBtn";  //DrawRockButton
+				  label = "绘制";
+				  fixed_width = true;
+				  alignment=right;             
+				}
+
+	
+			}//加框列引用结束
+	}//行引用结束
 		:row{//引用行
 			:boxed_column{//引用加框列3
 					label="完井结构";//加框列的标签
@@ -244,63 +347,7 @@ framework:dialog{ //定义名字为yuan的对话框
 					
 			}//加框列引用结束
 		}//行引用结束
-		:boxed_column{//引用加框列5
-				label="根据EXCEL绘制井柱状图";//加框列的标签
-    
-				:popup_list{label="柱状图类型：";
-						edit_width = 15;
-						list="钻井柱状图\n\测井柱状图\n待开发";
-						key= "RockType_List";
-				}		    
-	
-				:edit_box{ //引用编辑框1
-					label = "深度列(eg A1:A10)："; //编辑框1的标签
-					edit_width = 8; //编辑框1的宽度
-					key = "columnRockOne";//编辑框1的关键字 
-					value = "A1:A10";//默认A1
-				}//编辑框1引用结束
-				:edit_box{ //引用编辑框2
-					label = "层厚列(eg A1:A10)：";
-					edit_width = 8; //编辑框2的宽度
-					key = "columnRockTwo";//编辑框5的关键字 
-					value = "B1：B10";
-				}//编辑框2引用结束
-				:edit_box{ //引用编辑框3
-					label = "岩性名称列(eg A1:A10)："; 
-					edit_width = 8; //编辑框2的宽度
-					key = "columnRockThree";//编辑框3的关键字 
-					value = "C1：C10";
-				}//编辑框3引用结束
-				:edit_box{ //引用编辑框4
-					label = "岩性描述列(eg A1:A10)：";
-					edit_width = 8; 
-					key = "columnRockFour";
-					value = "D1：D10";
-				}//编辑框4引用结束
-				:edit_box{ //引用编辑框5
-					label = "层号列(eg A1:A10)："; 
-					edit_width = 8; //
-					key = "columnRockFive";//编辑框5的关键字 
-					value = "E1：E10";
-				}//编辑框5引用结束
-	
-				
-				//:popup_list{label="文字大小：";
-					//	edit_width = 15;
-						//list="3.00\n\2.00\n1.00\n待开发";
-						//key= "RockTextSize_List";
-				//}		
-					
-				:button{
-				  key = "DRBtn";  //DrawRockButton
-				  label = "绘制";
-				  fixed_width = true;
-				  alignment=right;             
-				}
-
-	
-    	}//加框列引用结束
-  }//行引用结束
+		
 	:button{
 				  key = "startBtn";  //DrawLineButton
 				  label = "启动";
