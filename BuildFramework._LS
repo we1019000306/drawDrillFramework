@@ -575,7 +575,7 @@
 						(drawRockSignTextLabel)
 				)
 			)
-			(setq indexRSign (+ 1 indexRSign))
+			(setq indexRSign (1 + indexRSign))
 		)
 )
 

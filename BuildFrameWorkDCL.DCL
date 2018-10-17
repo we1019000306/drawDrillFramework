@@ -192,6 +192,40 @@ framework:dialog{ //定义名字为yuan的对话框
 			}//加框列引用结束
 	}//行引用结束
 		:row{//引用行
+				:boxed_column{
+						label="根据EXCEL绘制标志层代号";//加框列的标签    
+						:edit_box{ //引用编辑框1
+							label = "深度列(eg A1:A10)："; //编辑框1的标签
+							edit_width = 8; //编辑框1的宽度
+							key = "columnRockSignOne";//编辑框1的关键字 
+							value = "A1:A10";//默认A1
+						}//编辑框1引用结束
+						:edit_box{ //引用编辑框2
+							label = "层厚列(eg A1:A10)：";
+							edit_width = 8; //编辑框2的宽度
+							key = "columnRockSignTwo";//编辑框5的关键字 
+							value = "B1：B10";
+						}//编辑框2引用结束
+						:edit_box{ //引用编辑框3
+							label = "标志层名称列(eg A1:A10)："; 
+							edit_width = 8; //编辑框2的宽度
+							key = "columnRockSignThree";//编辑框3的关键字 
+							value = "C1：C10";
+						}//编辑框3引用结束
+						
+						:button{
+						  key = "DRSignBtn";  //DrawRockSignButton
+						  label = "绘制";
+						  fixed_width = true;
+						  alignment=right;             
+						}
+
+			
+					}//加框列引用结束
+				
+		
+		
+		
 			:boxed_column{//引用加框列3
 					label="完井结构";//加框列的标签
 					
