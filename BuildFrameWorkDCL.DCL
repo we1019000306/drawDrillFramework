@@ -1,6 +1,149 @@
 framework:dialog{ //定义名字为yuan的对话框
-  label= "绘制整体架构";//显示在对话框顶部的标签
+  label= "绘制钻井图外挂";//显示在对话框顶部的标签
   :row{//引用行
+	:boxed_column{//引用加框列
+        label="钻井基础信息";//加框列的标签
+        
+        	:edit_box{ 
+      			label = "井号："; //编辑框标签
+     	 		edit_width = 20; //编辑框宽度
+     	 		key = "DN";//编辑框关键字 DrillName
+     			value = "SHCK-";
+        	}
+
+        	:edit_box{ 
+      			label = "井位：";
+      			edit_width = 20; 
+      			key = "DL";//编辑框关键字 drillLocation
+      	       		value = "县村镇";
+      		}
+
+      		:edit_box{ 
+  		        label = "坐标X："; 
+  	 	        edit_width = 20; 
+                key = "LX";//LocationX
+				value = "x";
+    	  	}
+
+    	  	:edit_box{ 
+				label = "坐标Y："; 
+				edit_width = 20; 
+				key = "LY";//LocationY
+				value = "y";
+      		}
+			:edit_box{ 
+				label = "高度H："; 
+				edit_width = 20; 
+				key = "LH";//LocationHeight
+				value = "h";
+      		}
+			:edit_box{ 
+				label = "施工单位："; 
+				edit_width = 40; 
+				key = "Company";
+				value = "山西蓝焰煤层气集团有限责任公司勘探分公司";
+      		}
+			:edit_box{ 
+				label = "开工日期："; 
+				edit_width = 12; 
+				key = "StartDay";
+				value = "年月日";
+      		}
+			:edit_box{ 
+				label = "完工日期："; 
+				edit_width = 12; 
+				key = "EndDay";
+				value = "年月日";
+      		}
+			:edit_box{ 
+				label = "钻机类型："; 
+				edit_width = 8; 
+				key = "DrillType";
+				value = "TSJ-2000";
+      		}
+			:edit_box{ 
+				label = "水泵："; 
+				edit_width = 8; 
+				key = "WaterPump";
+				value = "TBW-1200";
+      		}
+			:edit_box{ 
+				label = "机动力："; 
+				edit_width = 8; 
+				key = "MachinePower";
+				value = "12V135";
+      		}
+		}//加框列引用结束
+ :boxed_column{//引用加框列
+        label="制图基础信息";
+        
+        	:edit_box{ 
+      			label = "制图：";
+     	 		edit_width = 15;
+     	 		key = "PictureMaker";
+     			value = "PictureMaker";
+        	}
+
+        	:edit_box{ 
+      			label = "校对：";
+      			edit_width = 15; 
+      			key = "PictureProofreader";
+      	       		value = "PictureProofreader";//校对
+      		}
+
+      		:edit_box{ 
+  		        label = "审核："; 
+  	 	        edit_width = 15; 
+                key = "PictureChecker";
+				value = "PictureChecker";
+    	  	}
+
+    	  	:edit_box{ 
+				label = "机长："; 
+				edit_width = 15; 
+				key = "DrillCommander";
+				value = "DrillCommander";
+      		}
+			:edit_box{ 
+				label = "技术负责："; 
+				edit_width = 15; 
+				key = "TechnicalLeader";//技术负责
+				value = "TechnicalLeader";
+      		}
+			:edit_box{ 
+				label = "项目经理："; 
+				edit_width = 15; 
+				key = "DrillManager";
+				value = "DrillManager";
+      		}
+			:edit_box{ 
+				label = "图号："; 
+				edit_width = 15; 
+				key = "PictureNumber";
+				value = "PictureNumber";
+      		}
+			:edit_box{ 
+				label = "比例："; 
+				edit_width = 15; 
+				key = "Proportion";
+				value = "1:200";
+      		}
+			:edit_box{ 
+				label = "制作日期："; 
+				edit_width = 15; 
+				key = "PictureTime";
+				value = "年月日";
+      		}
+			:edit_box{ 
+				label = "资料来源："; 
+				edit_width = 40; 
+				key = "DataSource";
+				value = "山西蓝焰煤层气集团有限责任公司勘探分公司";
+      		}
+		}//加框列引用结束 
+  
+  
+  
   	:boxed_column{//引用加框列1
         label="作图结构化数据";//加框列的标签
         
@@ -134,7 +277,10 @@ framework:dialog{ //定义名字为yuan的对话框
 	
 			}//加框列引用结束
 		
-		:boxed_column{//引用加框列5
+	
+	}//行引用结束
+		:row{//引用行
+				:boxed_column{//引用加框列5
 				label="根据EXCEL绘制井柱状图";//加框列的标签
     
 				:popup_list{label="柱状图类型：";
@@ -190,8 +336,11 @@ framework:dialog{ //定义名字为yuan的对话框
 
 	
 			}//加框列引用结束
-	}//行引用结束
-		:row{//引用行
+		
+		
+		
+		
+		
 				:boxed_column{
 						label="根据EXCEL绘制标志层代号";//加框列的标签    
 						:edit_box{ //引用编辑框1
@@ -380,6 +529,38 @@ framework:dialog{ //定义名字为yuan的对话框
 					}
 					
 			}//加框列引用结束
+			
+			
+			:boxed_column{
+						label="根据EXCEL绘制井斜方位角";//加框列的标签    
+						:edit_box{ //引用编辑框1
+							label = "深度列(eg A1:A10)："; //编辑框1的标签
+							edit_width = 8; //编辑框1的宽度
+							key = "columnDrillDeviationOne";//编辑框1的关键字 
+							value = "A1:A10";//默认A1
+						}//编辑框1引用结束
+						:edit_box{ //引用编辑框2
+							label = "井斜列(eg A1:A10)：";
+							edit_width = 8; //编辑框2的宽度
+							key = "columnDrillDeviationTwo";//编辑框5的关键字 
+							value = "B1：B10";
+						}//编辑框2引用结束
+						:edit_box{ //引用编辑框3
+							label = "方位角列(eg A1:A10)："; 
+							edit_width = 8; //编辑框2的宽度
+							key = "columnDrillDeviationThree";//编辑框3的关键字 
+							value = "C1：C10";
+						}//编辑框3引用结束
+						
+						:button{
+						  key = "DDDBtn";  //DrawDrillDeviationButton
+						  label = "绘制";
+						  fixed_width = true;
+						  alignment=right;             
+						}
+
+			
+					}//加框列引用结束
 		}//行引用结束
 		
 	:button{

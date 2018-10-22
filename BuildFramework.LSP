@@ -17,6 +17,7 @@
 	(action_tile "DRSBtn" "(configDRSBtn)  (done_dialog 5)")
 	(action_tile "DRBtn" "(configDRBtn)  (done_dialog 6)")
 	(action_tile "DRSignBtn" "(configDRSignBtn)  (done_dialog 7)")
+	(action_tile "DDDBtn" "(configDDDBtn)  (done_dialog 8)")
 	(action_tile "HoleNumber_List" "(configHolePopListAction)")
 	(action_tile "RockType_List" "(configRockPopListAction)")
 	(action_tile "cancelBtn" "(done_dialog -1)")
@@ -29,6 +30,7 @@
 				(mode_tile  "DRBtn" 0)
 				(mode_tile  "DRSBtn" 0)
 				(mode_tile  "DRSignBtn" 0)
+				(mode_tile  "DDDBtn" 0)
 			)
 			(progn
 				(mode_tile  "startBtn" 0)
@@ -38,6 +40,7 @@
 				(mode_tile  "DRBtn" 1)
 				(mode_tile  "DRSBtn" 1)
 				(mode_tile  "DRSignBtn" 1)
+				(mode_tile  "DDDBtn" 1)
 			)
 	)
 	;存储上次输入记录
@@ -91,6 +94,12 @@
 					((= std 7)
 						(progn
 							(drawRockSign)
+							(c:buildFramework)
+						)
+					)
+					((= std 8)
+						(progn
+							(drawDrillDeviation)
 							(c:buildFramework)
 						)
 					)
@@ -214,6 +223,10 @@
 					)
 				)	 
 	)
+	;井斜方位角
+	(if (null columnDrillDeviationOne) (print "nil") (set_tile "columnDrillDeviationOne" columnDrillDeviationOne))
+  	(if (null columnDrillDeviationTwo) (print "nil") (set_tile "columnDrillDeviationTwo" columnDrillDeviationTwo))
+	(if (null columnDrillDeviationThree) (print "nil") (set_tile "columnDrillDeviationThree" columnDrillDeviationThree))
 )
 
 (defun configStartBtn()
@@ -375,6 +388,14 @@
 	(setq RockSignXOffset -250)
 )
 
+;配置井斜方位角按钮属性
+(defun configDDDBtn()
+	(setq columnDrillDeviationOne  (get_tile "columnDrillDeviationOne"))
+	(setq columnDrillDeviationTwo  (get_tile "columnDrillDeviationTwo"))
+	(setq columnDrillDeviationThree  (get_tile "columnDrillDeviationThree"))
+	(setq DrillDeviationXOffset 0)
+)
+
 
 ;根据DCL配置多线段属性
 (defun configPLineAttribute()
@@ -502,7 +523,7 @@
 	 
 		(setq indexRS 1)
 		(setq rockStructureListLength (length rockStructureLst))
-		(while (<= indexA rockStructureListLength)
+		(while (<= indexRS rockStructureListLength)
 			(if (> indexRS 0)
 				  (progn
 				  	 	(setq rockStructureDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Item indexRS)) 'Value2))
@@ -579,11 +600,39 @@
 		)
 )
 
+;完井结构
 (defun drawDrillStructure()
 	(drawDrillStructureLine)
 	(drawDrillStructureTextLabel)
 	(drawDrillStructureDimlinear)
   	(hatchDrillStructure)
+)
+
+;绘制井斜方位
+(defun drawDrillDeviation()
+  		(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
+		(vl-load-com)
+		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
+		(Vlax-Put-Property EXCEL 'Visible -1 )
+		(setq cells (Vlax-Get excel 'Cells ))
+		(setq drillDeviationDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnDrillDeviationOne))
+		(setq drillDeviationDataDeviation (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnDrillDeviationTwo))
+		(setq drillDeviationDataAzimuth (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnDrillDeviationThree))
+		(setq drillDeviationLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property drillDeviationDataRangeOfY 'Value2))))
+
+		(setq indexDDD 1)
+		(setq drillDeviationListLength (length drillDeviationLst))
+		(while (<= indexDDD drillDeviationListLength)
+			(if (> indexDDD 0)
+				  (progn
+				  	 	(setq drillDeviationDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataRangeOfY 'Item indexDDD)) 'Value2))
+						(setq drillDeviationDeviation (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataDeviation 'Item indexDDD)) 'Value2))
+						(setq drillDeviationAzimuth (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataAzimuth 'Item indexDDD)) 'Value2))
+						(drawDrillDeviationLineAndTextLabel)
+				)
+			)
+			(setq indexDDD (+ 1 indexDDD))
+		)
 )
 
 ;UI-PLine
@@ -739,7 +788,7 @@
 )
 
 (defun drawRockStructureLineAndTextLabel()
-	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Item indexA)) 'Value2))
+	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Item indexRS)) 'Value2))
 	(setq pyA (* pyA -5))
 	(setq pxA  RockStructureXOffset)
 	(setq holeNameLength (/ (strlen  rockStructureHoleName) 2)) ;strlen中文单位为2
@@ -793,7 +842,7 @@
 
 (defun drawRockLineAndTextLabel()		
 	;处理划线数据
-	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Item indexA)) 'Value2))
+	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Item indexR)) 'Value2))
 	(setq pyA (* pyA -5))
 	(setq pxA  RockXOffset)
 
@@ -907,19 +956,23 @@
 				) 
 			   ((= rockTypeNum 1)
 						(progn
-							(if (= rockName "黄土")  
+							(if (= rockName "表层套管")  
 								(progn
 									;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
 									(setq rockLineDeep 0)
 									(setq rockLineDeep rockDeep)
 									(setq pxA (- RockXOffset 15))
 									(setq pxB (- RockXOffset 50))
-									(command "SPLine" (strcat (strcat (rtos (- RockXOffset 15) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 13.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 12) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 10.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 9) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 6) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 3) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (- RockXOffset 0) 2 2) ",") (rtos (* rockDeep -5) 2 2)) "" "" "") 
+									(command "Line" (strcat (strcat (rtos pxA 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos RockXOffset 2 2) ",") (rtos (* rockDeep -5) 2 2)) "") 
 									(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 									(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
 									(command "line" ptA ptB "")	
 									(command "text" "J" "L" (list -304 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 									(command "text" "J" "L" (list -289 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
+									(command "text" "J" "C" (list (+ pxA 7.5) (- (* (- rockDeep  rockThickness) -5) 8)) 3 0 "表")
+									(command "text" "J" "C" (list (+ pxA 7.5)  (* (- rockDeep (* rockThickness  (/ 2.0 3.0))) -5)) 3 0 "层")
+									(command "text" "J" "C" (list (+ pxA 7.5)  (* (- rockDeep (* rockThickness  (/ 1.0 3.0))) -5)) 3 0 "套")
+									(command "text" "J" "C" (list (+ pxA 7.5)  (+ (* rockDeep -5) 8)) 3 0 "管")
 								) 
 							
 								(progn 							
@@ -999,6 +1052,25 @@
 				)
 	)
 		
+)
+
+;井斜方位角
+(defun drawDrillDeviationLineAndTextLabel()
+	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataRangeOfY 'Item indexDDD)) 'Value2))
+	(setq pyA (* pyA -5))
+	(setq pxA  DrillDeviationXOffset)
+	;1.2 2.5 3.75
+	(command "line" (strcat (strcat (rtos DrillDeviationXOffset 2 2) ",") (rtos pyA 2 2)) (strcat (strcat (rtos (+ DrillDeviationXOffset 25) 2 2) ",") (rtos pyA 2 2)) "")
+	(if (null drillDeviationAzimuth)
+		(progn
+				(command "text" "J" "C" (list (+ pxA 12.5) (+ pyA 2)) 2 0 (strcat (rtos drillDeviationDeviation 2 2) "(°)"))
+				(command "text" "J" "C" (list (+ pxA 12.5) (- pyA 4.5)) 2 0 (strcat (rtos drillDeviationDeviation 2 2) "(m)"))
+		)
+		(progn
+				(command "text" "J" "C" (list (+ pxA 12.5) (+ pyA 2)) 2 0 (strcat (strcat (rtos drillDeviationDeviation 2 2) "(°) / ") (strcat (rtos drillDeviationAzimuth 2 2) "(°)")))
+				(command "text" "J" "C" (list (+ pxA 12.5) (- pyA 4.5)) 2 0 (strcat (rtos drillDeviationDeviation 2 2) "(m)"))
+		)
+	)
 )
 
 (defun drawDrillStructureLine()
@@ -1144,7 +1216,7 @@
 )
 
 (defun drawRockSignTextLabel()
-	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataRangeOfY 'Item indexA)) 'Value2))
+	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataRangeOfY 'Item indexRSign)) 'Value2))
 	(setq pyA (* pyA -5))
 	(setq pxA  RockSignXOffset)
 	;1.2 2.5 3.75
@@ -1283,6 +1355,12 @@
 																(drawHuangTuCengBottomLineWithRockThinkness)
 															) 
 														)
+														  ((= rockName "表层套管")
+															(progn 
+																(print "表层套管")
+																
+															)
+														)  
 													   ((= rockName "粉砂岩")
 															(progn 
 																(print "粉砂岩")
@@ -1467,6 +1545,12 @@
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* rockDeep -5)) 1 (/ (* rockThickness 5) 3) 1 0)
 															) 
 														)
+														 ((= rockName "表层套管")
+															(progn 
+																(print "表层套管")
+																
+															)
+														)  
 													   ((= rockName "粉砂岩")
 															(progn 
 																(print "粉砂岩")
@@ -1726,9 +1810,61 @@
 
 )
 
+;drawBaseDataTable
+(defun drawBaseDataTable()
+	(command "text" "J" "C" (list -195 100) 20 0 drillName)
+	(command "line" "-360,80" "-30,80" "")
+	(command "line" "-360,70" "-275,70" "")
+	(command "line" "-360,60" "-275,60" "")
+	(command "line" "-360,50" "-30,50" "")
+	(command "line" "-360,50" "-360,80" "")
+	(command "line" "-340,50" "-340,80" "")
+	(command "line" "-275,80" "-275,50" "")
+	(command "line" "-265,80" "-265,50" "")
+	(command "line" "-265,70" "-30,70" "")
+	(command "line" "-265,60" "-30,60" "")
+	(command "line" "-215,80" "-215,50" "")
+	(command "line" "-185,80" "-185,50" "")
+	(command "line" "-90,50" "-90,80" "")
+	(command "line" "-60,50" "-60,80" "")
+	(command "line" "-30,50" "-30,80" "")
+	(command "text" "J" "C" (list -350 73) 3 0 "井    号")
+	(command "text" "J" "C" (list -350 63) 3 0 "井    位")
+	(command "text" "J" "C" (list -350 53) 3 0 "井    深")
+	(command "text" "J" "C" (list -270 73) 3 0 "坐")
+	(command "text" "J" "C" (list -270 53) 3 0 "标")
+	(command "text" "J" "C" (list -200 73) 3 0 "施 工 单 位")
+	(command "text" "J" "C" (list -200 63) 3 0 "开 工 日 期")
+	(command "text" "J" "C" (list -200 53) 3 0 "完 井 日 期")
+	(command "text" "J" "C" (list -75 73) 3 0 "钻 机 类 型")
+	(command "text" "J" "C" (list -75 63) 3 0 "水       泵")
+	(command "text" "J" "C" (list -75 53) 3 0 "机  动  力")
 
 
 
+	  
+
+
+
+
+
+)
+
+(defun drawPictureDataTable()
+	(command "line"  (strcat "-75," (rtos (- (* d -5) 15) 2 2)) (strcat "-75," (rtos (- (* d -5) 95) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* d -5) 15) 2 2)) (strcat "55," (rtos (- (* d -5) 15) 2 2)) "")
+	(command "line"  (strcat "-50," (rtos (- (* d -5) 35) 2 2)) (strcat "-50," (rtos (- (* d -5) 95) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* d -5) 35) 2 2)) (strcat "55," (rtos (- (* d -5) 35) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* d -5) 47) 2 2)) (strcat "55," (rtos (- (* d -5) 47) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* d -5) 59) 2 2)) (strcat "55," (rtos (- (* d -5) 59) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* d -5) 71) 2 2)) (strcat "55," (rtos (- (* d -5) 71) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* d -5) 83) 2 2)) (strcat "55," (rtos (- (* d -5) 83) 2 2)) "")
+	(command "line"  (strcat "-20," (rtos (- (* d -5) 35) 2 2)) (strcat "-20," (rtos (- (* d -5) 95) 2 2)) "")
+	(command "line"  (strcat "5," (rtos (- (* d -5) 35) 2 2)) (strcat "5," (rtos (- (* d -5) 95) 2 2)) "")
+
+
+
+)
 ;Tools
 (defun caculateMaxNum(num);计算最高位数的最高值
   	
@@ -1810,7 +1946,7 @@
 	
 	(command "circle" (strcat "-334," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
 	
-	  (command "-hatch" "S" (ssget "W" (list -341.5 (- (* d -5) 40.75)) (list -339.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	 (command "-hatch" "S" (ssget "W" (list -341.5 (- (* d -5) 40.75)) (list -339.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
 	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* d -5) 40.75)) (list -333.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
