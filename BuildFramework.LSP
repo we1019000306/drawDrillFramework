@@ -1,15 +1,36 @@
 (defun c:buildFramework()
-  	(DCLAndDataHandler)
-	(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
-	;操作后记忆数据
+  	(if (= loginSuccess 1) (DCLAndDataHandler) (loginStateDataHandler))
 )
 
+(defun loginStateDataHandler()
+		(setq loginSdt 0)
+	  	(setq loginId (load_dialog "G:\\工程二处\\drawDrillFramework\\LoginView.DCL"));BuildFrameWorkDCL testDCL Login
+		(if (not (new_dialog "login" loginId)) (exit))
+		(action_tile "loginBtn" "(configLoginBtn) (done_dialog 1)")
+		(action_tile "closeBtn" "(done_dialog -1)")
+		(setq loginSdt (start_dialog))
+		(unload_dialog loginId)
+		(cond 
+						((= loginSdt 1)
+								(progn
+									(checkLoginState)
+							)
+						)
+		  
+						((= loginSdt -1)
+							(progn
+								(alert "外挂已退出")
+
+							)
+						)
+		)
+)
 
 ;Data
 (defun DCLAndDataHandler()
-	(setq sdt 0)
-  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\BuildFrameWorkDCL.DCL"));BuildFrameWorkDCL testDCL
-	(if (not (new_dialog "framework" id))(exit))
+	(setq std 0)
+  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\BuildFrameWorkDCL.DCL"));BuildFrameWorkDCL testDCL Login
+	(if (not (new_dialog "framework" id)) (exit))
   	(action_tile "startBtn" "(configStartBtn) (done_dialog 1)")
 	(action_tile "DFBtn" "(configDFBtn)  (done_dialog 2)")
 	(action_tile "DLBtn" "(configDLBtn)  (done_dialog 3)")
@@ -227,6 +248,11 @@
 	(if (null columnDrillDeviationOne) (print "nil") (set_tile "columnDrillDeviationOne" columnDrillDeviationOne))
   	(if (null columnDrillDeviationTwo) (print "nil") (set_tile "columnDrillDeviationTwo" columnDrillDeviationTwo))
 	(if (null columnDrillDeviationThree) (print "nil") (set_tile "columnDrillDeviationThree" columnDrillDeviationThree))
+)
+
+(defun configLoginBtn()
+	(setq username (get_tile "username"))
+	(setq password (get_tile "password"))
 )
 
 (defun configStartBtn()
@@ -502,14 +528,14 @@
 ;UI
 ;UI-Frame
 (defun drawFrame()
-  		(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
+  		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(drawFrameLine)
 		(drawFrameTextLabel)
 )
 
 ;绘制系统组
 (defun drawRockStructure()
-  		(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
+  		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(vl-load-com)
 		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
 		(Vlax-Put-Property EXCEL 'Visible -1 )
@@ -540,7 +566,7 @@
 
 ;绘制钻井和测井柱状图
 (defun drawRock()
-  		(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
+  		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(vl-load-com)
 		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
 		(Vlax-Put-Property EXCEL 'Visible -1 )
@@ -575,7 +601,7 @@
 
 ;绘制系统组
 (defun drawRockSign()
-  		(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
+  		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(vl-load-com)
 		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
 		(Vlax-Put-Property EXCEL 'Visible -1 )
@@ -610,7 +636,7 @@
 
 ;绘制井斜方位
 (defun drawDrillDeviation()
-  		(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
+  		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(vl-load-com)
 		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
 		(Vlax-Put-Property EXCEL 'Visible -1 )
@@ -1329,7 +1355,7 @@
 )
 
 (defun hatchRock(rockName rockDeep rockThickness)
-	(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
+	;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 	(cond ((= rockTypeNum 0)  
 					(progn
 						(setq RockHatchXOffset -237.5)
@@ -1842,7 +1868,7 @@
 
 
 
-	  
+
 
 
 
@@ -3190,3 +3216,31 @@
 	(command "line" (strcat (strcat (rtos (+ RockHatchXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
 )
 
+;UserClient
+(defun checkLoginState()
+	(setq loginSuccess 0)
+	(loginWithUsernameAndPassword username password)
+	(if (= responseStatus 200) 
+		(progn
+			(setq loginSuccess 1)
+			(alert "登录成功！！！外挂即将启动！！！")
+			(DCLAndDataHandler)
+		)
+		(progn
+			(setq loginSuccess 0)
+			(alert "登录失败，请检查账号密码是否正确！！！如确认无错误，请与开发者联系，邮箱we1019000306@gmail.com")
+			(loginStateDataHandler)
+		)
+	)
+)
+
+(defun loginWithUsernameAndPassword(username password / xml)
+  (setq xml (vlax-create-object "Microsoft.XMLHTTP"))
+  (setq httpURL (strcat (strcat (strcat "https://api2.bmob.cn/1/login?username=" username) "&password=") password))
+  (vlax-invoke xml 'open "GET" httpURL 0)
+  (vlax-invoke xml 'setRequestHeader "X-Bmob-Application-Id" "c095f89edf7e0b4be4d046a2b758ffc6")
+  (vlax-invoke xml 'setRequestHeader "X-Bmob-REST-API-Key" "7bf79c64d21a78cdd102e3766fa2985f")
+  (vlax-invoke xml 'send)
+  (setq responseStatus (vlax-get xml "status"))
+  (vlax-release-object xml)
+)

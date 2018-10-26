@@ -564,14 +564,14 @@ framework:dialog{ //定义名字为yuan的对话框
 		}//行引用结束
 		
 	:button{
-				  key = "startBtn";  //DrawLineButton
+				  key = "startBtn"; 
 				  label = "启动";
 				  is_default = true;
 				  fixed_width = true;
 				  alignment=centered;             
 				}
 	:button{
-				  key = "cancelBtn";  //DrawLineButton
+				  key = "cancelBtn";  
 				  label = "退出";
 				  fixed_width = true;
 				  alignment=centered;             
