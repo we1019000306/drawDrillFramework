@@ -478,24 +478,24 @@
 ;配置多线段线型
 	(cond ((= lineNameNum 0)
 					(progn
-							(command "LineType" "s" "ByLayer" "")
+							(command "LineType" "s"  "ByLayer" "")
 							(command "lweight" "ByLayer")
 
 					)
 				)
-				((= lineNameNum 1)
+				((= lineTypeNum 1)
 					(progn
-							(command "LineType" "s" "ByLayer" "")
+							(command "LineType" "s"  "ByLayer" "")
 							(command "lweight" "ByLayer")
 
 					)
 				)
-				((= lineNameNum 2)
-					(progn 
-							(command "LineType" "s" "ACAD_ISO02W100" "")
+				((= lineTypeNum 2)
+					(progn
+							(command "LineType" "s"  "ACAD_ISO02W100" "")
 							(command "lweight" "ByLayer")
 
-					)   
+					)
 				)
 	)
 )
@@ -608,8 +608,6 @@
   		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(drawFrameLine)
 		(drawFrameTextLabel)
-		(drawBaseDataTable)
-		(drawPictureDataTable)
 )
 
 ;绘制系统组
@@ -1956,7 +1954,7 @@
 	(command "text" "J" "C" (list -195 100) 19 0 (strcat DN "井钻井柱状图"))
 	(command "text" "J" "C" (list -307.5 73) 3 0 DN)
 	(command "text" "J" "C" (list -307.5 63) 3 0 DL)
-	(command "text" "J" "C" (list -307.5 53) 3 0 (rtos d 2 2))
+	(command "text" "J" "C" (list -307.5 53) 3 0 d)
 	(command "text" "J" "C" (list -240.5 73) 3 0 (strcat "X:  "LX))
 	(command "text" "J" "C" (list -240.5 63) 3 0 (strcat "Y:  "LY))
 	(command "text" "J" "C" (list -240.5 53) 3 0 (strcat "H:  "LH))
