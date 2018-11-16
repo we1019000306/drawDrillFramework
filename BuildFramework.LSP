@@ -80,6 +80,7 @@
 					((= std 2)
 						(progn
 							(drawFrame)
+							(command "zoom" "C" (list -222.5 (* d -5)) "250")
 						  	(c:buildFramework)
 						)
 					)
@@ -108,6 +109,7 @@
 					)
 					((= std 6)
 						(progn
+							command "zoom" "C" (list -222.5 (* d -5)) "250")
 							(drawRock)
 							(c:buildFramework)
 						)
@@ -656,7 +658,8 @@
 		(setq rockDataDescription (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFour))
 		(setq rockDataNumber (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFive))
 		(setq rockLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Value2))))
-
+		(command "LineType" "s" "ByLayer" "")
+		(command "lweight" "ByLayer")
 	 
 		(setq indexR 1)
 		(setq rockListLength (length rockLst))
@@ -1463,7 +1466,7 @@
 															(progn
 																(print "»ÆÍÁ")
 																(drawHuangTuCengTop)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 5.5)) (list -380.25 (- (* d -5) 8.5)))) 
+																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 5.25)) (list -380.25 (- (* d -5) 8.75)))) 
 																(creatBlockOrCheckBlock rockName (list -387.5 (- (* d -5) 8.5)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (- rockThickness 0.6))-5)) 1 1 1 0)	
 																(drawHuangTuCengBottomLineWithRockThinkness)
@@ -1566,7 +1569,7 @@
 																(configBoldHatch)
 															)
 														)  
-														((= rockName "Ãº²ã")
+														((= rockName "Ãº²ã");£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡
 															(progn 
 																(print "Ãº²ã")
 																;(drawMeiCeng)
@@ -1654,7 +1657,7 @@
 															(progn
 																(print "»ÆÍÁ")
 																(drawHuangTuCengTop)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 5.5)) (list -380.25 (- (* d -5) 8.5)))) 
+																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 5.25)) (list -380.25 (- (* d -5) 8.75)))) 
 																(creatBlockOrCheckBlock rockName (list -387.5 (- (* d -5) 8.5)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* rockDeep -5)) 1 (/ (* rockThickness 5) 3) 1 0)
 															) 
