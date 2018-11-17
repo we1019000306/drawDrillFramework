@@ -109,7 +109,7 @@
 					)
 					((= std 6)
 						(progn
-							command "zoom" "C" (list -222.5 (* d -5)) "250")
+							(command "zoom" "C" (list -222.5 (* d -5)) "250")
 							(drawRock)
 							(c:buildFramework)
 						)
@@ -672,6 +672,7 @@
 						(setq rockDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataDescription 'Item indexR)) 'Value2))
 						(setq rockNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataNumber 'Item indexR)) 'Value2))
 					(drawRockLineAndTextLabel)
+					(setq BlockCodeName (strcat rockName (itoa indexR)))
 					(hatchRock rockName rockDeep rockThickness)
 					
 				)
@@ -710,6 +711,7 @@
 
 ;完井结构
 (defun drawDrillStructure()
+	(command "LineType" "s" "ByLayer" "")
 	(drawDrillStructureLine)
 	(drawDrillStructureTextLabel)
 	(drawDrillStructureDimlinear)
@@ -1447,6 +1449,7 @@
 
 (defun hatchRock(rockName rockDeep rockThickness)
 	;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
+	
 	(cond ((= rockTypeNum 0)  
 					(progn
 						(setq RockHatchXOffset -237.5)
@@ -1846,11 +1849,11 @@
 			(vl-load-com)  ;加载Vlisp函数  
 			;选择加密对象
  			(command "zoom" "C" (list -222.5 (* d -5)) "250")
-			(if (= rowCount 1) (command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1) (command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace))
+			(if (= rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace))
 			;(command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace);用block命令制作块，然后用minsert命令制作多重引用块
 		  ;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
 			;(command "minsert"   BlockName BasicPoint 1 1 0 1 1 0 )
-			(vla-put-name (vla-item (vla-get-blocks (vla-get-activedocument (vlax-get-acad-object))) (vla-get-name (vlax-ename->vla-object (entlast)))) "*U") 
+			;(vla-put-name (vla-item (vla-get-blocks (vla-get-activedocument (vlax-get-acad-object))) (vla-get-name (vlax-ename->vla-object (entlast)))) "*U") 
 					;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
 			(princ "\n加密完成")
   			;加密完成后恢复参考图形
@@ -1862,7 +1865,7 @@
 	 (if Selectionset  ;选择加密对象 
 			(progn    ;以当前时间作为块名  ;因为我们要用多重引用块进行加密，在制作多重引用块之前我们必须将我们需要 ;加密的图元制作成块，为避免与图档内块名冲突，引用了当前时间作为块名 
 				(command "zoom" "C" (list -222.5 (* d -5)) "250")
-				(command "block" BlockName BasicPoint Selectionset "")
+				(command "block" BlockCodeName BasicPoint Selectionset "")
 			) 
 			 (princ "\n没有选中图元")  
 			
