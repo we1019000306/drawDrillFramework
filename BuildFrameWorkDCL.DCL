@@ -326,12 +326,19 @@ framework:dialog{ //定义名字为yuan的对话框
 						//list="3.00\n\2.00\n1.00\n待开发";
 						//key= "RockTextSize_List";
 				//}		
-					
-				:button{
-				  key = "DRBtn";  //DrawRockButton
-				  label = "绘制";
-				  fixed_width = true;
-				  alignment=right;             
+				:row{
+					 :button{
+					  key = "ECDBtn";  //EraseColumnarDiagramButton 单独删除柱状图所有已画部分
+					  label = "单独清除该模式下已绘模型";
+					  fixed_width = true;
+					  alignment=left;             
+					}
+					:button{
+					  key = "DRBtn";  //DrawRockButton
+					  label = "绘制";
+					  fixed_width = true;
+					  alignment=right;             
+					}
 				}
 
 	
@@ -561,6 +568,7 @@ framework:dialog{ //定义名字为yuan的对话框
 
 			
 					}//加框列引用结束
+					
 		}//行引用结束
 		
 	:button{

@@ -31,17 +31,32 @@
 	(setq std 0)
   	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\BuildFrameWorkDCL.DCL"));BuildFrameWorkDCL testDCL Login
 	(if (not (new_dialog "framework" id)) (exit))
+	;配置启动按钮
   	(action_tile "startBtn" "(configStartBtn) (done_dialog 1)")
+	;配置框架按钮
 	(action_tile "DFBtn" "(configDFBtn)  (done_dialog 2)")
+	;配置曲线按钮
 	(action_tile "DLBtn" "(configDLBtn)  (done_dialog 3)")
-	(action_tile "DDBtn" "(configDDBtn)  (done_dialog 4)")
-	(action_tile "DRSBtn" "(configDRSBtn)  (done_dialog 5)")
-	(action_tile "DRBtn" "(configDRBtn)  (done_dialog 6)")
-	(action_tile "DRSignBtn" "(configDRSignBtn)  (done_dialog 7)")
-	(action_tile "DDDBtn" "(configDDDBtn)  (done_dialog 8)")
+	;
+	(action_tile "DRSBtn" "(configDRSBtn)  (done_dialog 4)")
+	;
+	(action_tile "DRBtn" "(configDRBtn)  (done_dialog 5)")
+	;
+	(action_tile "DRSignBtn" "(configDRSignBtn)  (done_dialog 6)")
+	;
+	(action_tile "DDDBtn" "(configDDDBtn)  (done_dialog 7)")
+	;配置完井结构按钮
+	(action_tile "DDBtn" "(configDDBtn)  (done_dialog 8)")
+	;
 	(action_tile "HoleNumber_List" "(configHolePopListAction)")
+	;
 	(action_tile "RockType_List" "(configRockPopListAction)")
+	;
 	(action_tile "cancelBtn" "(done_dialog -1)")
+	
+	;配置单独清除已绘模型按钮群
+	(action_tile "ECDBtn" "(done_dialog 9)")
+
 	(if (= initSuccessValue 1)  
 			(progn
 				(mode_tile  "startBtn" 1)
@@ -52,6 +67,7 @@
 				(mode_tile  "DRSBtn" 0)
 				(mode_tile  "DRSignBtn" 0)
 				(mode_tile  "DDDBtn" 0)
+				(mode_tile  "ECDBtn" 0)
 			)
 			(progn
 				(mode_tile  "startBtn" 0)
@@ -62,6 +78,7 @@
 				(mode_tile  "DRSBtn" 1)
 				(mode_tile  "DRSignBtn" 1)
 				(mode_tile  "DDDBtn" 1)
+				(mode_tile  "ECDBtn" 1)
 			)
 	)
 	;存储上次输入记录
@@ -95,34 +112,42 @@
 					
 					((= std 4)
 						(progn
-							(alert "完井结构！！！")
-							(drawDrillStructure)
+							(drawRockStructure)
 						  	(c:buildFramework)
 						)
 					)
 					
 					((= std 5)
-						(progn
-							(drawRockStructure)
-						  	(c:buildFramework)
+						(progn						
+							(command "zoom" "C" (list -222.5 (* d -5)) "250")
+							(drawRock)
+							(c:buildFramework)
+							;当已绘制柱状图后才设置已绘标记，用来允许单独删除该部分模型
 						)
 					)
 					((= std 6)
-						(progn
-							(command "zoom" "C" (list -222.5 (* d -5)) "250")
-							(drawRock)
+						(progn					
+							(drawRockSign)
 							(c:buildFramework)
 						)
 					)
 					((= std 7)
 						(progn
-							(drawRockSign)
+							(drawDrillDeviation)
 							(c:buildFramework)
 						)
 					)
 					((= std 8)
 						(progn
-							(drawDrillDeviation)
+						
+							(alert "完井结构！！！")
+							(drawDrillStructure)
+						  	(c:buildFramework)
+						)
+					)
+					((= std 9)
+						(progn						
+							(if (= rockTypeNum 0) (eraseWellDrillingColumnarDiagram) (eraseWellLoggingColumnarDiagram))
 							(c:buildFramework)
 						)
 					)
@@ -2067,6 +2092,24 @@
 	(command "erase" entName "")
  )
  
+  ;删除已画钻井柱状图
+ (defun eraseWellDrillingColumnarDiagram()
+	;(command "zoom" "A")
+	;(command "erase" "C" (list -300 -5) (list -295 (+ (* d -5) 5)) "")
+	;(command "erase" "C" (list -285 -5) (list -280 (+ (* d -5) 5)) "")
+	;(command "erase" "F" (list -272.5 -5) (list -272.5 (+ (* d -5) 5)) "" "")
+	;(command "erase" "C" (list -265 -5) (list -261 (+ (* d -5) 5)) "")
+	(alert "明天再写！！！！")
+ )
+ 
+ ;删除已画测井柱状图
+ (defun eraseWellLoggingColumnarDiagram()
+	(command "zoom" "A")
+	(command "erase" "C" (list -300 -5) (list -295 (+ (* d -5) 5)) "")
+	(command "erase" "C" (list -285 -5) (list -280 (+ (* d -5) 5)) "")
+	(command "erase" "F" (list -272.5 -5) (list -272.5 (+ (* d -5) 5)) "" "")
+	(command "erase" "C" (list -265 -5) (list -261 (+ (* d -5) 5)) "")
+ )
  ;BaseBlock
  
   (defun drawShaLiYanVla()
