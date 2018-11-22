@@ -23,9 +23,9 @@ framework:dialog{ //定义名字为yuan的对话框
       		:edit_box{ //引用编辑框3
   		        label = "钻时Max："; //编辑框3的标签
   	 	        edit_width = 8; //编辑框3的宽度
-                        key = "DT";//编辑框3的关键字
-  	  		mnemonic = "DT";//编辑框3的热键
-  	  		value = 48;
+                key = "DT";//编辑框3的关键字
+				mnemonic = "DT";//编辑框3的热键
+  	  		    value = 48;
     	  	}//编辑框3引用结束
 
     	  	:edit_box{ //引用编辑框4
@@ -36,6 +36,13 @@ framework:dialog{ //定义名字为yuan的对话框
   	  		value = 121;
       		}//编辑框4引用结束
 			
+			:button{
+			  key = "baseDataBtn"; 
+			  label = "设置或更新框架基础数据";
+			  is_default = true;
+			  fixed_width = true;
+			  alignment=centered;             
+			}
 		}//加框列引用结束
 		
 		:boxed_column{//引用加框列
@@ -158,7 +165,7 @@ framework:dialog{ //定义名字为yuan的对话框
 				label = "图号："; 
 				edit_width = 15; 
 				key = "PictureNumber";
-				value = "PictureNumber";
+				value = "1";
       		}
 			:edit_box{ 
 				label = "比例："; 
@@ -191,17 +198,17 @@ framework:dialog{ //定义名字为yuan的对话框
 				label="根据EXCEL绘制多段线";//加框列的标签
         
 				:edit_box{ //引用编辑框1
-					label = "列1(eg A1:A10)："; //编辑框1的标签
+					label = "列1："; //编辑框1的标签
 					edit_width = 8; //编辑框1的宽度
 					key = "columnPLineOne";//编辑框1的关键字 
-					value = "A1:A10";//默认A1
+					value = "A2:A";//
 				}//编辑框1引用结束
 
 				:edit_box{ //引用编辑框2
-					label = "列2(eg A1:A10)："; //编辑框2的标签&之后的字符是热键Maximum Consumption
+					label = "列2："; //编辑框2的标签&之后的字符是热键Maximum Consumption
 					edit_width = 8; //编辑框2的宽度
 					key = "columnPLineTwo";//编辑框2的关键字 
-					value = "B1：B10";
+					value = "B2:B";
 				}//编辑框2引用结束
 
 				//:popup_list{label="线宽：";
@@ -222,13 +229,20 @@ framework:dialog{ //定义名字为yuan的对话框
 						//key= "LineType_List";
 				//}		
 				
-				:button{
-				  key = "DLBtn";  //DrawLineButton
-				  label = "绘制";
-				  fixed_width = true;
-				  alignment=right;             
-				}
-
+				//:row{
+					// :button{
+					// key = "ELBtn";  //EraseLineButton 单独删除多段线所有已画部分
+					//  label = "单独清除该模式下已绘模型";
+					 // fixed_width = true;
+					//  alignment=left;             
+					//}		
+					:button{
+					  key = "DLBtn";  //DrawLineButton
+					  label = "绘制";
+					  fixed_width = true;
+					  alignment=right;             
+					}
+				//}
 	
     	}//加框列引用结束
 		//
@@ -242,40 +256,46 @@ framework:dialog{ //定义名字为yuan的对话框
 				}		    
 	
 				:edit_box{ //引用编辑框1
-					label = "深度列(eg A1:A10)："; //编辑框1的标签
+					label = "深度列："; //编辑框1的标签
 					edit_width = 8; //编辑框1的宽度
 					key = "columnRockStructureOne";//编辑框1的关键字 
-					value = "A1:A10";//默认A1
+					value = "A2:A";
 				}//编辑框1引用结束
 				:edit_box{ //引用编辑框2
-					label = "厚度列(eg A1:A10)：";
+					label = "厚度列：";
 					edit_width = 8; //编辑框2的宽度
 					key = "columnRockStructureTwo";//编辑框5的关键字 
-					value = "B1：B10";
+					value = "B2:B";
 				}//编辑框2引用结束
 				:edit_box{ //引用编辑框3
-					label = "全称列(eg A1:A10)："; 
+					label = "全称列："; 
 					edit_width = 8; //编辑框2的宽度
 					key = "columnRockStructureThree";//编辑框3的关键字 
-					value = "C1：C10";
+					value = "C2:C";
 				}//编辑框3引用结束
 				:edit_box{ //引用编辑框4
-					label = "简称列(eg A1:A10)：";
+					label = "简称列：";
 					edit_width = 8; 
 					key = "columnRockStructureFour";
-					value = "D1：D10";
+					value = "D2:D";
 				}//编辑框4引用结束
 	
-					
+			:row{
+				 :button{
+				  key = "ERSBtn";  //EraseRockStructureButton 单独删除系统组所有已画部分
+				  label = "单独清除该模式下已绘模型";
+				  fixed_width = true;
+				  alignment=left;             
+				}		
 				:button{
 				  key = "DRSBtn";  //DrawRockStructureButton
 				  label = "绘制";
 				  fixed_width = true;
 				  alignment=right;             
 				}
-
+			}
 	
-			}//加框列引用结束
+		}//加框列引用结束
 		
 	
 	}//行引用结束
@@ -290,34 +310,34 @@ framework:dialog{ //定义名字为yuan的对话框
 				}		    
 	
 				:edit_box{ //引用编辑框1
-					label = "深度列(eg A1:A10)："; //编辑框1的标签
+					label = "深度列："; //编辑框1的标签
 					edit_width = 8; //编辑框1的宽度
 					key = "columnRockOne";//编辑框1的关键字 
-					value = "A1:A10";//默认A1
+					value = "A2:A";
 				}//编辑框1引用结束
 				:edit_box{ //引用编辑框2
-					label = "层厚列(eg A1:A10)：";
+					label = "层厚列：";
 					edit_width = 8; //编辑框2的宽度
 					key = "columnRockTwo";//编辑框5的关键字 
-					value = "B1：B10";
+					value = "B2:B";
 				}//编辑框2引用结束
 				:edit_box{ //引用编辑框3
-					label = "岩性名称列(eg A1:A10)："; 
+					label = "岩性名称列："; 
 					edit_width = 8; //编辑框2的宽度
 					key = "columnRockThree";//编辑框3的关键字 
-					value = "C1：C10";
+					value = "C2:C";
 				}//编辑框3引用结束
 				:edit_box{ //引用编辑框4
-					label = "岩性描述列(eg A1:A10)：";
+					label = "岩性描述列：";
 					edit_width = 8; 
 					key = "columnRockFour";
-					value = "D1：D10";
+					value = "D2:D";
 				}//编辑框4引用结束
 				:edit_box{ //引用编辑框5
-					label = "层号列(eg A1:A10)："; 
+					label = "层号列："; 
 					edit_width = 8; //
 					key = "columnRockFive";//编辑框5的关键字 
-					value = "E1：E10";
+					value = "E2:E";
 				}//编辑框5引用结束
 	
 				
@@ -344,39 +364,42 @@ framework:dialog{ //定义名字为yuan的对话框
 	
 			}//加框列引用结束
 		
-		
-		
-		
-		
+
 				:boxed_column{
 						label="根据EXCEL绘制标志层代号";//加框列的标签    
 						:edit_box{ //引用编辑框1
-							label = "深度列(eg A1:A10)："; //编辑框1的标签
+							label = "深度列："; //编辑框1的标签
 							edit_width = 8; //编辑框1的宽度
 							key = "columnRockSignOne";//编辑框1的关键字 
-							value = "A1:A10";//默认A1
+							value = "A2:A";
 						}//编辑框1引用结束
 						:edit_box{ //引用编辑框2
-							label = "层厚列(eg A1:A10)：";
+							label = "层厚列：";
 							edit_width = 8; //编辑框2的宽度
 							key = "columnRockSignTwo";//编辑框5的关键字 
-							value = "B1：B10";
+							value = "B2:B";
 						}//编辑框2引用结束
 						:edit_box{ //引用编辑框3
-							label = "标志层名称列(eg A1:A10)："; 
+							label = "标志层名称列："; 
 							edit_width = 8; //编辑框2的宽度
 							key = "columnRockSignThree";//编辑框3的关键字 
-							value = "C1：C10";
+							value = "D2:D";
 						}//编辑框3引用结束
-						
-						:button{
-						  key = "DRSignBtn";  //DrawRockSignButton
-						  label = "绘制";
-						  fixed_width = true;
-						  alignment=right;             
+						:row{
+							 :button{
+							  key = "ERSignBtn";  //EraseRockSignButton 单独删除标志层代号所有已画部分
+							  label = "单独清除该模式下已绘模型";
+							  fixed_width = true;
+							  alignment=left;             
+							}
+							:button{
+							  key = "DRSignBtn";  //DrawRockSignButton
+							  label = "绘制";
+							  fixed_width = true;
+							  alignment=right;             
+							}
 						}
-
-			
+		
 					}//加框列引用结束
 				
 		
@@ -430,7 +453,7 @@ framework:dialog{ //定义名字为yuan的对话框
 						label = "二开钻头直径(mm)："; //编辑框1的标签
 						edit_width = 8; //编辑框1的宽度
 						key = "HoleTwoDrillDiameter";//编辑框1的关键字  HoleOneDrillDiameter一开钻头直径
-						value = "φ311.15mm";//默认A1
+						value = "φ311.15mm";
 					}//编辑框1引用结束
 
 					:edit_box{ //引用编辑框4
@@ -444,7 +467,7 @@ framework:dialog{ //定义名字为yuan的对话框
 						label = "二开套管外径(mm)："; //编辑框1的标签
 						edit_width = 8; //编辑框1的宽度
 						key = "HoleTwoBushDiameter";//编辑框1的关键字  HoleOneBushDiameter一开钻头直径
-						value = "J55φ244.48×8.94mm";//默认A1
+						value = "J55φ244.48×8.94mm";
 					}//编辑框1引用结束
 
 					:edit_box{ //引用编辑框4
@@ -471,7 +494,7 @@ framework:dialog{ //定义名字为yuan的对话框
 						label = "三开钻头直径(mm)："; //编辑框1的标签
 						edit_width = 8; //编辑框1的宽度
 						key = "HoleThreeDrillDiameter";//编辑框1的关键字  HoleOneDrillDiameter一开钻头直径
-						value = "φ215.9mm";//默认A1
+						value = "φ215.9mm";
 						is_enabled = False;
 					}//编辑框1引用结束
 
@@ -487,7 +510,7 @@ framework:dialog{ //定义名字为yuan的对话框
 						label = "三开套管外径(mm)："; //编辑框1的标签
 						edit_width = 8; //编辑框1的宽度
 						key = "HoleThreeBushDiameter";//编辑框1的关键字  HoleOneBushDiameter一开钻头直径
-						value = "φ139.70×7.72";//默认A1
+						value = "φ139.70×7.72";
 						is_enabled = False;
 					}//编辑框1引用结束
 
@@ -528,11 +551,19 @@ framework:dialog{ //定义名字为yuan的对话框
 						value = 0.0;
 					}//编辑框11引用结束
 					
-					:button{
-						key = "DDBtn";  //DrawDrillButton
-						label = "绘制";
-						fixed_width = true;
-						alignment=right;             
+					:row{
+						 :button{
+						  key = "EDCSBtn";  //EraseDrillCompletionStructureButton 单独删除柱状图所有已画部分
+						  label = "单独清除该模式下已绘模型";
+						  fixed_width = true;
+						  alignment=left;             
+						}
+						:button{
+							key = "DDCSBtn";  //DrawDrillCompletionStructureButton 
+							label = "绘制";
+							fixed_width = true;
+							alignment=right;             
+						}
 					}
 					
 			}//加框列引用结束
@@ -541,43 +572,50 @@ framework:dialog{ //定义名字为yuan的对话框
 			:boxed_column{
 						label="根据EXCEL绘制井斜方位角";//加框列的标签    
 						:edit_box{ //引用编辑框1
-							label = "深度列(eg A1:A10)："; //编辑框1的标签
+							label = "深度列："; //编辑框1的标签
 							edit_width = 8; //编辑框1的宽度
 							key = "columnDrillDeviationOne";//编辑框1的关键字 
-							value = "A1:A10";//默认A1
+							value = "A2:A";
 						}//编辑框1引用结束
 						:edit_box{ //引用编辑框2
-							label = "井斜列(eg A1:A10)：";
+							label = "井斜列：";
 							edit_width = 8; //编辑框2的宽度
 							key = "columnDrillDeviationTwo";//编辑框5的关键字 
-							value = "B1：B10";
+							value = "B2:B";
 						}//编辑框2引用结束
 						:edit_box{ //引用编辑框3
-							label = "方位角列(eg A1:A10)："; 
+							label = "方位角列："; 
 							edit_width = 8; //编辑框2的宽度
 							key = "columnDrillDeviationThree";//编辑框3的关键字 
-							value = "C1：C10";
+							value = "C2:C";
 						}//编辑框3引用结束
 						
+					:row{
+						 :button{
+						  key = "EDDBtn";  //EraseDrillDeviationButton 单独删除井斜方位角所有已画部分
+						  label = "单独清除该模式下已绘模型";
+						  fixed_width = true;
+						  alignment=left;             
+						}
 						:button{
 						  key = "DDDBtn";  //DrawDrillDeviationButton
 						  label = "绘制";
 						  fixed_width = true;
 						  alignment=right;             
 						}
-
+					}
 			
 					}//加框列引用结束
 					
 		}//行引用结束
 		
 	:button{
-				  key = "startBtn"; 
-				  label = "启动";
-				  is_default = true;
-				  fixed_width = true;
-				  alignment=centered;             
-				}
+		  key = "startBtn"; 
+		  label = "启动";
+		  is_default = true;
+		  fixed_width = true;
+		  alignment=centered;             
+		}
 	:button{
 				  key = "cancelBtn";  
 				  label = "退出";

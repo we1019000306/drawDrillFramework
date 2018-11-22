@@ -33,52 +33,77 @@
 	(if (not (new_dialog "framework" id)) (exit))
 	;配置启动按钮
   	(action_tile "startBtn" "(configStartBtn) (done_dialog 1)")
+	;配置基础数据按钮
+	(action_tile "baseDataBtn" "(configbaseDataBtn) (done_dialog 2)")
 	;配置框架按钮
-	(action_tile "DFBtn" "(configDFBtn)  (done_dialog 2)")
+	(action_tile "DFBtn" "(configDFBtn)  (done_dialog 3)")
 	;配置曲线按钮
-	(action_tile "DLBtn" "(configDLBtn)  (done_dialog 3)")
+	(action_tile "DLBtn" "(configDLBtn)  (done_dialog 4)")
 	;
-	(action_tile "DRSBtn" "(configDRSBtn)  (done_dialog 4)")
+	(action_tile "DRSBtn" "(configDRSBtn)  (done_dialog 5)")
 	;
-	(action_tile "DRBtn" "(configDRBtn)  (done_dialog 5)")
+	(action_tile "DRBtn" "(configDRBtn)  (done_dialog 6)")
 	;
-	(action_tile "DRSignBtn" "(configDRSignBtn)  (done_dialog 6)")
+	(action_tile "DRSignBtn" "(configDRSignBtn)  (done_dialog 7)")
 	;
-	(action_tile "DDDBtn" "(configDDDBtn)  (done_dialog 7)")
+	(action_tile "DDDBtn" "(configDDDBtn)  (done_dialog 8)")
 	;配置完井结构按钮
-	(action_tile "DDBtn" "(configDDBtn)  (done_dialog 8)")
-	;
+	(action_tile "DDCSBtn" "(configDDBtn)  (done_dialog 9)")
+	;配置单独清除已绘模型按钮群
+	(action_tile "ELBtn" "(done_dialog 11)")
+	(action_tile "ERSBtn" "(done_dialog 12)")
+	(action_tile "ECDBtn" "(done_dialog 13)")
+	(action_tile "ERSignBtn" "(done_dialog 14)")
+	(action_tile "EDCSBtn" "(done_dialog 15)")
+	(action_tile "EDDBtn" "(done_dialog 16)")
+	
+	(action_tile "LineName_List" "(configLineNamePopListAction)")
+	(action_tile "RockStructureType_List" "(configRockStructurePopListAction)")
+
 	(action_tile "HoleNumber_List" "(configHolePopListAction)")
 	;
 	(action_tile "RockType_List" "(configRockPopListAction)")
 	;
 	(action_tile "cancelBtn" "(done_dialog -1)")
 	
-	;配置单独清除已绘模型按钮群
-	(action_tile "ECDBtn" "(done_dialog 9)")
+
 
 	(if (= initSuccessValue 1)  
 			(progn
 				(mode_tile  "startBtn" 1)
+				(mode_tile  "baseDataBtn" 0)
 				(mode_tile  "DFBtn" 0)
 				(mode_tile  "DLBtn" 0)
-				(mode_tile  "DDBtn" 0)
+				(mode_tile  "DDCSBtn" 0)
 				(mode_tile  "DRBtn" 0)
 				(mode_tile  "DRSBtn" 0)
 				(mode_tile  "DRSignBtn" 0)
 				(mode_tile  "DDDBtn" 0)
+				(mode_tile  "ELBtn" 0)
+				(mode_tile  "ERSBtn" 0)
 				(mode_tile  "ECDBtn" 0)
+				(mode_tile  "ERSignBtn" 0)
+				(mode_tile  "EDCSBtn" 0)
+				(mode_tile  "EDDBtn" 0)
+
 			)
 			(progn
 				(mode_tile  "startBtn" 0)
+				(mode_tile  "baseDataBtn" 1)
 				(mode_tile  "DFBtn" 1)
 				(mode_tile  "DLBtn" 1)
-				(mode_tile  "DDBtn" 1)
+				(mode_tile  "DDCSBtn" 1)
 				(mode_tile  "DRBtn" 1)
 				(mode_tile  "DRSBtn" 1)
 				(mode_tile  "DRSignBtn" 1)
 				(mode_tile  "DDDBtn" 1)
+				(mode_tile  "ELBtn" 1)
+				(mode_tile  "ERSBtn" 1)
 				(mode_tile  "ECDBtn" 1)
+				(mode_tile  "ERSignBtn" 1)
+				(mode_tile  "EDCSBtn" 1)
+				(mode_tile  "EDDBtn" 1)
+
 			)
 	)
 	;存储上次输入记录
@@ -88,13 +113,18 @@
 	(cond 
 					((= std 1)
 						(progn
-							(alert "外挂启动完毕，请开始蹂躏我吧！！")
+							(alert "辅助程序启动完毕，请开始绘图！！")
 							(configInitValue)
 						  	(c:buildFramework)
 						)
 					)
-					
 					((= std 2)
+						(progn
+							(alert "基础数据设置或更新完毕，可以进行绘图操作啦！！")
+						  	(c:buildFramework)
+						)
+					)
+					((= std 3)
 						(progn
 							(drawFrame)
 							(command "zoom" "C" (list -222.5 (* d -5)) "250")
@@ -102,22 +132,21 @@
 						)
 					)
 					
-					((= std 3)
+					((= std 4)
 						(progn
-							(alert "画线喽！！！")
 							(drawPLine)
 						  	(c:buildFramework)
 						)
 					)
 					
-					((= std 4)
+					((= std 5)
 						(progn
 							(drawRockStructure)
 						  	(c:buildFramework)
 						)
 					)
 					
-					((= std 5)
+					((= std 6)
 						(progn						
 							(command "zoom" "C" (list -222.5 (* d -5)) "250")
 							(drawRock)
@@ -125,35 +154,70 @@
 							;当已绘制柱状图后才设置已绘标记，用来允许单独删除该部分模型
 						)
 					)
-					((= std 6)
+					((= std 7)
 						(progn					
 							(drawRockSign)
 							(c:buildFramework)
 						)
 					)
-					((= std 7)
+					((= std 8)
 						(progn
 							(drawDrillDeviation)
 							(c:buildFramework)
 						)
 					)
-					((= std 8)
-						(progn
-						
-							(alert "完井结构！！！")
+					((= std 9)
+						(progn		
 							(drawDrillStructure)
 						  	(c:buildFramework)
 						)
 					)
-					((= std 9)
-						(progn						
-							(if (= rockTypeNum 0) (eraseWellDrillingColumnarDiagram) (eraseWellLoggingColumnarDiagram))
+					((= std 11)
+						(progn			
+							;单独删除柱状图
+							(eraseLine)
+							(c:buildFramework)
+						)
+					)
+					((= std 12)
+						(progn			
+							;单独删除柱状图
+							(eraseDrillRockStructure)
+							(c:buildFramework)
+						)
+					)
+					((= std 13)
+						(progn			
+							;单独删除柱状图
+						
+							(eraseWellColumnarDiagram)
+							(c:buildFramework)
+						)
+					)
+					((= std 14)
+						(progn	
+							;单独删除标志层代号
+							(eraseRockSign)
+							(c:buildFramework)
+						)
+					)
+					((= std 15)
+						(progn				
+							;单独删除完井结构
+						    (EraseDrillCompletionStructure)
+							(c:buildFramework)
+						)
+					)
+					((= std 16)
+						(progn			
+							;单独删除井斜方位角
+						    (eraseEraseDrillDeviation)
 							(c:buildFramework)
 						)
 					)
   					((= std -1)
 						(progn
-							(alert "你就这样离开我了么？？亚麻得！！")
+							(alert "退出辅助程序成功！！")
 
 						)
 					)
@@ -210,20 +274,19 @@
 	;曲线绘制
 	(if (null columnPLineOne) (print "nil") (set_tile "columnPLineOne" columnPLineOne))
   	(if (null columnPLineTwo) (print "nil") (set_tile "columnPLineTwo" columnPLineTwo))
-  	(if (null lineNameNum) (print "nil") (set_tile "LineName_List" (itoa lineNameNum)))
+  	(if (null lineNameNum) (setq lineNameNum 0) (set_tile "LineName_List" (itoa lineNameNum)))
   	;(if (null lineTypeNum) (print "nil") (set_tile "LineType_List" (itoa lineTypeNum)))
   	;(if (null lineWeightNum) (print "nil") (set_tile "LineWeight_List" (itoa lineWeightNum)))
-  	(if (null HoleNum) (print "nil") (set_tile "HoleNumber_List" (itoa HoleNum)))
 	
 	;系统组
-	(if (null rockStructureTypeNum) (print "nil") (set_tile "RockStructureType_List" (itoa rockStructureTypeNum)))
+	(if (null rockStructureTypeNum) (setq rockStructureTypeNum 0) (set_tile "RockStructureType_List" (itoa rockStructureTypeNum)))
 	(if (null columnRockStructureOne) (print "nil") (set_tile "columnRockStructureOne" columnRockStructureOne))
   	(if (null columnRockStructureTwo) (print "nil") (set_tile "columnRockStructureTwo" columnRockStructureTwo))
 	(if (null columnRockStructureThree) (print "nil") (set_tile "columnRockStructureThree" columnRockStructureThree))
 	(if (null columnRockStructureFour) (print "nil") (set_tile "columnRockStructureFour" columnRockStructureFour))
 	
 	;测井钻井柱状图
-	(if (null rockTypeNum) (print "nil") (set_tile "RockType_List" (itoa rockTypeNum)))
+	(if (null rockTypeNum) (setq rockTypeNum 0) (set_tile "RockType_List" (itoa rockTypeNum)))
 	(if (null columnRockOne) (print "nil") (set_tile "columnRockOne" columnRockOne))
   	(if (null columnRockTwo) (print "nil") (set_tile "columnRockTwo" columnRockTwo))
 	(if (null columnRockThree) (print "nil") (set_tile "columnRockThree" columnRockThree))
@@ -237,6 +300,7 @@
 					(mode_tile  "columnRockThree" 0)
 					(mode_tile  "columnRockFour" 0)
 					(mode_tile  "columnRockFive" 0)
+					(setq RockTypeName "钻井柱状图")
 				) 
 			)
 		   ((= rockTypeNum 1)
@@ -246,6 +310,7 @@
 					(mode_tile  "columnRockThree" 0)
 					(mode_tile  "columnRockFour" 1)
 					(mode_tile  "columnRockFive" 1)
+					(setq RockTypeName "测井柱状图")
 				)
 			)
 		   ((= rockTypeNum 2)  
@@ -261,6 +326,7 @@
 	(if (null columnRockSignThree) (print "nil") (set_tile "columnRockSignThree" columnRockSignThree))
 	
 	;完井结构
+	(if (null HoleNum) (setq HoleNum 0) (set_tile "HoleNumber_List" (itoa HoleNum)))
 	(if (null holeOneDrillDiameter) (print "nil") (set_tile "HoleOneDrillDiameter" holeOneDrillDiameterStr))
 	(if (null holeOneDeep) (print "nil") (set_tile "HoleOneDeep" (rtos holeOneDeep 2 2)))
 	(if (null holeOneBushDiameter) (print "nil") (set_tile "HoleOneBushDiameter" holeOneBushDiameterStr))
@@ -314,15 +380,24 @@
 
 (defun configStartBtn()
 	;此处可增加初始化代码，预留位置
-	(print "click startButton")
-
-)
-
-(defun configDFBtn()
 	(setq d (atof (get_tile "D")))
 	(setq dt (atof (get_tile "DT")))
  	(setq mc (atof (get_tile "MC")))
   	(setq wl (atof (get_tile "WL")))
+	(print "click startButton")
+
+)
+
+
+(defun configbaseDataBtn()
+	;此处可增加初始化代码，预留位置
+	(setq d (atof (get_tile "D")))
+	(setq dt (atof (get_tile "DT")))
+ 	(setq mc (atof (get_tile "MC")))
+  	(setq wl (atof (get_tile "WL")))
+)
+
+(defun configDFBtn()
 	(setq DN (get_tile "DN"))
 	(setq DL (get_tile "DL"))
 	(setq LX (get_tile "LX"))
@@ -565,6 +640,19 @@
 	)	
 )
 
+;配置线型popList动作属性
+(defun configLineNamePopListAction()
+    (setq lineNameNum (atoi (get_tile "LineName_List")))
+
+)
+
+;配置系统组popList动作属性
+(defun configRockStructurePopListAction()
+    (setq rockStructureTypeNum  (atoi (get_tile "RockStructureType_List")))
+	
+
+)
+
 ;配置二开三开popList动作属性
 (defun configHolePopListAction()
     (setq HoleNum  (atoi(get_tile "HoleNumber_List")))
@@ -608,6 +696,8 @@
 						(mode_tile  "columnRockThree" 0)
 						(mode_tile  "columnRockFour" 0)
 						(mode_tile  "columnRockFive" 0)
+						(setq RockTypeName "钻井柱状图")
+
 					) 
 				)
 			   ((= rockTypeNum 1)
@@ -617,6 +707,7 @@
 						(mode_tile  "columnRockThree" 0)
 						(mode_tile  "columnRockFour" 1)
 						(mode_tile  "columnRockFive" 1)
+						(setq RockTypeName "钻井柱状图")
 					)
 				)
 		       ((= rockTypeNum 2)  
@@ -697,7 +788,7 @@
 						(setq rockDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataDescription 'Item indexR)) 'Value2))
 						(setq rockNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataNumber 'Item indexR)) 'Value2))
 					(drawRockLineAndTextLabel)
-					(setq BlockCodeName (strcat rockName (itoa indexR)))
+					(setq BlockCodeName (strcat (strcat (strcat rockName (itoa indexR)) RockTypeName) (rtos (getvar "CDATE") 2 10)))
 					(hatchRock rockName rockDeep rockThickness)
 					
 				)
@@ -1483,6 +1574,7 @@
 			   ((= rockTypeNum 1)
 					(progn 
 						(setq RockHatchXOffset -262.5)
+
 					)
 				)
 	)
@@ -2092,14 +2184,98 @@
 	(command "erase" entName "")
  )
  
+ ;单独删除多段线
+ (defun eraseLine()
+	 (cond ((= lineNameNum 0)
+						(progn
+							(eraseDrillTimeLine)
+						)
+					)
+					((= lineNameNum 1)
+						(progn
+							(eraseConsumptionLine)
+						)
+					)
+					((= lineNameNum 2)
+						(progn
+							(eraseWaterLevel)
+						)
+					)
+	)
+ )
+ 
+ (defun eraseDrillTimeLine()
+	(alert "钻时")
+ )
+ 
+ (defun eraseConsumptionLine()
+ 	(alert "消耗量")
+
+ )
+ 
+ (defun eraseWaterLevel()
+ 	(alert "水位")
+
+ )
+ 
+ ;单独删除系统组
+ (defun eraseDrillRockStructure()
+	(cond ((= rockStructureTypeNum 0)
+					(progn
+						(eraseXi)
+					)
+				)
+				((= rockStructureTypeNum 1)
+					(progn
+						(eraseTong)
+					)
+				)
+				((= rockStructureTypeNum 2)
+					(progn
+						(eraseZu)
+					)
+				)
+	)
+ )
+ 
+ (defun eraseXi()
+ 	(command "zoom" "A")
+	(command "erase" "F" (list -330 -1) (list -330 (+ (* d -5) 1)) "" "")
+	(command "erase" "F" (list -330.25 -1) (list -330.25 (+ (* d -5) 1)) "" "")
+	(command "erase" "F" (list -329.75 -1) (list -329.75 (+ (* d -5) 1)) "" "")
+ )
+ 
+  (defun eraseTong()
+  	(command "zoom" "A")
+	(command "erase" "F" (list -320 -1) (list -320 (+ (* d -5) 1)) "" "")
+	(command "erase" "F" (list -320.25 -1) (list -320.25 (+ (* d -5) 1)) "" "")
+	(command "erase" "F" (list -319.75 -1) (list -319.75 (+ (* d -5) 1)) "" "")
+
+ )
+ 
+ (defun eraseZu()
+ 	(command "zoom" "A")
+	(command "erase" "F" (list -310 -1) (list -310 (+ (* d -5) 1)) "" "")
+	(command "erase" "F" (list -310.25 -1) (list -310.25 (+ (* d -5) 1)) "" "")
+	(command "erase" "F" (list -309.75 -1) (list -309.75 (+ (* d -5) 1)) "" "")
+ )
+ ;单独删除柱状图
+ (defun eraseWellColumnarDiagram()
+ 	(if (= rockTypeNum 0) (eraseWellDrillingColumnarDiagram) (eraseWellLoggingColumnarDiagram))
+ )
+ 
   ;删除已画钻井柱状图
  (defun eraseWellDrillingColumnarDiagram()
-	;(command "zoom" "A")
-	;(command "erase" "C" (list -300 -5) (list -295 (+ (* d -5) 5)) "")
-	;(command "erase" "C" (list -285 -5) (list -280 (+ (* d -5) 5)) "")
-	;(command "erase" "F" (list -272.5 -5) (list -272.5 (+ (* d -5) 5)) "" "")
-	;(command "erase" "C" (list -265 -5) (list -261 (+ (* d -5) 5)) "")
-	(alert "明天再写！！！！")
+	(command "zoom" "A")
+	;erase 床交时能识别的最近距离为5！！！
+	(command "erase" "C" (list -240 -5) (list -235 (+ (* d -5) 5)) "")
+	(command "erase" "C" (list -220 -5) (list -215 (+ (* d -5) 5)) "")
+	(command "erase" "C" (list -205 -5) (list -200 (+ (* d -5) 5)) "")
+	(command "erase" "F" (list -193.5 -5) (list -193.5 (+ (* d -5) 1)) "" "")
+	(command "erase" "C" (list -180 -5) (list -165 (+ (* d -5) 5)) "")
+	(command "erase" "C" (list -155 -5) (list -65 (+ (* d -5) 5)) "")
+	;(command "erase" "F" (list -210 (- (* d -5) 1)) (list -193.5 (+ (* d -5) 1)) "" "")
+
  )
  
  ;删除已画测井柱状图
@@ -2110,6 +2286,26 @@
 	(command "erase" "F" (list -272.5 -5) (list -272.5 (+ (* d -5) 5)) "" "")
 	(command "erase" "C" (list -265 -5) (list -261 (+ (* d -5) 5)) "")
  )
+ 
+ (defun eraseRockSign()
+	(command "zoom" "A")
+	(command "erase" "F" (list -250 -5) (list -250 (+ (* d -5) 5)) "" "")
+	(command "erase" "F" (list -250.25 -5) (list -250.25 (+ (* d -5) 5)) "" "")
+	(command "erase" "F" (list -249.75 -5) (list -249.75 (+ (* d -5) 5)) "" "")
+ )
+ 
+ ;删除已画完井结构
+ (defun EraseDrillCompletionStructure()
+	(command "zoom" "A")
+	(command "erase" "C" (list -55 -5) (list -5 (+ (* d -5) 5)) "")
+ )
+ 
+ ;删除已画井斜方位角
+ (defun eraseEraseDrillDeviation()
+ 	(command "zoom" "A")
+	(command "erase" "C" (list 5 -5) (list 20 (+ (* d -5) 5)) "")
+ )
+ 
  ;BaseBlock
  
   (defun drawShaLiYanVla()
