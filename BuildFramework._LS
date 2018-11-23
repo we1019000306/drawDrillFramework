@@ -148,6 +148,7 @@
 					
 					((= std 6)
 						(progn
+							(command "")
 							(command "zoom" "C" (list -222.5 (* d -5)) "250")
 							(drawRock)
 							(c:buildFramework)
@@ -771,13 +772,8 @@
 		(setq rockDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockOne))
 		(setq rockDataThickness (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockTwo))
 		(setq rockDataName (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockThree))
-		(if (= rockTypeNum 0)
-			(progn 
-					(setq rockDataDescription (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFour))
-					(setq rockDataNumber (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFive))
-			)
-		)
-	
+		(setq rockDataDescription (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFour))
+		(setq rockDataNumber (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFive))
 		(setq rockLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Value2))))
 		(command "LineType" "s" "ByLayer" "")
 		(command "lweight" "ByLayer")
@@ -790,13 +786,8 @@
 				  	 	(setq rockDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Item indexR)) 'Value2))
 						(setq rockThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataThickness 'Item indexR)) 'Value2))
 						(setq rockName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataName 'Item indexR)) 'Value2))
-						(if (= rockTypeNum 0)
-							(progn 
-								(setq rockDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataDescription 'Item indexR)) 'Value2))
-								(setq rockNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataNumber 'Item indexR)) 'Value2))
-							)
-						)
-						
+						(setq rockDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataDescription 'Item indexR)) 'Value2))
+						(setq rockNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataNumber 'Item indexR)) 'Value2))
 					(drawRockLineAndTextLabel)
 					(setq BlockCodeName (strcat (strcat (strcat rockName (itoa indexR)) RockTypeName) (rtos (getvar "CDATE") 2 10)))
 					(hatchRock rockName rockDeep rockThickness)
