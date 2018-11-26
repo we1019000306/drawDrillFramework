@@ -29,7 +29,7 @@
 ;Data
 (defun DCLAndDataHandler()
 	(setq std 0)
-  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\BuildFrameWorkDCL.DCL"));BuildFrameWorkDCL testDCL Login
+  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\AutoBuildFrameworkDCL.DCL"));BuildFrameWorkDCL testDCL Login AutoBuildFrameworkDCL
 	(if (not (new_dialog "framework" id)) (exit))
 	;配置启动按钮
   	(action_tile "startBtn" "(configStartBtn) (done_dialog 1)")
@@ -765,9 +765,8 @@
 (defun drawRock()
   		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(vl-load-com)
-		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
-		(Vlax-Put-Property EXCEL 'Visible -1 )
-		(setq cells (Vlax-Get excel 'Cells ))
+		(Setq excel (Vlax-Get-Or-Create-Object "Excel.Application"))
+		(Vlax-Put-Property excel 'Visible -1 )
 		(setq rockDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockOne))
 		(setq rockDataThickness (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockTwo))
 		(setq rockDataName (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockThree))
