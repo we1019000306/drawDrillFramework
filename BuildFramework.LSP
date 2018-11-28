@@ -42,7 +42,7 @@
 	;
 	(action_tile "DRSBtn" "(configDRSBtn)  (done_dialog 5)")
 	;
-	(action_tile "DRBtn" "(configDRBtn)  (done_dialog 6)")
+	(action_tile "DCDBtn" "(configDCDBtn)  (done_dialog 6)")
 	;
 	(action_tile "DRSignBtn" "(configDRSignBtn)  (done_dialog 7)")
 	;
@@ -68,7 +68,7 @@
 				(mode_tile  "DFBtn" 0)
 				(mode_tile  "DLBtn" 0)
 				(mode_tile  "DDCSBtn" 0)
-				(mode_tile  "DRBtn" 0)
+				(mode_tile  "DCDBtn" 0)
 				(mode_tile  "DRSBtn" 0)
 				(mode_tile  "DRSignBtn" 0)
 				(mode_tile  "DDDBtn" 0)
@@ -86,7 +86,7 @@
 				(mode_tile  "DFBtn" 1)
 				(mode_tile  "DLBtn" 1)
 				(mode_tile  "DDCSBtn" 1)
-				(mode_tile  "DRBtn" 1)
+				(mode_tile  "DCDBtn" 1)
 				(mode_tile  "DRSBtn" 1)
 				(mode_tile  "DRSignBtn" 1)
 				(mode_tile  "DDDBtn" 1)
@@ -142,7 +142,7 @@
 					((= std 6)
 						(progn
 							(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
-							(drawRock)
+							(DrawColumnarDiagram)
 							(c:buildFramework)
 							;当已绘制柱状图后才设置已绘标记，用来允许单独删除该部分模型
 						)
@@ -299,7 +299,6 @@
 					(mode_tile  "columnRockThree" 0)
 					(mode_tile  "columnRockFour" 0)
 					(mode_tile  "columnRockFive" 0)
-					(setq RockTypeName "钻井柱状图")
 				) 
 			)
 		   ((= rockTypeNum 1)
@@ -309,7 +308,6 @@
 					(mode_tile  "columnRockThree" 0)
 					(mode_tile  "columnRockFour" 1)
 					(mode_tile  "columnRockFive" 1)
-					(setq RockTypeName "测井柱状图")
 				)
 			)
 		   ((= rockTypeNum 2)  
@@ -486,7 +484,7 @@
 )
 
 ;配置井柱状图按钮属性
-(defun configDRBtn()
+(defun configDCDBtn()
 	(print 11111)
 ;;;	(setq columnRockOne  (get_tile "columnRockOne"))
 ;;;	(setq columnRockTwo  (get_tile "columnRockTwo"))
@@ -672,50 +670,68 @@
 )
 
 ;绘制钻井和测井柱状图
-(defun drawRock()
-  		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
-		(vl-load-com)
-		(Setq excel (Vlax-Get-Or-Create-Object "Excel.Application"))
-		(Vlax-Put-Property excel 'Visible -1 )
-		(setq rockDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockOne))
-		(setq rockDataThickness (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockTwo))
-		(setq rockDataName (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockThree))
-		(if (= rockTypeNum 0)
-			(progn 
-					(setq rockDataDescription (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFour))
-					(setq rockDataNumber (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockFive))
-			)
-		)
-	
-		(setq rockLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Value2))))
+(defun drawColumnarDiagram()
+  	(drawWellLoggingColumnarDiagram)
+	(drawWellDrillingColumnarDiagram)
+)
+
+;测井柱状图
+(defun drawWellLoggingColumnarDiagram()
+		
+		(setq wlcdLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Value2))))
 		(command "LineType" "s" "ByLayer" "")
 		(command "lweight" "ByLayer")
 	 
-		(setq indexR 1)
-		(setq rockListLength (length rockLst))
-		(while (<= indexR rockListLength)
-			(if (> indexR 0)
+		(setq wlcdIndexA 1)
+		(setq wlcdListLength (length wlcdLst))
+		(while (<= wlcdIndexA wlcdListLength)
+			(if (> wlcdIndexA 0)
 				  (progn
-				  	 	(setq rockDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Item indexR)) 'Value2))
-						(setq rockThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataThickness 'Item indexR)) 'Value2))
-						(setq rockName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataName 'Item indexR)) 'Value2))
-						(if (= rockTypeNum 0)
-							(progn 
-								(setq rockDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataDescription 'Item indexR)) 'Value2))
-								(setq rockNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataNumber 'Item indexR)) 'Value2))
-							)
-						)
+				  	 	(setq wlcdRockDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Item wlcdIndexA)) 'Value2))
+						(setq wlcdThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataThicknessRange 'Item wlcdIndexA)) 'Value2))
+						(setq wlcdName (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataNameRange 'Item wlcdIndexA)) 'Value2))
 						
-					(drawRockLineAndTextLabel)
-					(setq BlockCodeName (strcat (strcat (strcat rockName (itoa indexR)) RockTypeName) (rtos (getvar "CDATE") 2 10)))
-					(hatchRock rockName rockDeep rockThickness)
+						(setq wlcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Item wlcdIndexA)) 'Value2))	
+						(drawWLCDLineAndTextLabel)
+						(setq BlockCodeName (strcat (strcat (strcat wlcdName (itoa wlcdIndexA)) "测井柱状图") (rtos (getvar "CDATE") 2 10)))
+						(hatchRock wlcdName wlcdRockDeep wlcdThickness -262.5)
 					
-				)
+				  )
 			)
-			(setq indexR (1+ indexR))
+			(setq wlcdIndexA (1+ wlcdIndexA))
 		)
 	(drawFrameBaseBlock)
 )
+
+;钻井柱状图
+(defun drawWellDrillingColumnarDiagram()
+		
+		(setq wdcdLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Value2))))
+		(command "LineType" "s" "ByLayer" "")
+		(command "lweight" "ByLayer")
+	 
+		(setq wdcdIndexA 1)
+		(setq wdcdListLength (length wdcdLst))
+		(while (<= wdcdIndexA wdcdListLength)
+			(if (> wdcdIndexA 0)
+				  (progn
+				  	 	(setq wdcdDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Item wdcdIndexA)) 'Value2))
+						(setq wdcdThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataThicknessRange 'Item wdcdIndexA)) 'Value2))
+						(setq wdcdName (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataNameRange 'Item wdcdIndexA)) 'Value2))
+						(setq wdcdDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataDescription 'Item wdcdIndexA)) 'Value2))
+						(setq wdcdNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataNumber 'Item wdcdIndexA)) 'Value2))
+						(setq wdcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Item wdcdIndexA)) 'Value2))	
+						(drawWDCDLineAndTextLabel)
+						(setq BlockCodeName (strcat (strcat (strcat wdcdName (itoa wdcdIndexA)) "钻井柱状图") (rtos (getvar "CDATE") 2 10)))
+						(hatchRock wdcdName wdcdDeep wdcdThickness -237.5)
+					
+					)
+			)
+			(setq wdcdIndexA (1+ wdcdIndexA))
+		)
+	(drawFrameBaseBlock)
+)
+
 
 ;绘制系统组
 (defun drawRockSign()
@@ -1080,7 +1096,7 @@
 
 (defun drawRockLineAndTextLabel()		
 	;处理划线数据
-	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockDataRangeOfY 'Item indexR)) 'Value2))
+
 	(setq pyA (* pyA -5))
 	(setq pxA  RockXOffset)
 
@@ -1301,6 +1317,224 @@
 		
 )
 
+;测井柱状图
+(defun drawWLCDLineAndTextLabel()
+	(setq pyA (* wlcdPyA -5))
+	(setq RockXOffset -255)
+	(setq pxA  RockXOffset)
+	(if (= wlcdName "表层套管")  
+									(progn
+										;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
+										(setq rockLineDeep 0)
+										(setq rockLineDeep wlcdRockDeep)
+										(setq pxA (- RockXOffset 15))
+										(setq pxB (- RockXOffset 50))
+										(command "Line" (strcat (strcat (rtos pxA 2 2) ",") (rtos (* wlcdRockDeep -5) 2 2)) (strcat (strcat (rtos RockXOffset 2 2) ",") (rtos (* wlcdRockDeep -5) 2 2)) "") 
+										(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+										(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+										(command "line" ptA ptB "")	
+										(if (> wlcdThickness 20)
+											(progn
+													(command "text" "J" "L" (list -289 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
+													(command "text" "J" "L" (list -304 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
+													(command "text" "J" "C" (list (+ pxA 7.5) (- (* (- wlcdRockDeep  wlcdThickness) -5) 8)) 3 0 "表")
+													(command "text" "J" "C" (list (+ pxA 7.5)  (* (- wlcdRockDeep (* wlcdThickness  (/ 2.0 3.0))) -5)) 3 0 "层")
+													(command "text" "J" "C" (list (+ pxA 7.5)  (* (- wlcdRockDeep (* wlcdThickness  (/ 1.0 3.0))) -5)) 3 0 "套")
+													(command "text" "J" "C" (list (+ pxA 7.5)  (+ (* wlcdRockDeep -5) 8)) 3 0 "管")
+											)
+											(progn
+													(command "text" "J" "C" (list (+ pxA 7.5) (* (- wlcdRockDeep  (/ wlcdThickness 2)) -5)) 2 0 "表层套管")
+
+											)
+										)
+				
+									) 
+								
+									(progn 							
+										(setq pxB (- RockXOffset 50))
+													;0.75是当文本框文字高度为3时能够完全战士出来的岩石厚度
+													(if (< wlcdThickness 0.75) 
+															(progn
+																		(if (< (- wlcdRockDeep rockLineDeep) 0.75) 
+																				(progn
+																						;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
+																						(setq rockLineDeep  (+ wlcdRockDeep (- 0.75 (- wlcdRockDeep rockLineDeep))))
+																						(setq pxA (- RockXOffset 20))
+																						(setq pyA (* rockLineDeep -5))
+																						(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+																						(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+																						(command "line" ptA ptB "")		
+																						(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")			
+																						(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")	
+		
+																						(command "text" "J" "L" (list -289 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
+																						(command "text" "J" "L" (list -304 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
+																				)
+																				(progn
+																				;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
+																						;(setq rockLineDeep (+ (+ rockLineDeep 0.75) wlcdThickness))
+																						(setq rockLineDeep wlcdRockDeep)
+
+																						(setq pxA (- RockXOffset 20))
+																						(setq pyA (* rockLineDeep -5))
+																						(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+																						(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+																						(command "line" ptA ptB "")		
+																						(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")			
+																						(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")			
+																				
+																						(command "text" "J" "L" (list -289 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
+																						(command "text" "J" "L" (list -304 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
+																			
+																				)
+																		)
+															)
+															(progn
+																		;当下一层岩性深度小于已调整后的上一层最大显示的文本框的岩性深度，则也对该层进行改变
+																		(if (< (- wlcdRockDeep rockLineDeep) 0.75) 
+																				(progn
+																						;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
+																						(setq rockLineDeep (+ wlcdRockDeep (- 0.75 (- wlcdRockDeep rockLineDeep))))
+																						(setq pxA (- RockXOffset 20))
+																						(setq pyA (* rockLineDeep -5))
+																						(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+																						(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+																						(command "line" ptA ptB "")		
+																						(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")			
+																						(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")	
+
+																						(command "text" "J" "L" (list -289 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
+																						(command "text" "J" "L" (list -304 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
+																			
+																				)
+																				;当下一层岩性深度大于或等于已调整后的上一层最大显示的文本框的岩性深度，则根据当前深度正常计算
+																				(progn
+																						(setq rockLineDeep wlcdRockDeep)
+																						;正常情况划线
+																						(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+																						(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+																						(command "line" ptA ptB "")		
+																						(command "text" "J" "L" (list -289 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
+																						(command "text" "J" "L" (list -304 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
+																				)
+																		)		
+															)
+													)
+
+									)
+								)
+)
+
+;钻井柱状图
+(defun drawWDCDLineAndTextLabel()
+	(setq pyA (* wdcdPyA -5))
+	(setq RockXOffset -245)
+	(setq pxA  RockXOffset)
+	(setq pxA (+ RockXOffset 20))
+							(setq pxB (+ RockXOffset 185))
+							(if (= wdcdName "黄土")  
+								(progn
+									(setq pxA (+ RockXOffset 15))
+									(setq rockLineDeep 0)
+									(setq rockLineDeep wdcdDeep)
+									(command "SPLine" (strcat (strcat (rtos (+ RockXOffset 15) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 13.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 12) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 10.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 9) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 7.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 6) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 4.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 3) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 1.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 0) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) "" "" "") 
+									(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+									(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+									(command "line" ptA ptB "")	
+									
+									(command "text" "J" "L" (list -224 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
+									(command "text" "J" "L" (list -209 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
+									(command "text" "J" "L" (list -194 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
+									(command "text" "J" "L" (list -184 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 wdcdName)
+									(command "mtext" (list -159 (+ (* wdcdDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
+								) 
+							
+								(progn 
+
+									(if (< wdcdThickness 0.75) 
+														(progn
+																	(if (< (- wdcdDeep rockLineDeep) 0.75) 
+																			(progn
+																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
+																					(setq rockLineDeep  (+ wdcdDeep (- 0.75 (- wdcdDeep rockLineDeep))))
+																					(setq pyA (* rockLineDeep -5))
+																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+																					(command "line" ptA ptB "")		
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")			
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")	
+																					
+																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
+																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
+																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
+																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 wdcdName)
+																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
+																			)
+																			(progn
+																			;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
+																					;(setq rockLineDeep (+ (+ rockLineDeep 0.75) wdcdThickness))
+																					(setq rockLineDeep wdcdDeep)
+																					(setq pyA (* rockLineDeep -5))
+																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+																					(command "line" ptA ptB "")		
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")			
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")		
+																					
+																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
+																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
+																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
+																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 wdcdName)
+																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
+																		
+																			)
+																	)
+														)
+														(progn
+																	;当下一层岩性深度小于已调整后的上一层最大显示的文本框的岩性深度，则也对该层进行改变
+																	(if (< (- wdcdDeep rockLineDeep) 0.75) 
+																			(progn
+																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
+																					(setq rockLineDeep (+ wdcdDeep (- 0.75 (- wdcdDeep rockLineDeep))))
+																					(setq pyA (* rockLineDeep -5))
+																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+																					(command "line" ptA ptB "")		
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")			
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")	
+																					
+																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
+																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
+																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
+																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 wdcdName)
+																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
+																		
+																			)
+																			;当下一层岩性深度大于或等于已调整后的上一层最大显示的文本框的岩性深度，则根据当前深度正常计算
+																			(progn
+																					(setq rockLineDeep wdcdDeep)
+																					;正常情况划线
+																					(setq pxA RockXOffset)
+																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+																					(command "line" ptA ptB "")	
+																					(command "text" "J" "L" (list -224 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
+																					(command "text" "J" "L" (list -209 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
+																					(command "text" "J" "L" (list -194 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
+																					(command "text" "J" "L" (list -184 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 wdcdName)
+																					(command "mtext" (list -159 (+ (* wdcdDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
+								
+																			)
+																	)	
+														)
+									)
+									;(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
+									;(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
+									;(command "line" ptA ptB "")	
+								)
+							)
+)
+
 ;井斜方位角
 (defun drawDrillDeviationLineAndTextLabel()
 	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataRangeOfY 'Item indexDDD)) 'Value2))
@@ -1445,17 +1679,17 @@
 
 	(cond ((= rockTypeNum 0)  
 					(progn
-						(command "text" "J" "L" (list -224 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
-						(command "text" "J" "L" (list -209 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
-						(command "text" "J" "L" (list -194 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
-						(command "text" "J" "L" (list -184 (+ (* rockDeep -5) 0.5)) rockTextSize 0 rockName)
-						(command "mtext" (list -159 (+ (* rockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
+						(command "text" "J" "L" (list -224 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
+						(command "text" "J" "L" (list -209 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
+						(command "text" "J" "L" (list -194 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
+						(command "text" "J" "L" (list -184 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 wdcdName)
+						(command "mtext" (list -159 (+ (* wdcdDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
 					) 
 				)
 			   ((= rockTypeNum 1)
 					(progn 
-						(command "text" "J" "L" (list -304 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
-						(command "text" "J" "L" (list -289 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
+						(command "text" "J" "L" (list -304 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
+						(command "text" "J" "L" (list -289 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
 					)
 				)
 	)
@@ -1575,21 +1809,9 @@
 	(drawHuangTuCeng)
 )
 
-(defun hatchRock(rockName rockDeep rockThickness)
+(defun hatchRock(rockName rockDeep rockThickness RockHatchXOffset)
 	;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
-	
-	(cond ((= rockTypeNum 0)  
-					(progn
-						(setq RockHatchXOffset -237.5)
-					) 
-				)
-			   ((= rockTypeNum 1)
-					(progn 
-						(setq RockHatchXOffset -262.5)
 
-					)
-				)
-	)
 	(cond ((> rockThickness 1)  
 							(progn
 										(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
@@ -3420,6 +3642,7 @@
 	(configBaseFrameworkData)
 	(configPlineData)
 	(configRockStrctureData)
+	(configColumnarDiagramData)
 )
 
 (defun configBaseFrameworkData()
@@ -3508,6 +3731,29 @@
 	(setq zuDataThicknessRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "组" "B"))
 	(setq zuDataHoleNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "组" "C"))
 	(setq zuDataSimpleNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "组" "D"))
+)
+
+(defun configColumnarDiagramData()
+	(setq rockTextSize 3)
+	(configWellLoggingColumnarDiagramData)
+	(configWellDrillingColumnarDiagramData)
+)
+
+;测井柱状图数据
+(defun configWellLoggingColumnarDiagramData()
+	(setq wlcdDataOfYRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "测井柱状图" "A"))
+	(setq wlcdDataThicknessRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "测井柱状图" "B"))
+	(setq wlcdDataNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "测井柱状图" "C"))
+	
+)
+
+;钻井柱状图数据
+(defun configWellDrillingColumnarDiagramData()
+	(setq wdcdDataOfYRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻井柱状图" "A"))
+	(setq wdcdDataThicknessRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻井柱状图" "B"))
+	(setq wdcdDataNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻井柱状图" "C"))
+	(setq wdcdDataDescription (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻井柱状图" "D"))
+	(setq wdcdDataNumber (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻井柱状图" "E"))
 )
 
 ;Data-UserClient
