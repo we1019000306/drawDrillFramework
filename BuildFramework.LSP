@@ -36,7 +36,7 @@
 	;配置基础数据按钮
 	(action_tile "baseDataBtn" "(configbaseDataBtn) (done_dialog 2)")
 	;配置框架按钮
-	(action_tile "DFBtn" "(configDFBtn)  (done_dialog 3)")
+	(action_tile "DFSBtn" "(configDFSBtn)  (done_dialog 3)")
 	;配置曲线按钮
 	(action_tile "DLBtn" "(configDLBtn)  (done_dialog 4)")
 	;
@@ -55,15 +55,8 @@
 	(action_tile "ECDBtn" "(done_dialog 13)")
 	(action_tile "ERSignBtn" "(done_dialog 14)")
 	(action_tile "EDCSBtn" "(done_dialog 15)")
-	(action_tile "EDDBtn" "(done_dialog 16)")
-	
-	(action_tile "LineName_List" "(configLineNamePopListAction)")
-	(action_tile "RockStructureType_List" "(configRockStructurePopListAction)")
-
-	(action_tile "HoleNumber_List" "(configHolePopListAction)")
-	;
-	(action_tile "RockType_List" "(configRockPopListAction)")
-	;
+	(action_tile "EDDBtn" "(done_dialog 16)")	
+	(action_tile "filePathBtn" "(done_dialog 0)")
 	(action_tile "cancelBtn" "(done_dialog -1)")
 	
 
@@ -127,7 +120,7 @@
 					((= std 3)
 						(progn
 							(drawFrame)
-							(command "zoom" "C" (list -222.5 (* d -5)) "250")
+							(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 						  	(c:buildFramework)
 						)
 					)
@@ -148,7 +141,7 @@
 					
 					((= std 6)
 						(progn
-							(command "zoom" "C" (list -222.5 (* d -5)) "250")
+							(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 							(drawRock)
 							(c:buildFramework)
 							;当已绘制柱状图后才设置已绘标记，用来允许单独删除该部分模型
@@ -215,6 +208,12 @@
 							(c:buildFramework)
 						)
 					)
+					((= std 0)
+						(progn
+							(setq baseDataExcelFilePathName (getfiled "选择*文件" "c:" "" 8))
+						  	(c:buildFramework)
+						)
+					)
   					((= std -1)
 						(progn
 							(alert "退出辅助程序成功！！")
@@ -242,10 +241,10 @@
 ;记忆初次输入的DCL的数据
 (defun storageLastDCLValue()
 	;架构绘制
-  	(if (null d) (print "nil") (set_tile "D" (rtos d 2 2)))
-	(if (null dt) (print "nil") (set_tile "DT" (rtos dt 2 2)))
-  	(if (null mc) (print "nil") (set_tile "MC" (rtos mc 2 2)))
-  	(if (null wl) (print "nil") (set_tile "WL" (rtos wl 2 2)))
+  	(if (null drillDeepMaxData) (print "nil") (set_tile "D" (rtos drillDeepMaxData 2 2)))
+	(if (null drillingTimeMaxData) (print "nil") (set_tile "DT" (rtos drillingTimeMaxData 2 2)))
+  	(if (null consumptionMaxData) (print "nil") (set_tile "MC" (rtos consumptionMaxData 2 2)))
+  	(if (null waterLevelMaxData) (print "nil") (set_tile "WL" (rtos waterLevelMaxData 2 2)))
 	;钻井基础信息
 	(if (null DN) (print "nil") (set_tile "DN" DN))
 	(if (null DL) (print "nil") (set_tile "DL" DL))
@@ -380,10 +379,11 @@
 
 (defun configStartBtn()
 	;此处可增加初始化代码，预留位置
-	(setq d (atof (get_tile "D")))
-	(setq dt (atof (get_tile "DT")))
- 	(setq mc (atof (get_tile "MC")))
-  	(setq wl (atof (get_tile "WL")))
+;;;	(setq drillDeepMaxData (atof (get_tile "D")))
+;;;	(setq drillingTimeMaxData (atof (get_tile "DT")))
+;;; 	(setq consumptionMaxData (atof (get_tile "MC")))
+;;;  	(setq waterLevelMaxData (atof (get_tile "WL")))
+
 	(print "click startButton")
 
 )
@@ -391,331 +391,341 @@
 
 (defun configbaseDataBtn()
 	;此处可增加初始化代码，预留位置
-	(setq d (atof (get_tile "D")))
-	(setq dt (atof (get_tile "DT")))
- 	(setq mc (atof (get_tile "MC")))
-  	(setq wl (atof (get_tile "WL")))
+	(setq drillDeepMaxData (atof (get_tile "D")))
+	(setq drillingTimeMaxData (atof (get_tile "DT")))
+ 	(setq consumptionMaxData (atof (get_tile "MC")))
+  	(setq waterLevelMaxData (atof (get_tile "WL")))
 )
 
-(defun configDFBtn()
-	(setq DN (get_tile "DN"))
-	(setq DL (get_tile "DL"))
-	(setq LX (get_tile "LX"))
-	(setq LY (get_tile "LY"))
-	(setq LH (get_tile "LH"))
-	(setq Company (get_tile "Company"))
-	(setq StartDay (get_tile "StartDay"))
-	(setq EndDay (get_tile "EndDay"))
-	(setq DrillType (get_tile "DrillType"))
-	(setq WaterPump (get_tile "WaterPump"))
-	(setq MachinePower (get_tile "MachinePower"))
-	(setq PictureMaker (get_tile "PictureMaker"))
-	(setq PictureProofreader (get_tile "PictureProofreader"))
-	(setq PictureChecker (get_tile "PictureChecker"))
-	(setq DrillCommander (get_tile "DrillCommander"))
-	(setq TechnicalLeader (get_tile "TechnicalLeader"))
-	(setq DrillManager (get_tile "DrillManager"))
-	(setq PictureNumber (get_tile "PictureNumber"))
-	(setq Proportion (get_tile "Proportion"))
-	(setq PictureTime (get_tile "PictureTime"))
-	(setq DataSource (get_tile "DataSource"))
-	
+(defun configDFSBtn()
+	(print 111111)
+;;;	(setq DN (get_tile "DN"))
+;;;	(setq DL (get_tile "DL"))
+;;;	(setq LX (get_tile "LX"))
+;;;	(setq LY (get_tile "LY"))
+;;;	(setq LH (get_tile "LH"))
+;;;	(setq Company (get_tile "Company"))
+;;;	(setq StartDay (get_tile "StartDay"))
+;;;	(setq EndDay (get_tile "EndDay"))
+;;;	(setq DrillType (get_tile "DrillType"))
+;;;	(setq WaterPump (get_tile "WaterPump"))
+;;;	(setq MachinePower (get_tile "MachinePower"))
+;;;	(setq PictureMaker (get_tile "PictureMaker"))
+;;;	(setq PictureProofreader (get_tile "PictureProofreader"))
+;;;	(setq PictureChecker (get_tile "PictureChecker"))
+;;;	(setq DrillCommander (get_tile "DrillCommander"))
+;;;	(setq TechnicalLeader (get_tile "TechnicalLeader"))
+;;;	(setq DrillManager (get_tile "DrillManager"))
+;;;	(setq PictureNumber (get_tile "PictureNumber"))
+;;;	(setq Proportion (get_tile "Proportion"))
+;;;	(setq PictureTime (get_tile "PictureTime"))
+;;;	(setq DataSource (get_tile "DataSource"))
+;;;	
 )
 
 ;配置画线按钮属性
 (defun configDLBtn()
-	(setq PLFactor 1)
-	(setq columnPLineOne  (get_tile "columnPLineOne"))
-	(setq columnPLineTwo  (get_tile "columnPLineTwo"))
-	(setq lineNameNum  (atoi (get_tile "LineName_List")))
-	(setq PLXOffset -445)
-	(cond ((= lineNameNum 0)  
-					(progn
-						(setq PLFactor (caculateFactor 12 (caculateMaxNum dt)))
-						(setq PLXOffset -445)			
-					) 
-				)
-			   ((= lineNameNum 1)
-					(progn 
-						(setq PLFactor (caculateFactor 10 (caculateMaxNum mc)))
-						(setq PLXOffset -385)	
-					)
-				)
-		       ((= lineNameNum 2)  
-					(progn 
-						(setq PLFactor (caculateFactor 10 (caculateMaxNum wl)))
-						(setq PLXOffset -385)					
-					)
-				)
-	)
+  (print 11111)
+;;;	(setq PLFactor 1)
+;;;	(setq columnPLineOne  (get_tile "columnPLineOne"))
+;;;	(setq columnPLineTwo  (get_tile "columnPLineTwo"))
+;;;	(setq lineNameNum  (atoi (get_tile "LineName_List")))
+;;;	(setq PLXOffset -445)
+;;;	(cond ((= lineNameNum 0)  
+;;;					(progn
+;;;						(setq PLFactor (caculateFactor 12 (caculateMaxNum drillingTimeMaxData)))
+;;;						(setq PLXOffset -445)			
+;;;					) 
+;;;				)
+;;;			   ((= lineNameNum 1)
+;;;					(progn 
+;;;						(setq PLFactor (caculateFactor 10 (caculateMaxNum consumptionMaxData)))
+;;;						(setq PLXOffset -385)	
+;;;					)
+;;;				)
+;;;		       ((= lineNameNum 2)  
+;;;					(progn 
+;;;						(setq PLFactor (caculateFactor 10 (caculateMaxNum waterLevelMaxData)))
+;;;						(setq PLXOffset -385)					
+;;;					)
+;;;				)
+;;;	)
 )
 
 
 ;配置画完井结构按钮属性
 (defun configDDBtn()
-	
-	(setq holeOneDrillDiameterStr  (get_tile "HoleOneDrillDiameter"));一开钻头直径
-	(setq holeOneDeep  (atof (get_tile "HoleOneDeep")));一开井深
-	(setq holeOneBushDiameterStr (get_tile "HoleOneBushDiameter"));一开套管外径
-	(setq holeOneBushDeep (atof (get_tile "HoleOneBushDeep")));一开套管下深
-	(setq holeOneCement  (atof (get_tile "HoleOneCement")));一开水泥上返深度
-	(setq holeTwoDrillDiameterStr (get_tile "HoleTwoDrillDiameter"));二开钻头直径
-	(setq holeTwoDeep  (atof (get_tile "HoleTwoDeep")));二开井深
-	(setq holeTwoBushDiameterStr (get_tile "HoleTwoBushDiameter"));二开套管外径
-	(setq holeTwoBushDeep  (atof (get_tile "HoleTwoBushDeep")));二开套管下深
-	(setq holeTwoCement  (atof (get_tile "HoleTwoCement")));二开水泥上返深度
-	(setq holeArtificialDeep  (atof (get_tile "HoleArtificialDeep")));人工井底深度
-	(setq holeDamperLocation  (atof (get_tile "HoleDamperLocation")));阻流环位置
-	(setq bushShoes  (atof (get_tile "BushShoes")));套管鞋
-
-	(setq HoleNum (atoi(get_tile "HoleNumber_List")))
-	(cond ((= HoleNum 0)  
-					(progn
-						(mode_tile  "HoleThreeDrillDiameter" 1)
-						(mode_tile  "HoleThreeDeep" 1)
-						(mode_tile  "HoleThreeBushDiameter" 1)
-						(mode_tile  "HoleThreeBushDeep" 1)
-						(mode_tile  "HoleThreeCement" 1)
-					  	(setq HoleNumFactor 1)
-					) 
-				)
-			   ((= HoleNum 1)
-					(progn 
-						(mode_tile  "HoleThreeDrillDiameter" 0)
-						(mode_tile  "HoleThreeDeep" 0)
-						(mode_tile  "HoleThreeBushDiameter" 0)
-						(mode_tile  "HoleThreeBushDeep" 0)
-						(mode_tile  "HoleThreeCement" 0)
-						(setq holeThreeDrillDiameterStr (get_tile "HoleThreeDrillDiameter"));三开钻头直径
-						(setq holeThreeDeep  (atof (get_tile "HoleThreeDeep")));三开井深
-						(setq holeThreeBushDiameterStr (get_tile "HoleThreeBushDiameter"));三开套管外径
-						(setq holeThreeBushDeep  (atof (get_tile "HoleThreeBushDeep")));三开套管下深
-						(setq holeThreeCement  (atof (get_tile "HoleThreeCement")));三开水泥上返深度
-						(setq HoleNumFactor 2)
-					)
-				)
-		       ((= HoleNum 2)  
-					(progn 
-							
-					)
-				)
-	)
+	(print 11111)
+;;;	(setq holeOneDrillDiameterStr  (get_tile "HoleOneDrillDiameter"));一开钻头直径
+;;;	(setq holeOneDeep  (atof (get_tile "HoleOneDeep")));一开井深
+;;;	(setq holeOneBushDiameterStr (get_tile "HoleOneBushDiameter"));一开套管外径
+;;;	(setq holeOneBushDeep (atof (get_tile "HoleOneBushDeep")));一开套管下深
+;;;	(setq holeOneCement  (atof (get_tile "HoleOneCement")));一开水泥上返深度
+;;;	(setq holeTwoDrillDiameterStr (get_tile "HoleTwoDrillDiameter"));二开钻头直径
+;;;	(setq holeTwoDeep  (atof (get_tile "HoleTwoDeep")));二开井深
+;;;	(setq holeTwoBushDiameterStr (get_tile "HoleTwoBushDiameter"));二开套管外径
+;;;	(setq holeTwoBushDeep  (atof (get_tile "HoleTwoBushDeep")));二开套管下深
+;;;	(setq holeTwoCement  (atof (get_tile "HoleTwoCement")));二开水泥上返深度
+;;;	(setq holeArtificialDeep  (atof (get_tile "HoleArtificialDeep")));人工井底深度
+;;;	(setq holeDamperLocation  (atof (get_tile "HoleDamperLocation")));阻流环位置
+;;;	(setq bushShoes  (atof (get_tile "BushShoes")));套管鞋
+;;;
+;;;	(setq HoleNum (atoi(get_tile "HoleNumber_List")))
+;;;	(cond ((= HoleNum 0)  
+;;;					(progn
+;;;						(mode_tile  "HoleThreeDrillDiameter" 1)
+;;;						(mode_tile  "HoleThreeDeep" 1)
+;;;						(mode_tile  "HoleThreeBushDiameter" 1)
+;;;						(mode_tile  "HoleThreeBushDeep" 1)
+;;;						(mode_tile  "HoleThreeCement" 1)
+;;;					  	(setq HoleNumFactor 1)
+;;;					) 
+;;;				)
+;;;			   ((= HoleNum 1)
+;;;					(progn 
+;;;						(mode_tile  "HoleThreeDrillDiameter" 0)
+;;;						(mode_tile  "HoleThreeDeep" 0)
+;;;						(mode_tile  "HoleThreeBushDiameter" 0)
+;;;						(mode_tile  "HoleThreeBushDeep" 0)
+;;;						(mode_tile  "HoleThreeCement" 0)
+;;;						(setq holeThreeDrillDiameterStr (get_tile "HoleThreeDrillDiameter"));三开钻头直径
+;;;						(setq holeThreeDeep  (atof (get_tile "HoleThreeDeep")));三开井深
+;;;						(setq holeThreeBushDiameterStr (get_tile "HoleThreeBushDiameter"));三开套管外径
+;;;						(setq holeThreeBushDeep  (atof (get_tile "HoleThreeBushDeep")));三开套管下深
+;;;						(setq holeThreeCement  (atof (get_tile "HoleThreeCement")));三开水泥上返深度
+;;;						(setq HoleNumFactor 2)
+;;;					)
+;;;				)
+;;;		       ((= HoleNum 2)  
+;;;					(progn 
+;;;							
+;;;					)
+;;;				)
+;;;	)
 )
 
 ;配置系统组按钮属性
 (defun configDRSBtn()
-	
-	(setq columnRockStructureOne  (get_tile "columnRockStructureOne"))
-	(setq columnRockStructureTwo  (get_tile "columnRockStructureTwo"))
-	(setq columnRockStructureThree  (get_tile "columnRockStructureThree"))
-	(setq columnRockStructureFour (get_tile "columnRockStructureFour"))
-	(setq rockStructureTypeNum (atoi(get_tile "RockStructureType_List")))
-	;(setq rockTextSizeNum (atoi(get_tile "RockTextSize_List")))
-	(setq rockStructureTextSize 3)
-	(setq RockStructureXOffset -330)
-
-	(cond ((= rockStructureTypeNum 0)  
-					(progn
-						(setq RockStructureXOffset -330)
-					) 
-				)
-			   ((= rockStructureTypeNum 1)
-					(progn 
-						(setq RockStructureXOffset -320)
-					)
-				)
-				 ((= rockStructureTypeNum 2)
-					(progn 
-						(setq RockStructureXOffset -310)
-					)
-				)
-	)
+	(print 11111)
+;;;	(setq columnRockStructureOne  (get_tile "columnRockStructureOne"))
+;;;	(setq columnRockStructureTwo  (get_tile "columnRockStructureTwo"))
+;;;	(setq columnRockStructureThree  (get_tile "columnRockStructureThree"))
+;;;	(setq columnRockStructureFour (get_tile "columnRockStructureFour"))
+;;;	(setq rockStructureTypeNum (atoi(get_tile "RockStructureType_List")))
+;;;	;(setq rockTextSizeNum (atoi(get_tile "RockTextSize_List")))
+;;;	(setq rockStructureTextSize 3)
+;;;	(setq RockStructureXOffset -330)
+;;;
+;;;	(cond ((= rockStructureTypeNum 0)  
+;;;					(progn
+;;;						(setq RockStructureXOffset -330)
+;;;					) 
+;;;				)
+;;;			   ((= rockStructureTypeNum 1)
+;;;					(progn 
+;;;						(setq RockStructureXOffset -320)
+;;;					)
+;;;				)
+;;;				 ((= rockStructureTypeNum 2)
+;;;					(progn 
+;;;						(setq RockStructureXOffset -310)
+;;;					)
+;;;				)
+;;;	)
 )
 
 ;配置井柱状图按钮属性
 (defun configDRBtn()
-	
-	(setq columnRockOne  (get_tile "columnRockOne"))
-	(setq columnRockTwo  (get_tile "columnRockTwo"))
-	(setq columnRockThree  (get_tile "columnRockThree"))
-	(setq columnRockFour (get_tile "columnRockFour"))
-	(setq columnRockFive  (get_tile "columnRockFive"))
-	(setq rockTypeNum (atoi(get_tile "RockType_List")))
-	;(setq rockTextSizeNum (atoi(get_tile "RockTextSize_List")))
-	(setq rockTextSize 3)
-	(setq RockXOffset -245)
-
-	(cond ((= rockTypeNum 0)  
-					(progn
-						(setq RockXOffset -245)
-					) 
-				)
-			   ((= rockTypeNum 1)
-					(progn 
-						(setq RockXOffset -255)
-					)
-				)
-	)
+	(print 11111)
+;;;	(setq columnRockOne  (get_tile "columnRockOne"))
+;;;	(setq columnRockTwo  (get_tile "columnRockTwo"))
+;;;	(setq columnRockThree  (get_tile "columnRockThree"))
+;;;	(setq columnRockFour (get_tile "columnRockFour"))
+;;;	(setq columnRockFive  (get_tile "columnRockFive"))
+;;;	(setq rockTypeNum (atoi(get_tile "RockType_List")))
+;;;	;(setq rockTextSizeNum (atoi(get_tile "RockTextSize_List")))
+;;;	(setq rockTextSize 3)
+;;;	(setq RockXOffset -245)
+;;;
+;;;	(cond ((= rockTypeNum 0)  
+;;;					(progn
+;;;						(setq RockXOffset -245)
+;;;					) 
+;;;				)
+;;;			   ((= rockTypeNum 1)
+;;;					(progn 
+;;;						(setq RockXOffset -255)
+;;;					)
+;;;				)
+;;;	)
 )
 
 ;配置标志层按钮属性
 (defun configDRSignBtn()
-	(setq columnRockSignOne  (get_tile "columnRockSignOne"))
-	(setq columnRockSignTwo  (get_tile "columnRockSignTwo"))
-	(setq columnRockSignThree  (get_tile "columnRockSignThree"))
-	(setq RockSignXOffset -250)
+  	(print 11111)
+;;;	(setq columnRockSignOne  (get_tile "columnRockSignOne"))
+;;;	(setq columnRockSignTwo  (get_tile "columnRockSignTwo"))
+;;;	(setq columnRockSignThree  (get_tile "columnRockSignThree"))
+;;;	(setq RockSignXOffset -250)
 )
 
 ;配置井斜方位角按钮属性
 (defun configDDDBtn()
-	(setq columnDrillDeviationOne  (get_tile "columnDrillDeviationOne"))
-	(setq columnDrillDeviationTwo  (get_tile "columnDrillDeviationTwo"))
-	(setq columnDrillDeviationThree  (get_tile "columnDrillDeviationThree"))
-	(setq DrillDeviationXOffset 0)
+ 	(print 11111)
+;;;	(setq columnDrillDeviationOne  (get_tile "columnDrillDeviationOne"))
+;;;	(setq columnDrillDeviationTwo  (get_tile "columnDrillDeviationTwo"))
+;;;	(setq columnDrillDeviationThree  (get_tile "columnDrillDeviationThree"))
+;;;	(setq DrillDeviationXOffset 0)
 )
 
 
 ;根据DCL配置多线段属性
 (defun configPLineAttribute()
 ;配置多线段线型
-	(cond ((= lineNameNum 0)
-					(progn
-							(command "LineType" "s" "ByLayer" "")
-							(command "lweight" "ByLayer")
-
-					)
-				)
-				((= lineNameNum 1)
-					(progn
-							(command "LineType" "s" "ByLayer" "")
-							(command "lweight" "ByLayer")
-
-					)
-				)
-				((= lineNameNum 2)
-					(progn 
-							(command "LineType" "s" "ACAD_ISO02W100" "")
-							(command "lweight" "ByLayer")
-
-					)   
-				)
-	)
+  (print 11111)
+;;;	(cond ((= lineNameNum 0)
+;;;					(progn
+;;;							(command "LineType" "s" "ByLayer" "")
+;;;							(command "lweight" "ByLayer")
+;;;
+;;;					)
+;;;				)
+;;;				((= lineNameNum 1)
+;;;					(progn
+;;;							(command "LineType" "s" "ByLayer" "")
+;;;							(command "lweight" "ByLayer")
+;;;
+;;;					)
+;;;				)
+;;;				((= lineNameNum 2)
+;;;					(progn 
+;;;							(command "LineType" "s" "ACAD_ISO02W100" "")
+;;;							(command "lweight" "ByLayer")
+;;;
+;;;					)   
+;;;				)
+;;;	)
 )
 
 ;备用配置多段线属性
 (defun configPLineAttributeBeiyong()
 	;配置多线段线型
-	(cond ((= lineTypeNum 0)
-					(progn
-							(command "LineType" "s"  "ByLayer" "")
-					)
-				)
-				((= lineTypeNum 1)
-					(progn
-							(command "LineType" "s"  "ACAD_ISO02W100" "")
-					)
-				)
-				((= lineTypeNum 2)
-					(progn
-							(command "LineType" "s"  "ByLayer" "")
-					)
-				)
-	)
-	;配置多线段线宽
-	(cond ((= lineWeightNum 0)
-					(progn
-							(command "lweight" "ByLayer")
-					)
-				)
-				((= lineWeightNum 1)
-					(progn
-							(command "lweight" 1.00)
-					)
-				)
-				((= lineWeightNum 2)
-					(progn
-							(command "lweight" "ByLayer")
-					)
-				)
-	)	
+  	(print 11111)
+;;;	(cond ((= lineTypeNum 0)
+;;;					(progn
+;;;							(command "LineType" "s"  "ByLayer" "")
+;;;					)
+;;;				)
+;;;				((= lineTypeNum 1)
+;;;					(progn
+;;;							(command "LineType" "s"  "ACAD_ISO02W100" "")
+;;;					)
+;;;				)
+;;;				((= lineTypeNum 2)
+;;;					(progn
+;;;							(command "LineType" "s"  "ByLayer" "")
+;;;					)
+;;;				)
+;;;	)
+;;;	;配置多线段线宽
+;;;	(cond ((= lineWeightNum 0)
+;;;					(progn
+;;;							(command "lweight" "ByLayer")
+;;;					)
+;;;				)
+;;;				((= lineWeightNum 1)
+;;;					(progn
+;;;							(command "lweight" 1.00)
+;;;					)
+;;;				)
+;;;				((= lineWeightNum 2)
+;;;					(progn
+;;;							(command "lweight" "ByLayer")
+;;;					)
+;;;				)
+;;;	)	
 )
 
 ;配置线型popList动作属性
 (defun configLineNamePopListAction()
-    (setq lineNameNum (atoi (get_tile "LineName_List")))
+    (print 11111)
+;;;    (setq lineNameNum (atoi (get_tile "LineName_List")))
 
 )
 
 ;配置系统组popList动作属性
 (defun configRockStructurePopListAction()
-    (setq rockStructureTypeNum  (atoi (get_tile "RockStructureType_List")))
+(print 11111)
+;;;  (setq rockStructureTypeNum  (atoi (get_tile "RockStructureType_List")))
 	
 
 )
 
 ;配置二开三开popList动作属性
 (defun configHolePopListAction()
-    (setq HoleNum  (atoi(get_tile "HoleNumber_List")))
-	(setq HoleNumFactor 1)
-	(cond ((= HoleNum 0)  
-					(progn
-						(mode_tile  "HoleThreeDrillDiameter" 1)
-						(mode_tile  "HoleThreeDeep" 1)
-						(mode_tile  "HoleThreeBushDiameter" 1)
-						(mode_tile  "HoleThreeBushDeep" 1)
-						(mode_tile  "HoleThreeCement" 1)
-						(setq HoleNumFactor 1)
-					) 
-				)
-			   ((= HoleNum 1)
-					(progn 
-						(mode_tile  "HoleThreeDrillDiameter" 0)
-						(mode_tile  "HoleThreeDeep" 0)
-						(mode_tile  "HoleThreeBushDiameter" 0)
-						(mode_tile  "HoleThreeBushDeep" 0)
-						(mode_tile  "HoleThreeCement" 0)
-						(setq HoleNumFactor 2)
-					)
-				)
-		       ((= HoleNum 2)  
-					(progn 
-						(print "待开发")
-					)
-				)
-	)
+  (print 11111)
+;;;    (setq HoleNum  (atoi(get_tile "HoleNumber_List")))
+;;;	(setq HoleNumFactor 1)
+;;;	(cond ((= HoleNum 0)  
+;;;					(progn
+;;;						(mode_tile  "HoleThreeDrillDiameter" 1)
+;;;						(mode_tile  "HoleThreeDeep" 1)
+;;;						(mode_tile  "HoleThreeBushDiameter" 1)
+;;;						(mode_tile  "HoleThreeBushDeep" 1)
+;;;						(mode_tile  "HoleThreeCement" 1)
+;;;						(setq HoleNumFactor 1)
+;;;					) 
+;;;				)
+;;;			   ((= HoleNum 1)
+;;;					(progn 
+;;;						(mode_tile  "HoleThreeDrillDiameter" 0)
+;;;						(mode_tile  "HoleThreeDeep" 0)
+;;;						(mode_tile  "HoleThreeBushDiameter" 0)
+;;;						(mode_tile  "HoleThreeBushDeep" 0)
+;;;						(mode_tile  "HoleThreeCement" 0)
+;;;						(setq HoleNumFactor 2)
+;;;					)
+;;;				)
+;;;		       ((= HoleNum 2)  
+;;;					(progn 
+;;;						(print "待开发")
+;;;					)
+;;;				)
+;;;	)
 
 )
 
 ;配置岩性柱状图popList动作属性
 (defun configRockPopListAction()
-    (setq rockTypeNum  (atoi(get_tile "RockType_List")))
-	(cond ((= rockTypeNum 0)  
-					(progn
-						(mode_tile  "columnRockOne" 0)
-						(mode_tile  "columnRockTwo" 0)
-						(mode_tile  "columnRockThree" 0)
-						(mode_tile  "columnRockFour" 0)
-						(mode_tile  "columnRockFive" 0)
-						(setq RockTypeName "钻井柱状图")
-
-					) 
-				)
-			   ((= rockTypeNum 1)
-					(progn 
-						(mode_tile  "columnRockOne" 0)
-						(mode_tile  "columnRockTwo" 0)
-						(mode_tile  "columnRockThree" 0)
-						(mode_tile  "columnRockFour" 1)
-						(mode_tile  "columnRockFive" 1)
-						(setq RockTypeName "钻井柱状图")
-					)
-				)
-		       ((= rockTypeNum 2)  
-					(progn 
-						(print "待开发")
-					)
-				)
-	)
+  (print 11111)
+;;;    (setq rockTypeNum  (atoi(get_tile "RockType_List")))
+;;;	(cond ((= rockTypeNum 0)  
+;;;					(progn
+;;;						(mode_tile  "columnRockOne" 0)
+;;;						(mode_tile  "columnRockTwo" 0)
+;;;						(mode_tile  "columnRockThree" 0)
+;;;						(mode_tile  "columnRockFour" 0)
+;;;						(mode_tile  "columnRockFive" 0)
+;;;						(setq RockTypeName "钻井柱状图")
+;;;
+;;;					) 
+;;;				)
+;;;			   ((= rockTypeNum 1)
+;;;					(progn 
+;;;						(mode_tile  "columnRockOne" 0)
+;;;						(mode_tile  "columnRockTwo" 0)
+;;;						(mode_tile  "columnRockThree" 0)
+;;;						(mode_tile  "columnRockFour" 1)
+;;;						(mode_tile  "columnRockFive" 1)
+;;;						(setq RockTypeName "钻井柱状图")
+;;;					)
+;;;				)
+;;;		       ((= rockTypeNum 2)  
+;;;					(progn 
+;;;						(print "待开发")
+;;;					)
+;;;				)
+;;;	)
 
 )
 
@@ -723,7 +733,6 @@
 ;UI
 ;UI-Frame
 (defun drawFrame()
-  		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 		(drawFrameLine)
 		(drawFrameTextLabel)
 		(drawBaseDataTable)
@@ -871,6 +880,91 @@
 )
 
 ;UI-PLine
+
+;drillingTimePline
+(defun drawDrillingTimePLine()
+
+	(setq drillingTimePlineLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfY 'Value2))))
+	(setq drillingTimeIndexA 1)
+  	(setq drillingTimePlineListLength (length drillingTimePlineLst))
+	(setq drillingTimePlineListPT '())
+	(while (<= drillingTimeIndexA drillingTimePlineListLength)
+			(print (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfY 'Item drillingTimeIndexA )) 'Value2 ))
+		(if (> drillingTimeIndexA 1)
+			  (progn
+				(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfY 'Item drillingTimeIndexA)) 'Value2))
+				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfX 'Item drillingTimeIndexA)) 'Value2))
+				(setq pyA (* pyA -5))
+				;drillingTimeFactor
+			
+				(setq pxA (+ (* pxA drillingTimePLFactor) drillingTimeXOffset))
+					
+				(setq ptA (strcat (strcat (strcat (strcat "(" (rtos pxA 2 6)) " ") (rtos pyA 2 6)) ")"))
+				(setq drillingTimePlineListPT (cons (read ptA) drillingTimePlineListPT))
+			)
+		)
+		(setq drillingTimeIndexA (1+ drillingTimeIndexA))
+	)
+				;配置多线段属性
+				;(configPLineAttribute)
+	 ;;;;有顺序，不可改
+				(entmake 
+					(append 
+						(list '(0 . "LWPOLYLINE")
+							 '(100 . "AcDbEntity")
+							 '(100 . "AcDbPolyline")
+							 (cons 90 (length drillingTimePlineListPT)) ; 顶点个数
+							'(70 . 0) ; 1 闭合 0 不闭合 不是必须，默认为0
+						)
+						(mapcar '(lambda (x) (cons 10 x)) drillingTimePlineListPT)
+				 ;二维坐标列表 加组码 10
+					)    ;append end
+				)
+  	(print c)
+)
+
+;consumptionPline
+(defun drawConsumptionPline()
+
+	(setq consumptionPlineLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property consumptionPlineDataRangeOfY 'Value2))))
+	(setq consumptionIndexA 1)
+  	(setq drillingTimePlineListLength (length consumptionPlineLst))
+	(setq consumptionPlineListPT '())
+	(while (<= consumptionIndexA drillingTimePlineListLength)
+			(print (Vlax-Get (vlax-variant-value (Vlax-Get-Property consumptionPlineDataRangeOfY 'Item consumptionIndexA )) 'Value2 ))
+		(if (> consumptionIndexA 1)
+			  (progn
+				(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property consumptionPlineDataRangeOfY 'Item consumptionIndexA)) 'Value2))
+				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property consumptionPlineDataRangeOfX 'Item consumptionIndexA)) 'Value2))
+				(setq pyA (* pyA -5))
+				;drillingTimeFactor
+			
+				(setq pxA (+ (* pxA consumptionPLFactor) consumptionXOffset))
+					
+				(setq ptA (strcat (strcat (strcat (strcat "(" (rtos pxA 2 6)) " ") (rtos pyA 2 6)) ")"))
+				(setq consumptionPlineListPT (cons (read ptA) consumptionPlineListPT))
+			)
+		)
+		(setq consumptionIndexA (1+ consumptionIndexA))
+	)
+				;配置多线段属性
+				;(configPLineAttribute)
+	 ;;;;有顺序，不可改
+				(entmake 
+					(append 
+						(list '(0 . "LWPOLYLINE")
+							 '(100 . "AcDbEntity")
+							 '(100 . "AcDbPolyline")
+							 (cons 90 (length consumptionPlineListPT)) ; 顶点个数
+							'(70 . 0) ; 1 闭合 0 不闭合 不是必须，默认为0
+						)
+						(mapcar '(lambda (x) (cons 10 x)) consumptionPlineListPT)
+				 ;二维坐标列表 加组码 10
+					)    ;append end
+				)
+  	(print c)
+)
+
 (defun drawPLine()
 	(vl-load-com)
 	(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
@@ -921,9 +1015,9 @@
 (defun drawFrameLine()
   	(command "lweight" 1.00)
   	(command "line" "-450,140" "60,140" "")
-  	(setq floatPyRough (+ (* d -5) -100));柱状图比例为1：:200
-	(setq floatPyThinTop  (* d -5) );
-	(setq floatPyThinDown (+ (* d -5) -95));
+  	(setq floatPyRough (+ (* drillDeepMaxData -5) -100));柱状图比例为1：:200
+	(setq floatPyThinTop  (* drillDeepMaxData -5) );
+	(setq floatPyThinDown (+ (* drillDeepMaxData -5) -95));
  	(setq strRoughPy (rtos floatPyRough 2 2));粗线Y坐标放缩后转换为字符串
 	(setq strThinDownPy (rtos floatPyThinDown 2 2));细线Y下部坐标放缩后转换为字符串
 	(setq strThinTopPy (rtos floatPyThinTop 2 2));细线Y上部坐标放缩后转换为字符串
@@ -1346,8 +1440,8 @@
 	(cond ((= HoleNumFactor 1)  
 					(progn
 							(command "lweight" "ByLayer")
-							(command "line" (strcat "-43," (rtos (* d -5) 2 2)) (strcat "-43," (rtos (* HoleOneDeep -5) 2 2)) "")
-							(command "line" (strcat "-17," (rtos (* d -5) 2 2)) (strcat "-17," (rtos (* HoleOneDeep -5) 2 2)) "")
+							(command "line" (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* HoleOneDeep -5) 2 2)) "")
+							(command "line" (strcat "-17," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-17," (rtos (* HoleOneDeep -5) 2 2)) "")
 							(command "line" "-49,0" (strcat "-49," (rtos (* HoleOneDeep -5) 2 2)) "")
 							(command "line" "-11,0" (strcat "-11," (rtos (* HoleOneDeep -5) 2 2)) "")
 							(command "lweight" 0.50)
@@ -1370,8 +1464,8 @@
 							(command "lweight" "ByLayer")
 							(command "line" (strcat "-49," (rtos (* HoleOneDeep -5) 2 2)) (strcat "-49," (rtos (* HoleTwoDeep -5) 2 2)) "")
 							(command "line" (strcat "-11," (rtos (* HoleOneDeep -5) 2 2)) (strcat "-11," (rtos (* HoleTwoDeep -5) 2 2)) "")
-							(command "line" (strcat "-43," (rtos (* d -5) 2 2)) (strcat "-43," (rtos (* HoleTwoDeep -5) 2 2)) "")
-							(command "line" (strcat "-17," (rtos (* d -5) 2 2)) (strcat "-17," (rtos (* HoleTwoDeep -5) 2 2)) "")
+							(command "line" (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* HoleTwoDeep -5) 2 2)) "")
+							(command "line" (strcat "-17," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-17," (rtos (* HoleTwoDeep -5) 2 2)) "")
 							;二开套管下深
 							(command "lweight" 0.50)
 							(command "line" (strcat "-46," (rtos (* HoleOneDeep -5) 2 2)) (strcat "-46," (rtos (* HoleTwoDeep -5) 2 2)) "")
@@ -1410,9 +1504,9 @@
   	(command "text" "J" "C" (list 12.5 11) 2.8 0 "井深(m)")
   	(command "text" "J" "C" (list 40 15) 3.0 0 "备      注")
 		
-	(drawDTTextLabel (caculateMaxNum dt))
-	(drawWLTextLabel (caculateMaxNum wl))
-	(drawMCTextLabel (caculateMaxNum mc))
+	(drawDTTextLabel (caculateMaxNum drillingTimeMaxData))
+	(drawWLTextLabel (caculateMaxNum waterLevelMaxData))
+	(drawMCTextLabel (caculateMaxNum consumptionMaxData))
   	
   	
 )
@@ -1491,7 +1585,7 @@
 	(command "text" "J" "C" (list -30 (+ (* holeArtificialDeep -5) 2)) 3 0 (strcat (rtos  holeArtificialDeep 2 2) "m"))
 	(command "text" "J" "C" (list -30 (+ (* holeDamperLocation -5) 2)) 3 0 (strcat (rtos  holeDamperLocation 2 2) "m"))
 	(command "text" "J" "C" (list -30 (+ (* BushShoes -5) 2)) 3 0 (strcat (rtos  BushShoes 2 2) "m"))
-	(command "text" "J" "C" (list -30 (+ (* d -5) 2)) 3 0 (strcat (rtos d 2 2) "m"))
+	(command "text" "J" "C" (list -30 (+ (* drillDeepMaxData -5) 2)) 3 0 (strcat (rtos drillDeepMaxData 2 2) "m"))
 )
 
 ;UI-Dimlinear
@@ -1595,8 +1689,8 @@
 															(progn
 																(print "黄土")
 																(drawHuangTuCengTop)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 5.25)) (list -380.25 (- (* d -5) 8.75)))) 
-																(creatBlockOrCheckBlock rockName (list -387.5 (- (* d -5) 8.5)) Selectionset)
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 5.25)) (list -380.25 (- (* drillDeepMaxData -5) 8.75)))) 
+																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 8.5)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (- rockThickness 0.6))-5)) 1 1 1 0)	
 																(drawHuangTuCengBottomLineWithRockThinkness)
 															) 
@@ -1614,8 +1708,8 @@
 																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 																(setq rockFactor (/ rockThickness rockMaxThickness))
 																(drawFenShaYanTop)
-																(setq Selectionset (ssget "C" (list -344 (- (* d -5) 6.75)) (list -331 (- (* d -5) 10.25)))) 
-																(creatBlockOrCheckBlock rockName (list -337.5 (- (* d -5) 9.75)) Selectionset)
+																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 10.25)))) 
+																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 9.75)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
 															)
 														)  
@@ -1626,8 +1720,8 @@
 																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 																(setq rockFactor (/ rockThickness rockMaxThickness))
 																(drawXiLiShaYanTop)
-																(setq Selectionset (ssget "C" (list -294.5 (- (* d -5) 6.75)) (list -280.5 (- (* d -5) 10.25)))) 
-																(creatBlockOrCheckBlock rockName (list -287.5 (- (* d -5) 9.75)) Selectionset)
+																(setq Selectionset (ssget "C" (list -294.5 (- (* drillDeepMaxData -5) 6.75)) (list -280.5 (- (* drillDeepMaxData -5) 10.25)))) 
+																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 9.75)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
 
 										
@@ -1640,8 +1734,8 @@
 																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 																(setq rockFactor (/ rockThickness rockMaxThickness))
 																(drawZhongLiShaYanTop)
-																(setq Selectionset (ssget "C" (list -244 (- (* d -5) 6.75)) (list -231 (- (* d -5) 10.25)))) 
-																(creatBlockOrCheckBlock rockName (list -237.5 (- (* d -5) 9.75)) Selectionset)
+																(setq Selectionset (ssget "C" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 10.25)))) 
+																(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 9.75)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))	
 															
 															)
@@ -1653,8 +1747,8 @@
 																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 																(setq rockFactor (/ rockThickness rockMaxThickness))
 																(drawCuLiShaYanTop)
-																(setq Selectionset (ssget "C" (list -194 (- (* d -5) 6.75)) (list -181 (- (* d -5) 10.25)))) 
-																(creatBlockOrCheckBlock rockName (list -187.5 (- (* d -5) 9.75)) Selectionset)
+																(setq Selectionset (ssget "C" (list -194 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 10.25)))) 
+																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 9.75)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))	
 															)
 														)  
@@ -1662,9 +1756,9 @@
 															(progn 
 																(print "粉砂质泥岩")
 																(drawFenShaZhiNiYanTop)
-																(setq Selectionset (ssget "C" (list -144 (- (* d -5) 5.75)) (list -131 (- (* d -5) 10.25))))
-																(creatBlockOrCheckBlock rockName (list -137.5 (- (* d -5) 10)) Selectionset)
-																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* d -5) 45))" " " "Selectionset)" " " ))
+																(setq Selectionset (ssget "C" (list -144 (- (* drillDeepMaxData -5) 5.75)) (list -131 (- (* drillDeepMaxData -5) 10.25))))
+																(creatBlockOrCheckBlock rockName (list -137.5 (- (* drillDeepMaxData -5) 10)) Selectionset)
+																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(configBoldHatch)
 															)
 														)  
@@ -1672,9 +1766,9 @@
 															(progn 
 																(print "泥质粉砂岩")
 																(drawNiZhiFenShaYanTop)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 40.75)) (list -380.25 (- (* d -5) 45.25))))
-																(creatBlockOrCheckBlock rockName (list -387.5 (- (* d -5) 45)) Selectionset)
-																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* d -5) 45))" " " "Selectionset)" " " ))
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 40.75)) (list -380.25 (- (* drillDeepMaxData -5) 45.25))))
+																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
+																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(configBoldHatch)
 															)
 														)  
@@ -1682,9 +1776,9 @@
 															(progn 
 																(print "砂砾岩");-316,-3984.5
 																(drawShaLiYanTop)
-																(setq Selectionset (ssget "C" (list -344 (- (* d -5) 40.75)) (list -331 (- (* d -5) 45.25)))) 
-																(creatBlockOrCheckBlock rockName (list -337.5 (- (* d -5) 45)) Selectionset)
-																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -337.5 (- (* d -5) 45))" " " "Selectionset)" " " ))
+																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 40.75)) (list -331 (- (* drillDeepMaxData -5) 45.25)))) 
+																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
+																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -337.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(configBoldHatch)
 																
 															) 
@@ -1693,8 +1787,8 @@
 															(progn 
 																(print "泥岩")
 																(drawNiYanTop)
-																(setq Selectionset (ssget "C" (list -294.75 (- (* d -5) 40.75)) (list -280.25 (- (* d -5) 45.25)))) 
-																(creatBlockOrCheckBlock rockName (list -287.5 (- (* d -5) 45)) Selectionset)
+																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 40.75)) (list -280.25 (- (* drillDeepMaxData -5) 45.25)))) 
+																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
 																(configBoldHatch)
 															)
 														)  
@@ -1702,8 +1796,8 @@
 															(progn 
 																(print "煤层")
 																;(drawMeiCeng)
-																;(setq Selectionset (ssget "C" (list -244.75 (- (* d -5) 40.75)) (list -230.25 (- (* d -5) 45.25)))) 
-																;(creatBlockOrCheckBlock rockName (list -237.5 (- (* d -5) 45)) Selectionset)
+																;(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 40.75)) (list -230.25 (- (* drillDeepMaxData -5) 45.25)))) 
+																;(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
 																;(hatchRockWithMInsert rockName (list RockHatchXOffset (* rockDeep -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
 
 																(command "-hatch" "W" "N" (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2))   (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2)) "C" "" "P" "SOLID" "")
@@ -1713,8 +1807,8 @@
 															(progn 
 																(print "炭质泥岩")
 																(drawTanZhiNiYanTop)
-																(setq Selectionset (ssget "C" (list -194.75 (- (* d -5) 40.75)) (list -180.25 (- (* d -5) 45.25))))
-																(creatBlockOrCheckBlock rockName (list -187.5 (- (* d -5) 45)) Selectionset)
+																(setq Selectionset (ssget "C" (list -194.75 (- (* drillDeepMaxData -5) 40.75)) (list -180.25 (- (* drillDeepMaxData -5) 45.25))))
+																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
 																(configBoldHatch)
 															)
 														)  
@@ -1722,9 +1816,9 @@
 															(progn 
 																(print "砂质泥岩")
 																(drawShaZhiNiYanTop)
-																(setq Selectionset (ssget "C" (list -144 (- (* d -5) 40.75)) (list -131 (- (* d -5) 45.25))))
-																(creatBlockOrCheckBlock rockName (list -137.5 (- (* d -5) 45)) Selectionset)
-																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* d -5) 45))" " " "Selectionset)" " " ))
+																(setq Selectionset (ssget "C" (list -144 (- (* drillDeepMaxData -5) 40.75)) (list -131 (- (* drillDeepMaxData -5) 45.25))))
+																(creatBlockOrCheckBlock rockName (list -137.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
+																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(configBoldHatch)
 																
 															)
@@ -1733,8 +1827,8 @@
 															(progn 
 																(print "泥质砂岩")
 																(drawNiZhiShaYanTop)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 75.75)) (list -380.25 (- (* d -5) 80.25))))
-																(creatBlockOrCheckBlock rockName (list -387.5 (- (* d -5) 80)) Selectionset)
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 75.75)) (list -380.25 (- (* drillDeepMaxData -5) 80.25))))
+																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 80)) Selectionset)
 																(configBoldHatch)
 															)
 														)  
@@ -1742,8 +1836,8 @@
 															(progn 
 																(print "石灰岩")
 																(drawShiHuiYanTop)
-																(setq Selectionset (ssget "C" (list -344.75 (- (* d -5) 75.75)) (list -330.25 (- (* d -5) 80.25))))
-																(creatBlockOrCheckBlock rockName (list -337.5 (- (* d -5) 80)) Selectionset)
+																(setq Selectionset (ssget "C" (list -344.75 (- (* drillDeepMaxData -5) 75.75)) (list -330.25 (- (* drillDeepMaxData -5) 80.25))))
+																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 80)) Selectionset)
 																(configBoldHatch)
 															)
 														)  
@@ -1751,8 +1845,8 @@
 															(progn 
 																(print "泥质灰岩")
 																(drawNiZhiHuiYanTop)
-																(setq Selectionset (ssget "C" (list -294.75 (- (* d -5) 75.75)) (list -280.25 (- (* d -5) 80.25))))
-																(creatBlockOrCheckBlock rockName (list -287.5 (- (* d -5) 80)) Selectionset)
+																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 75.75)) (list -280.25 (- (* drillDeepMaxData -5) 80.25))))
+																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 80)) Selectionset)
 																(configBoldHatch)
 															)
 														)  
@@ -1760,8 +1854,8 @@
 															(progn 
 																(print "铝质泥岩")
 																(drawLvZhiNiYanTop)
-																(setq Selectionset (ssget "C" (list -244.75 (- (* d -5) 75.75)) (list -230.25 (- (* d -5) 80))))
-																(creatBlockOrCheckBlock rockName (list -237.5 (- (* d -5) 80)) Selectionset)
+																(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 75.75)) (list -230.25 (- (* drillDeepMaxData -5) 80))))
+																(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 80)) Selectionset)
 																(configBoldHatch)
 															)
 														)  
@@ -1786,8 +1880,8 @@
 															(progn
 																(print "黄土")
 																(drawHuangTuCengTop)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 5.25)) (list -380.25 (- (* d -5) 8.75)))) 
-																(creatBlockOrCheckBlock rockName (list -387.5 (- (* d -5) 8.5)) Selectionset)
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 5.25)) (list -380.25 (- (* drillDeepMaxData -5) 8.75)))) 
+																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 8.5)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* rockDeep -5)) 1 (/ (* rockThickness 5) 3) 1 0)
 															) 
 														)
@@ -1801,9 +1895,9 @@
 															(progn 
 																(print "粉砂岩")
 																(drawFenShaYanOne)
-																(setq Selectionset (ssget "C" (list -344 (- (* d -5) 6.75)) (list -331 (- (* d -5) 7.75)))) 
-																(creatBlockOrCheckBlock rockName (list -337.5 (- (* d -5) 7.25)) Selectionset)
-																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -287.5 (- (* d -5) 9.75))" " " "Selectionset)" " " ))
+																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 7.75)))) 
+																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
+																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -287.5 (- (* drillDeepMaxData -5) 9.75))" " " "Selectionset)" " " ))
 																(configThickHatch)
 															)
 														)  
@@ -1811,8 +1905,8 @@
 															(progn 
 																(print "细粒砂岩")
 																(drawXiLiShaYanOne)
-																(setq Selectionset (ssget "C" (list -292.5 (- (* d -5) 6.75)) (list -282.5 (- (* d -5) 7.75)))) 
-																(creatBlockOrCheckBlock rockName (list -287.5 (- (* d -5) 7.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -292.5 (- (* drillDeepMaxData -5) 6.75)) (list -282.5 (- (* drillDeepMaxData -5) 7.75)))) 
+																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
 																(configThickHatch)
 																
 															)
@@ -1821,8 +1915,8 @@
 															(progn 
 																(print "中粒砂岩")															
 																(drawZhongLiShaYanOne)
-																(setq Selectionset (ssget "C" (list -244 (- (* d -5) 6.75)) (list -181 (- (* d -5) 7.75)))) 
-																(creatBlockOrCheckBlock rockName (list -187.5 (- (* d -5) 7.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 7.75)))) 
+																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
 																(configThickHatch)
 															)
 														)  
@@ -1830,8 +1924,8 @@
 															(progn 
 																(print "粗粒砂岩")
 																(drawCuLiShaYanOne)
-																(setq Selectionset (ssget "C" (list -194 (- (* d -5) 6.75)) (list -181 (- (* d -5) 7.75)))) 
-																(creatBlockOrCheckBlock rockName (list -187.5 (- (* d -5) 7.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -194 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 7.75)))) 
+																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
 																(configThickHatch)
 															)
 														)  
@@ -1839,9 +1933,9 @@
 															(progn 
 																(print "粉砂质泥岩")
 																(drawFenShaZhiNiYanOne)
-																(setq Selectionset (ssget "C" (list -144 (- (* d -5) 5.75)) (list -131 (- (* d -5) 7)))) 
-															;	(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* d -5) 45))" " " "Selectionset)" " " ))	
-																(creatBlockOrCheckBlock rockName (list -137.5 (- (* d -5) 6.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -144 (- (* drillDeepMaxData -5) 5.75)) (list -131 (- (* drillDeepMaxData -5) 7)))) 
+															;	(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))	
+																(creatBlockOrCheckBlock rockName (list -137.5 (- (* drillDeepMaxData -5) 6.25)) Selectionset)
 																(configThickHatch)
 															)
 														)  
@@ -1849,9 +1943,9 @@
 															(progn 
 																(print "泥质粉砂岩")
 																(drawNiZhiFenShaYanOne)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 40.75)) (list -380.25 (- (* d -5) 42)))) 
-															;	(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* d -5) 45))" " " "Selectionset)" " " ))	
-																(creatBlockOrCheckBlock rockName (list -387.5 (- (* d -5) 41.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 40.75)) (list -380.25 (- (* drillDeepMaxData -5) 42)))) 
+															;	(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))	
+																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(configThickHatch)
 															)
 														)  
@@ -1859,9 +1953,9 @@
 															(progn 
 																(print "砂砾岩");-316,-3984.5
 																(drawShaLiYanOne)
-																(setq Selectionset (ssget "C" (list -344 (- (* d -5) 40.75)) (list -331 (- (* d -5) 42)))) 
-																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -337.5 (- (* d -5) 45))" " " "Selectionset)" " " ))
-																(creatBlockOrCheckBlock rockName (list -337.5 (- (* d -5) 41.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 40.75)) (list -331 (- (* drillDeepMaxData -5) 42)))) 
+																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -337.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
+																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(configThickHatch)
 															) 
 														)					
@@ -1869,8 +1963,8 @@
 															(progn 
 																(print "泥岩")
 																(drawNiYanOne)
-																(setq Selectionset (ssget "C" (list -294.75 (- (* d -5) 40.75)) (list -280.25 (- (* d -5) 42)))) 
-																(creatBlockOrCheckBlock rockName (list -287.5 (- (* d -5) 41.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 40.75)) (list -280.25 (- (* drillDeepMaxData -5) 42)))) 
+																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(configThickHatch)
 															)
 														)  
@@ -1878,8 +1972,8 @@
 															(progn 
 																(print "煤层")
 																;(drawMeiCeng)
-																;(setq Selectionset (ssget "C" (list -244.75 (- (* d -5) 40.75)) (list -230.25 (- (* d -5) 42)))) 
-																;(creatBlockOrCheckBlock rockName (list -237.5 (- (* d -5) 40)) Selectionset)
+																;(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 40.75)) (list -230.25 (- (* drillDeepMaxData -5) 42)))) 
+																;(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 40)) Selectionset)
 																;(hatchRockWithMInsert rockName (list RockHatchXOffset  (* rockDeep  -5)) 1 (/ rockThickness 2) 1 0)
 																(command "-hatch" "W" "N" (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2))   (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2)) "C" "" "P" "SOLID" "")
 															)
@@ -1888,8 +1982,8 @@
 															(progn 
 																(print "炭质泥岩")
 																(drawTanZhiNiYanOne)
-																(setq Selectionset (ssget "C" (list -194.75 (- (* d -5) 40.75)) (list -180.25 (- (* d -5) 42)))) 
-																(creatBlockOrCheckBlock rockName (list -187.5 (- (* d -5) 41.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -194.75 (- (* drillDeepMaxData -5) 40.75)) (list -180.25 (- (* drillDeepMaxData -5) 42)))) 
+																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 (* rockThickness 2) 1 0)
 															)
 														)  
@@ -1897,8 +1991,8 @@
 															(progn 
 																(print "砂质泥岩")
 																(drawShaZhiNiYanOne)
-																(setq Selectionset (ssget "C" (list -144 (- (* d -5) 40.75)) (list -131 (- (* d -5) 42)))) 
-																(creatBlockOrCheckBlock rockName (list -137.5 (- (* d -5) 41.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -144 (- (* drillDeepMaxData -5) 40.75)) (list -131 (- (* drillDeepMaxData -5) 42)))) 
+																(creatBlockOrCheckBlock rockName (list -137.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(configThickHatch)
 															)
 														)  
@@ -1906,8 +2000,8 @@
 															(progn 
 																(print "泥质砂岩")
 																(drawNiZhiShaYanOne)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* d -5) 75.75)) (list -380.25 (- (* d -5) 77)))) 
-																(creatBlockOrCheckBlock rockName (list -387.5 (- (* d -5) 76.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 75.75)) (list -380.25 (- (* drillDeepMaxData -5) 77)))) 
+																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 76.25)) Selectionset)
 																(configThickHatch)
 															)
 														)  
@@ -1915,8 +2009,8 @@
 															(progn 
 																(print "石灰岩3")
 																(drawShiHuiYanOne)
-																(setq Selectionset (ssget "C" (list -344.75 (- (* d -5) 75.75)) (list -330.25 (- (* d -5) 77)))) 
-																(creatBlockOrCheckBlock rockName (list -337.5 (- (* d -5) 76.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -344.75 (- (* drillDeepMaxData -5) 75.75)) (list -330.25 (- (* drillDeepMaxData -5) 77)))) 
+																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 76.25)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 (* rockThickness 2) 1 0)
 															)
 														)  
@@ -1924,8 +2018,8 @@
 															(progn 
 																(print "泥质灰岩")
 																(drawNiZhiHuiYanOne)
-																(setq Selectionset (ssget "C" (list -294.75 (- (* d -5) 75.75)) (list -280.25 (- (* d -5) 77)))) 
-																(creatBlockOrCheckBlock rockName (list -287.5 (- (* d -5) 76.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 75.75)) (list -280.25 (- (* drillDeepMaxData -5) 77)))) 
+																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 76.25)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 (* rockThickness 2) 1 0)
 															)
 														)  
@@ -1933,8 +2027,8 @@
 															(progn 
 																(print "铝质泥岩")
 																(drawLvZhiNiYanOne)
-																(setq Selectionset (ssget "C" (list -244.75 (- (* d -5) 75.75)) (list -230.25 (- (* d -5) 77)))) 
-																(creatBlockOrCheckBlock rockName (list -237.5 (- (* d -5) 76.25)) Selectionset)
+																(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 75.75)) (list -230.25 (- (* drillDeepMaxData -5) 77)))) 
+																(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 76.25)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 (* rockThickness 2) 1 0)
 															)
 														)  
@@ -1974,7 +2068,7 @@
 (defun hatchRockWithMInsert(BlockName InsertPoint xFactor yFactor rowCount rowSpace)  ;定义函数 
 			(vl-load-com)  ;加载Vlisp函数  
 			;选择加密对象
- 			(command "zoom" "C" (list -222.5 (* d -5)) "250")
+ 			(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 			(if (= rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace))
 			;(command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace);用block命令制作块，然后用minsert命令制作多重引用块
 		  ;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
@@ -1990,7 +2084,7 @@
 	
 	 (if Selectionset  ;选择加密对象 
 			(progn    ;以当前时间作为块名  ;因为我们要用多重引用块进行加密，在制作多重引用块之前我们必须将我们需要 ;加密的图元制作成块，为避免与图档内块名冲突，引用了当前时间作为块名 
-				(command "zoom" "C" (list -222.5 (* d -5)) "250")
+				(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 				(command "block" BlockCodeName BasicPoint Selectionset "")
 			) 
 			 (princ "\n没有选中图元")  
@@ -2007,7 +2101,7 @@
 								(command "-hatch" "W" "N" "-11,0" "-14,0" (strcat "-14," (rtos (* holeOneDeep -5) 2 2))  (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 						
 								;二开水泥反深
-								(command "-hatch" "W" "N" (strcat "-43," (rtos (* (- d holeTwoCement) -5) 2 2)) (strcat "-40," (rtos (* (- d holeTwoCement) -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* (- d holeTwoCement) -5) 2 2)) (strcat "-17," (rtos (* (- d holeTwoCement) -5) 2 2)) (strcat "-17," (rtos  (* d -5) 2 2)) (strcat "-43," (rtos (* d -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								(command "-hatch" "W" "N" (strcat "-43," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-40," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-17," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 								(command "-hatch" "W" "N" strHoleDamperLocationPtC (strcat "-30," (rtos (- (* holeDamperLocation -5) 2) 2 2)) "A" "@5<270" "@5<90" "L" strHoleDamperLocationPtD strBushShoesPtB strBushShoesPtA  "C" "" "P" "DOTS" "1" "0" "")
 								(command "-hatch" "W" "N" strHoleArtificialDeepPtA strHoleArtificialDeepPtB strHoleDamperLocationPtB strHoleDamperLocationPtA "C" "" "P" "DOTS" "1" "0" "")
 						))
@@ -2037,14 +2131,14 @@
 														(setq strHoleThreeCementPlusPtH  (strcat "-20," (rtos (* holeTwoDeep -5) 2 2)))
 														(command "-hatch" "W" "N" strHoleThreeCementPlusPtA strHoleThreeCementPlusPtB strHoleThreeCementPlusPtC strHoleThreeCementPlusPtD "C" "" "P" "DOTS" "1" "0" "")
 														(command "-hatch" "W" "N" strHoleThreeCementPlusPtE strHoleThreeCementPlusPtF strHoleThreeCementPlusPtG strHoleThreeCementPlusPtH "C" "" "P" "DOTS" "1" "0" "")
-														(command "-hatch" "W" "N" (strcat "-43," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-40," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-17," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-17," (rtos  (* d -5) 2 2)) (strcat "-43," (rtos (* d -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+														(command "-hatch" "W" "N" (strcat "-43," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-40," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-17," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 													))
 												
 											((<= holeTwoDeep holeThreeCement)
 													;水泥反深低于二开孔径
 													(progn 
 															;三开水泥反深
-															(command "-hatch" "W" "N" (strcat "-43," (rtos (* holeThreeCement -5) 2 2)) (strcat "-40," (rtos (* holeThreeCement -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* holeThreeCement -5) 2 2)) (strcat "-17," (rtos (* holeThreeCement -5) 2 2)) (strcat "-17," (rtos  (* d -5) 2 2)) (strcat "-43," (rtos (* d -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+															(command "-hatch" "W" "N" (strcat "-43," (rtos (* holeThreeCement -5) 2 2)) (strcat "-40," (rtos (* holeThreeCement -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* holeThreeCement -5) 2 2)) (strcat "-17," (rtos (* holeThreeCement -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 													))
 									)
 									
@@ -2058,7 +2152,6 @@
 
 ;drawBaseDataTable
 (defun drawBaseDataTable()
-	(command "text" "J" "C" (list -195 100) 20 0 drillName)
 	(command "line" "-360,80" "-30,80" "")
 	(command "line" "-360,70" "-275,70" "")
 	(command "line" "-360,60" "-275,60" "")
@@ -2088,7 +2181,7 @@
 	(command "text" "J" "C" (list -195 100) 19 0 (strcat DN "井钻井柱状图"))
 	(command "text" "J" "C" (list -307.5 73) 3 0 DN)
 	(command "text" "J" "C" (list -307.5 63) 3 0 DL)
-	(command "text" "J" "C" (list -307.5 53) 3 0 (rtos d 2 2))
+	(command "text" "J" "C" (list -307.5 53) 3 0 (rtos drillDeepMaxData 2 2))
 	(command "text" "J" "C" (list -240.5 73) 3 0 (strcat "X:  "LX))
 	(command "text" "J" "C" (list -240.5 63) 3 0 (strcat "Y:  "LY))
 	(command "text" "J" "C" (list -240.5 53) 3 0 (strcat "H:  "LH))
@@ -2100,49 +2193,1440 @@
 	(command "text" "J" "C" (list -45 53) 3 0 MachinePower)
 
 
-
-
-
-
-
 )
 
 (defun drawPictureDataTable()
-	(command "line"  (strcat "-75," (rtos (- (* d -5) 15) 2 2)) (strcat "-75," (rtos (- (* d -5) 95) 2 2)) "")
-	(command "line"  (strcat "-75," (rtos (- (* d -5) 15) 2 2)) (strcat "55," (rtos (- (* d -5) 15) 2 2)) "")
-	(command "line"  (strcat "-50," (rtos (- (* d -5) 35) 2 2)) (strcat "-50," (rtos (- (* d -5) 95) 2 2)) "")
-	(command "line"  (strcat "-75," (rtos (- (* d -5) 35) 2 2)) (strcat "55," (rtos (- (* d -5) 35) 2 2)) "")
-	(command "line"  (strcat "-75," (rtos (- (* d -5) 47) 2 2)) (strcat "55," (rtos (- (* d -5) 47) 2 2)) "")
-	(command "line"  (strcat "-75," (rtos (- (* d -5) 59) 2 2)) (strcat "55," (rtos (- (* d -5) 59) 2 2)) "")
-	(command "line"  (strcat "-75," (rtos (- (* d -5) 71) 2 2)) (strcat "55," (rtos (- (* d -5) 71) 2 2)) "")
-	(command "line"  (strcat "-75," (rtos (- (* d -5) 83) 2 2)) (strcat "55," (rtos (- (* d -5) 83) 2 2)) "")
-	(command "line"  (strcat "-20," (rtos (- (* d -5) 35) 2 2)) (strcat "-20," (rtos (- (* d -5) 95) 2 2)) "")
-	(command "line"  (strcat "5," (rtos (- (* d -5) 35) 2 2)) (strcat "5," (rtos (- (* d -5) 95) 2 2)) "")
-	(command "text" "J" "C" (list -62.5 (- (* d -5) 43)) 3 0 "制    图")
-	(command "text" "J" "C" (list -62.5 (- (* d -5) 55)) 3 0 "校    对")
-	(command "text" "J" "C" (list -62.5 (- (* d -5) 67)) 3 0 "审    核")
-	(command "text" "J" "C" (list -62.5 (- (* d -5) 79)) 3 0 "机    长")
-	(command "text" "J" "C" (list -62.5 (- (* d -5) 91)) 3 0 "技术负责")
-	(command "text" "J" "C" (list -7.5 (- (* d -5) 43)) 3 0 "项目经理")
-	(command "text" "J" "C" (list -7.5 (- (* d -5) 55)) 3 0 "图    号")
-	(command "text" "J" "C" (list -7.5 (- (* d -5) 67)) 3 0 "比    例")
-	(command "text" "J" "C" (list -7.5 (- (* d -5) 79)) 3 0 "制作日期")
-	(command "text" "J" "C" (list -7.5 (- (* d -5) 91)) 3 0 "资料来源")
-	(command "text" "J" "C" (list -7.5 (- (* d -5) 22)) 3.5 0 Company)
-	(command "text" "J" "C" (list -7.5 (- (* d -5) 31)) 5.5 0 (strcat DN "井钻井柱状图"))
-	(command "text" "J" "C" (list -35 (- (* d -5) 43)) 3 0 PictureMaker)
-	(command "text" "J" "C" (list 30 (- (* d -5) 43)) 3 0 DrillManager)
-	(command "text" "J" "C" (list -35 (- (* d -5) 55)) 3 0 PictureProofreader)
-	(command "text" "J" "C" (list 30 (- (* d -5) 55)) 3 0 PictureNumber)
-	(command "text" "J" "C" (list -35 (- (* d -5) 67)) 3 0 PictureChecker)
-	(command "text" "J" "C" (list 30 (- (* d -5) 67)) 3 0 Proportion)
-	(command "text" "J" "C" (list -35 (- (* d -5) 79)) 3 0 DrillCommander)
-	(command "text" "J" "C" (list 30 (- (* d -5) 79)) 3 0 PictureTime)
-	(command "text" "J" "C" (list -35 (- (* d -5) 91)) 3 0 DrillManager)
-	(command "mtext" (list 6 (- (* d -5) 84)) "h" 3 "w" "48" DataSource "")
+	(command "line"  (strcat "-75," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) (strcat "-75," (rtos (- (* drillDeepMaxData -5) 95) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) (strcat "55," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) "")
+	(command "line"  (strcat "-50," (rtos (- (* drillDeepMaxData -5) 35) 2 2)) (strcat "-50," (rtos (- (* drillDeepMaxData -5) 95) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* drillDeepMaxData -5) 35) 2 2)) (strcat "55," (rtos (- (* drillDeepMaxData -5) 35) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* drillDeepMaxData -5) 47) 2 2)) (strcat "55," (rtos (- (* drillDeepMaxData -5) 47) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* drillDeepMaxData -5) 59) 2 2)) (strcat "55," (rtos (- (* drillDeepMaxData -5) 59) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* drillDeepMaxData -5) 71) 2 2)) (strcat "55," (rtos (- (* drillDeepMaxData -5) 71) 2 2)) "")
+	(command "line"  (strcat "-75," (rtos (- (* drillDeepMaxData -5) 83) 2 2)) (strcat "55," (rtos (- (* drillDeepMaxData -5) 83) 2 2)) "")
+	(command "line"  (strcat "-20," (rtos (- (* drillDeepMaxData -5) 35) 2 2)) (strcat "-20," (rtos (- (* drillDeepMaxData -5) 95) 2 2)) "")
+	(command "line"  (strcat "5," (rtos (- (* drillDeepMaxData -5) 35) 2 2)) (strcat "5," (rtos (- (* drillDeepMaxData -5) 95) 2 2)) "")
+	(command "text" "J" "C" (list -62.5 (- (* drillDeepMaxData -5) 43)) 3 0 "制    图")
+	(command "text" "J" "C" (list -62.5 (- (* drillDeepMaxData -5) 55)) 3 0 "校    对")
+	(command "text" "J" "C" (list -62.5 (- (* drillDeepMaxData -5) 67)) 3 0 "审    核")
+	(command "text" "J" "C" (list -62.5 (- (* drillDeepMaxData -5) 79)) 3 0 "机    长")
+	(command "text" "J" "C" (list -62.5 (- (* drillDeepMaxData -5) 91)) 3 0 "技术负责")
+	(command "text" "J" "C" (list -7.5 (- (* drillDeepMaxData -5) 43)) 3 0 "项目经理")
+	(command "text" "J" "C" (list -7.5 (- (* drillDeepMaxData -5) 55)) 3 0 "图    号")
+	(command "text" "J" "C" (list -7.5 (- (* drillDeepMaxData -5) 67)) 3 0 "比    例")
+	(command "text" "J" "C" (list -7.5 (- (* drillDeepMaxData -5) 79)) 3 0 "制作日期")
+	(command "text" "J" "C" (list -7.5 (- (* drillDeepMaxData -5) 91)) 3 0 "资料来源")
+	(command "text" "J" "C" (list -7.5 (- (* drillDeepMaxData -5) 22)) 3.5 0 Company)
+	(command "text" "J" "C" (list -7.5 (- (* drillDeepMaxData -5) 31)) 5.5 0 (strcat DN "井钻井柱状图"))
+	(command "text" "J" "C" (list -35 (- (* drillDeepMaxData -5) 43)) 3 0 PictureMaker)
+	(command "text" "J" "C" (list 30 (- (* drillDeepMaxData -5) 43)) 3 0 DrillManager)
+	(command "text" "J" "C" (list -35 (- (* drillDeepMaxData -5) 55)) 3 0 PictureProofreader)
+	(command "text" "J" "C" (list 30 (- (* drillDeepMaxData -5) 55)) 3 0 PictureNumber)
+	(command "text" "J" "C" (list -35 (- (* drillDeepMaxData -5) 67)) 3 0 PictureChecker)
+	(command "text" "J" "C" (list 30 (- (* drillDeepMaxData -5) 67)) 3 0 Proportion)
+	(command "text" "J" "C" (list -35 (- (* drillDeepMaxData -5) 79)) 3 0 DrillCommander)
+	(command "text" "J" "C" (list 30 (- (* drillDeepMaxData -5) 79)) 3 0 PictureTime)
+	(command "text" "J" "C" (list -35 (- (* drillDeepMaxData -5) 91)) 3 0 DrillManager)
+	(command "mtext" (list 6 (- (* drillDeepMaxData -5) 84)) "h" 3 "w" "48" DataSource "")
 
 )
+ 
+ ;BaseBlock
+ 
+  (defun drawShaLiYanVla()
+	(vla-SendCommand thisdrawing (strcat "(drawShaLiYan)" " "))
+)
+ 
+(defun drawShaLiYan()
+	(drawShaLiYanTop)
+  	(drawShaLiYanBottom)
+ )
+
+
+ 
+ ;砂砾岩
+(defun drawShaLiYanOneVla()
+	(vla-SendCommand thisdrawing (strcat "(drawShaLiYanOne)" " "))
+)
+
+ (defun drawShaLiYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "circle" (strcat "-337.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.35)
+	
+	(command "circle" (strcat "-340," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-341," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-335," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-334," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	 (command "-hatch" "S" (ssget "W" (list -341.5 (- (* drillDeepMaxData -5) 40.75)) (list -339.5 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* drillDeepMaxData -5) 40.75)) (list -333.5 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+ )
+ 
+ (defun drawShaLiYanTopVla()
+	(vla-SendCommand thisdrawing (strcat "(drawShaLiYanTop)" " "))
+)
+ 
+(defun drawShaLiYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) "")
+  	
+	(command "line" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) "")
+	
+	;rowOne
+	(command "circle" (strcat "-337.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.35)
+	
+	(command "circle" (strcat "-340," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-341," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-335," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-334," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	
+	(command "-hatch" "S" (ssget "W" (list -341.5 (- (* drillDeepMaxData -5) 40.75)) (list -339.5 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	(command)
+	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* drillDeepMaxData -5) 40.75)) (list -333.5 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	;rowTwo
+	(command "circle" (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.35)
+	
+	(command "circle" (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.35)
+	
+	(command "circle" (strcat "-338," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-337," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-331.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-343.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+
+	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* drillDeepMaxData -5) 43.25)) (list -336.5 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "-hatch" "S" (ssget "W" (list -333 (- (* drillDeepMaxData -5) 43.25)) (list -331 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 43.25)) (list -342 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+)
+
+ (defun drawShaLiYanBottomVla()
+	(vla-SendCommand thisdrawing (strcat "(drawShaLiYanBottom)" " "))
+)
+
+ (defun drawShaLiYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) " ")
+	
+	(command "line" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) "")
+	
+	;rowThree
+	(command "circle" (strcat "-337.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.35)
+	
+	(command "circle" (strcat "-340," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-341," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-335," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-334," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	
+	
+	(command "-hatch" "S" (ssget "W" (list -341.5 (- (* drillDeepMaxData -5) 45.75)) (list -339.5 (- (* drillDeepMaxData -5) 46.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* drillDeepMaxData -5) 45.75)) (list -333.5 (- (* drillDeepMaxData -5) 46.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	;rowFour
+	(command "circle" (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.35)
+	
+	(command "circle" (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.35)
+	
+	(command "circle" (strcat "-338," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-337," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-331.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-343.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+   	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂砾岩")
+   	
+
+	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* drillDeepMaxData -5) 48.25)) (list -336.5 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "-hatch" "S" (ssget "W" (list -333 (- (* drillDeepMaxData -5) 48.25)) (list -331 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 48.25)) (list -342 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+
+ ) 
+
+ 
+ ;砂质泥岩
+ 
+ (defun drawShaZhiNiYan()
+	(drawShaZhiNiYanTop)
+  	(drawShaZhiNiYanBottom)
+ )
+ 
+ (defun drawShaZhiNiYanOne()
+	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-141," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-139.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	
+	(command "line" (strcat "-135.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-134," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	
+	(command "circle" (strcat "-137.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+  	(command "-hatch" "S" (ssget "W" (list -138 (- (* drillDeepMaxData -5) 40.75)) (list -137 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+ )
+ 
+(defun drawShaZhiNiYanTop()
+  	;(command "zoom" "w" (strcat "-150," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-125," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) )
+	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) "")
+  	
+	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) "")
+	
+	;rowOne
+	(command "line" (strcat "-141," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-139.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	
+	(command "line" (strcat "-135.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-134," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	
+	(command "circle" (strcat "-137.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -138 (- (* drillDeepMaxData -5) 40.75)) (list -137 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+
+
+	
+
+	;rowTwo
+	(command "line" (strcat "-142.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-144," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+	(command "line" (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+	(command "line" (strcat "-132.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-131.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+	
+	(command "circle" (strcat "-140.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-134.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -135.5 (- (* drillDeepMaxData -5) 43.25)) (list -133.5 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* drillDeepMaxData -5) 43.25)) (list -139.5 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+)
+
+(defun drawShaZhiNiYanBottom()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) " ")
+	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) "")
+  		
+	;rowThree
+	(command "line" (strcat "-141," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-139.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
+	
+	(command "line" (strcat "-135.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-134," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
+	
+	(command "circle" (strcat "-137.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	
+  	(command "-hatch" "S" (ssget "W" (list -138 (- (* drillDeepMaxData -5) 46.75)) (list -137 (- (* drillDeepMaxData -5) 45.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	;rowFour
+	(command "line" (strcat "-142.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-144," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	(command "line" (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	(command "line" (strcat "-132.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-131.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	
+	(command "circle" (strcat "-140.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-134.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+	
+	(command "-hatch" "S" (ssget "W" (list -135.5 (- (* drillDeepMaxData -5) 49.25)) (list -133.5 (- (* drillDeepMaxData -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* drillDeepMaxData -5) 49.25)) (list -139.5 (- (* drillDeepMaxData -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	
+	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂质泥岩")
+   	
+)
+
+
+;细粒砂岩
+
+(defun drawXiLiShaYanVla()
+	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYan)" " "))
+	
+
+)
+
+ (defun drawXiLiShaYan()
+	(drawXiLiShaYanTop)
+	(drawXiLiShaYanBottom)
+)
+ 
+ (defun drawXiLiShaYanOneVla()
+	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYanOne)" " "))
+
+)
+ 
+ (defun drawXiLiShaYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "circle" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-290.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-284.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* drillDeepMaxData -5) 7.75)) (list -282.5 (- (* drillDeepMaxData -5) 6.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+ )
+ 
+  (defun drawXiLiShaYanTopVla()
+	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYanTop)" " "))
+	
+)
+ 
+(defun drawXiLiShaYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	(command "circle" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-290.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-284.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	
+	;rowTwo
+	(command "circle" (strcat "-287.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-286.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-288.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-292.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-293.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-282.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+
+	(command "-hatch" "S" (ssget "W" (list -294.5 (- (* drillDeepMaxData -5) 6.75)) (list -280.5 (- (* drillDeepMaxData -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+
+)
+
+  (defun drawXiLiShaYanBottomVla()
+	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYanBottom)" " "))
+)
+
+ (defun drawXiLiShaYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
+	
+	;rowThree
+	(command "circle" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-290.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-284.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* drillDeepMaxData -5) 11.75)) (list -282.5 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+
+	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "细粒砂岩")
+   	
+ ) 
+ 
+;粉砂岩
+(defun drawFenShaYan()
+	(drawFenShaYanTop)
+	(drawFenShaYanBottom)
+)
+
+ (defun drawFenShaYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	;left
+	(command "circle" (strcat "-339.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-339.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-340.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-340.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	;right
+	(command "circle" (strcat "-335.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-335.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-334.75," (rtos (- (* drillDeepMaxData -5)7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-334.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 7.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+ )
+
+ (defun drawFenShaYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	
+	;rowOne
+	;left
+	(command "circle" (strcat "-339.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-339.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-340.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-340.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	;right
+	(command "circle" (strcat "-335.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-335.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-334.75," (rtos (- (* drillDeepMaxData -5)7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-334.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	;rowTwo
+	;mid
+	(command "circle" (strcat "-336.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-337.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-337.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-338.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	;left
+	(command "circle" (strcat "-341.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-342.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-342.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-343.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	;right
+	(command "circle" (strcat "-332.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-332.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-331.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-331.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)	
+	
+	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+)
+
+ (defun drawFenShaYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
+	
+	;rowThree
+	;left
+	(command "circle" (strcat "-339.25," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-339.75," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-340.25," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-340.75," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	;right
+	(command "circle" (strcat "-335.75," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-335.25," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-334.75," (rtos (- (* drillDeepMaxData -5)12.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-334.25," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 11.75)) (list -331 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂岩")
+
+ ) 
+ 
+ ;中粒砂岩
+(defun drawZhongLiShaYan()
+	(drawZhongLiShaYanTop)
+	(drawZhongLiShaYanBottom)
+)
+
+ (defun drawZhongLiShaYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	;left
+	(command "circle" (strcat "-241," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	(command "circle" (strcat "-240," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	;right
+	(command "circle" (strcat "-235," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-234," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	
+	(command "-hatch" "S" (ssget "W" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 7.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+ )
+
+ (defun drawZhongLiShaYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	
+	;rowOne
+	;left
+	(command "circle" (strcat "-241," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	(command "circle" (strcat "-240," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	;right
+	(command "circle" (strcat "-235," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	(command "circle" (strcat "-234," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	;rowTwo
+	;mid
+	(command "circle" (strcat "-237," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	(command "circle" (strcat "-238," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	;left
+	(command "circle" (strcat "-242," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-243," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	;right
+	(command "circle" (strcat "-232," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "circle" (strcat "-233," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+)
+
+ (defun drawZhongLiShaYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
+	
+	;rowThree
+	;left
+	(command "circle" (strcat "-241," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	(command "circle" (strcat "-240," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	;right
+	(command "circle" (strcat "-235," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	(command "circle" (strcat "-234," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -244 (- (* drillDeepMaxData -5) 11.75)) (list -231 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "中粒砂岩")
+
+ ) 
+ 
+  ;粗粒砂岩
+(defun drawCuLiShaYan()
+	(drawCuLiShaYanTop)
+	(drawCuLiShaYanBottom)
+)
+
+ (defun drawCuLiShaYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	;left
+	(command "circle" (strcat "-190.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+
+	;right
+	(command "circle" (strcat "-184.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+
+	(command "-hatch" "S" (ssget "W" (list -194 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 7.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+ )
+
+ (defun drawCuLiShaYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	
+	;rowOne
+	;left
+	(command "circle" (strcat "-190.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+
+	;right
+	(command "circle" (strcat "-184.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
+	
+	;rowTwo
+	;mid
+	(command "circle" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	;left
+	(command "circle" (strcat "-192.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	;right
+	(command "circle" (strcat "-182.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -194 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+)
+
+ (defun drawCuLiShaYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
+	
+	;rowThree
+	;left
+	(command "circle" (strcat "-190.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+
+	;right
+	(command "circle" (strcat "-184.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -194 (- (* drillDeepMaxData -5) 11.75)) (list -181 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粗粒砂岩")
+
+ ) 
+ 
+  ;粉砂质泥岩
+(defun drawFenShaZhiNiYan()
+	(drawFenShaZhiNiYanTop)
+	(drawFenShaZhiNiYanBottom)
+)
+
+ (defun drawFenShaZhiNiYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	;mid
+	(command "circle" (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) 0.10)
+	(command "circle" (strcat "-137.75," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) 0.10)
+	(command "circle" (strcat "-137.25," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) 0.10)
+	(command "circle" (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) 0.10)
+	;left
+	(command "line" (strcat "-139.75," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) (strcat "-141.25," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) "")
+
+	;right
+	(command "line" (strcat "-135.25," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) (strcat "-133.75," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) "")
+
+	(command "-hatch" "S" (ssget "W" (list -144 (- (* drillDeepMaxData -5) 5.75)) (list -131 (- (* drillDeepMaxData -5) 6.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+ )
+
+ (defun drawFenShaZhiNiYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 7.5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 7.5) 2 2)) "")
+	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 10) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 10) 2 2)) "")
+
+	;rowOne
+	;mid
+	(command "circle" (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) 0.10)
+	(command "circle" (strcat "-137.75," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) 0.10)
+	(command "circle" (strcat "-137.25," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) 0.10)
+	(command "circle" (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) 0.10)
+	;left
+	(command "line" (strcat "-139.75," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) (strcat "-141.25," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) "")
+
+	;right
+	(command "line" (strcat "-135.25," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) (strcat "-133.75," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) "")
+	
+	;rowTwo
+	;mid
+	(command "line" (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) "")
+	
+	;left
+	(command "circle" (strcat "-139.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
+	(command "circle" (strcat "-140.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
+	(command "circle" (strcat "-140.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
+	(command "circle" (strcat "-141.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
+	
+	(command "line" (strcat "-142.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) (strcat "-144.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) "")
+
+
+	;right
+	(command "circle" (strcat "-135.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
+	(command "circle" (strcat "-134.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
+	(command "circle" (strcat "-134.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
+	(command "circle" (strcat "-133.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
+	
+	(command "line" (strcat "-132.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) (strcat "-130.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) "")	
+	(command "-hatch" "S" (ssget "W" (list -144 (- (* drillDeepMaxData -5) 5.75)) (list -131 (- (* drillDeepMaxData -5) 9.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+)
+
+ (defun drawFenShaZhiNiYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
+	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 12.5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 12.5) 2 2)) "")
+
+	
+	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 7.5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 7.5) 2 2)) "")
+	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 10) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 10) 2 2)) "")
+
+	;rowThree
+	;mid
+	(command "circle" (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) 0.10)
+	(command "circle" (strcat "-137.75," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) 0.10)
+	(command "circle" (strcat "-137.25," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) 0.10)
+	(command "circle" (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) 0.10)
+	;left
+	(command "line" (strcat "-139.75," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) (strcat "-141.25," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) "")
+
+	;right
+	(command "line" (strcat "-135.25," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) (strcat "-133.75," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) "")
+	
+	;rowTwo
+	;mid
+	(command "line" (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) "")
+	
+	;left
+	(command "circle" (strcat "-139.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
+	(command "circle" (strcat "-140.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
+	(command "circle" (strcat "-140.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
+	(command "circle" (strcat "-141.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
+	
+	(command "line" (strcat "-142.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) (strcat "-144.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) "")
+
+
+	;right
+	(command "circle" (strcat "-135.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
+	(command "circle" (strcat "-134.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
+	(command "circle" (strcat "-134.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
+	(command "circle" (strcat "-133.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
+	
+	(command "line" (strcat "-132.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) (strcat "-130.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) "")	
+	(command "-hatch" "S" (ssget "W" (list -144 (- (* drillDeepMaxData -5) 10.75)) (list -131 (- (* drillDeepMaxData -5) 14.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂质泥岩")
+
+ ) 
+ 
+  ;泥质粉砂岩
+(defun drawNiZhiFenShaYan()
+	(drawNiZhiFenShaYanTop)
+	(drawNiZhiFenShaYanBottom)
+)
+
+ (defun drawNiZhiFenShaYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	;mid
+	(command "circle" (strcat "-387.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-387.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	;left
+	(command "line" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	(command "circle" (strcat "-392.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-393.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-393.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-394.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+
+	;right
+	(command "line" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	(command "circle" (strcat "-382.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-381.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-381.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-380.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+
+	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 40.75)) (list -380.25 (- (* drillDeepMaxData -5) 42))) "" "P" "SOLID" "CO" "ByLayer" "")	
+ )
+
+ (defun drawNiZhiFenShaYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) "")
+	(command "line" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) "")
+
+	;rowOne
+	;mid
+	(command "circle" (strcat "-387.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-387.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	;left
+	(command "line" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	(command "circle" (strcat "-392.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-393.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-393.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-394.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+
+	;right
+	(command "line" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	(command "circle" (strcat "-382.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-381.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-381.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	(command "circle" (strcat "-380.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	;rowTwo
+	;mid
+	(command "line" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+	
+	;left
+	(command "circle" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	(command "circle" (strcat "-390.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	(command "circle" (strcat "-390.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	(command "circle" (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+	;right
+	(command "circle" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	(command "circle" (strcat "-384.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	(command "circle" (strcat "-384.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	(command "circle" (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 40.75)) (list -380.25 (- (* drillDeepMaxData -5) 45.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+)
+
+ (defun drawNiZhiFenShaYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) " ")
+	(command "line" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) "")
+
+	;rowThree
+	;mid
+	(command "circle" (strcat "-387.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	(command "circle" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	(command "circle" (strcat "-387.25," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	(command "circle" (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	;left
+	(command "line" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
+	(command "circle" (strcat "-392.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	(command "circle" (strcat "-393.25," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	(command "circle" (strcat "-393.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	(command "circle" (strcat "-394.25," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+
+	;right
+	(command "line" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
+	(command "circle" (strcat "-382.25," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	(command "circle" (strcat "-381.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	(command "circle" (strcat "-381.25," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	(command "circle" (strcat "-380.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	
+	;rowFour
+	;mid
+	(command "line" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	
+	;left
+	(command "circle" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	(command "circle" (strcat "-390.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	(command "circle" (strcat "-390.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	(command "circle" (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+	;right
+	(command "circle" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	(command "circle" (strcat "-384.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	(command "circle" (strcat "-384.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	(command "circle" (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 45.75)) (list -380.25 (- (* drillDeepMaxData -5) 50.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥质粉砂岩") 
+ ) 
+ 
+   ;泥质砂岩
+(defun drawNiZhiShaYan()
+	(drawNiZhiShaYanTop)
+	(drawNiZhiShaYanBottom)
+)
+
+ (defun drawNiZhiShaYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	;mid
+	(command "circle" (strcat "-387.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.10)
+
+	;left
+	(command "line" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+
+	(command "circle" (strcat "-393.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.10)
+
+
+	;right
+	(command "line" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+	(command "circle" (strcat "-381.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.10)
+
+
+	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 75.75)) (list -380.25 (- (* drillDeepMaxData -5) 77))) "" "P" "SOLID" "CO" "ByLayer" "")	
+ )
+
+ (defun drawNiZhiShaYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+
+	;rowOne
+	;mid
+	(command "circle" (strcat "-387.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.10)
+
+	;left
+	(command "line" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+
+	(command "circle" (strcat "-393.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.10)
+
+
+	;right
+	(command "line" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+	(command "circle" (strcat "-381.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.10)
+
+	
+	;rowTwo
+	;mid
+	(command "line" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) "")
+	
+	;left
+	(command "circle" (strcat "-390.5," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) 0.10)
+
+	;right
+	(command "circle" (strcat "-384.5," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 75.75)) (list -380.25 (- (* drillDeepMaxData -5) 80.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+)
+
+ (defun drawNiZhiShaYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) " ")
+	(command "line" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+
+	;rowThree
+	;mid
+	(command "circle" (strcat "-387.5," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) 0.10)
+
+	;left
+	(command "line" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) "")
+
+	(command "circle" (strcat "-393.5," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) 0.10)
+
+
+	;right
+	(command "line" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) "")
+	(command "circle" (strcat "-381.5," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) 0.10)
+
+	
+	;rowFour
+	;mid
+	(command "line" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) "")
+	
+	;left
+	(command "circle" (strcat "-390.5," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 0.10)
+
+	;right
+	(command "circle" (strcat "-384.5," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 0.10)
+	
+	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 80.75)) (list -380.25 (- (* drillDeepMaxData -5) 85.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+	
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质砂岩")
+ ) 
+ 
+    ;石灰岩
+(defun drawShiHuiYan()
+	(drawShiHuiYanTop)
+	(drawShiHuiYanBottom)
+)
+
+ (defun drawShiHuiYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	(command "line" (strcat "-344.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-344.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-336.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-336.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+ )
+
+ (defun drawShiHuiYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+
+	;rowOne
+	(command "line" (strcat "-344.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-344.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-336.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-336.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+
+	;rowTwo
+	(command "line" (strcat "-330.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-330.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	(command "line" (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	(command "line" (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	(command "line" (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	
+)
+
+ (defun drawShiHuiYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) " ")
+	(command "line" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+
+	;rowThree
+	(command "line" (strcat "-344.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-344.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+	(command "line" (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+	(command "line" (strcat "-336.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-336.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+	(command "line" (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+
+	;rowFour
+	(command "line" (strcat "-330.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-330.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
+	(command "line" (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
+	(command "line" (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
+	(command "line" (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
+	
+	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "石灰岩")
+ ) 
+ 
+     ;泥质灰岩
+(defun drawNiZhiHuiYan()
+	(drawNiZhiHuiYanTop)
+	(drawNiZhiHuiYanBottom)
+)
+
+ (defun drawNiZhiHuiYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	(command "line" (strcat "-287.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-287.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-288.75," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-290.25," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+	(command "line" (strcat "-286.25," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-284.75," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+ )
+
+ (defun drawNiZhiHuiYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+
+	;rowOne
+	(command "line" (strcat "-287.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-287.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-288.75," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-290.25," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+	(command "line" (strcat "-286.25," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-284.75," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+
+
+	;rowTwo
+	(command "line" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	(command "line" (strcat "-293.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-293.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	(command "line" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	(command "line" (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	
+)
+
+ (defun drawNiZhiHuiYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) " ")
+	(command "line" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+
+	;rowThree
+	(command "line" (strcat "-287.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-287.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+	(command "line" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+	(command "line" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+	(command "line" (strcat "-288.75," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) (strcat "-290.25," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) "")
+	(command "line" (strcat "-286.25," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) (strcat "-284.75," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) "")
+
+
+	;rowFour
+	(command "line" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
+	(command "line" (strcat "-293.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-293.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
+	(command "line" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
+	(command "line" (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
+	
+	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质灰岩")
+ ) 
+ 
+      ;泥岩
+(defun drawNiYan()
+	(drawNiYanTop)
+	(drawNiYanBottom)
+)
+
+ (defun drawNiYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	(command "line" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-291," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	(command "line" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-284," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+
+ )
+
+ (defun drawNiYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) "")
+	(command "line" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) "")
+
+	;rowOne
+	(command "line" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-291," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	(command "line" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-284," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+
+
+
+	;rowTwo
+	(command "line" (strcat "-288.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-286.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+	(command "line" (strcat "-292.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-293.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+	(command "line" (strcat "-282.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-281.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+
+)
+
+ (defun drawNiYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) " ")
+	(command "line" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) "")
+
+	;rowThree
+	(command "line" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-291," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
+	(command "line" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-284," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
+
+	;rowFour
+	(command "line" (strcat "-288.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-286.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	(command "line" (strcat "-292.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-293.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	(command "line" (strcat "-282.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-281.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	
+	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥岩")
+ ) 
+ 
+       ;铝质泥岩
+(defun drawLvZhiNiYan()
+	(drawLvZhiNiYanTop)
+	(drawLvZhiNiYanBottom)
+)
+
+ (defun drawLvZhiNiYanOne()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	(command "circle" (strcat "-237.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.30)
+	(command "circle" (strcat "-237.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 1.0)
+
+	(command "line" (strcat "-239.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-241," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+	(command "line" (strcat "-235.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-234," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+
+ )
+
+ (defun drawLvZhiNiYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) "")
+	(command "line" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+
+	;rowOne
+	(command "circle" (strcat "-237.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.30)
+	(command "circle" (strcat "-237.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 1.0)
+
+	(command "line" (strcat "-239.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-241," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+	(command "line" (strcat "-235.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-234," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
+
+
+
+	;rowTwo
+	;mid
+	(command "line" (strcat "-238.25," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) (strcat "-236.75," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) "")
+	;left
+	(command "circle" (strcat "-240.25," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) 0.30)
+	(command "circle" (strcat "-240.25," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) 1.0)
+	(command "line" (strcat "-242.25," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) (strcat "-243.75," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) "")
+	;right
+	(command "circle" (strcat "-234.75," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) 0.30)
+	(command "circle" (strcat "-234.75," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) 1.0)
+	(command "line" (strcat "-232.75," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) (strcat "-231.25," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) "")
+)
+
+ (defun drawLvZhiNiYanBottom()
+   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) " ")
+	(command "line" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) "")
+
+	;rowThree
+	(command "circle" (strcat "-237.5," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) 0.30)
+	(command "circle" (strcat "-237.5," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) 1.0)
+
+	(command "line" (strcat "-239.5," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) (strcat "-241," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) "")
+	(command "line" (strcat "-235.5," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) (strcat "-234," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) "")
+
+	;rowFour
+	;mid
+	(command "line" (strcat "-238.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) (strcat "-236.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) "")
+	;left
+	(command "circle" (strcat "-240.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 0.30)
+	(command "circle" (strcat "-240.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 1.0)
+	(command "line" (strcat "-242.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) (strcat "-243.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) "")
+	;right
+	(command "circle" (strcat "-234.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 0.30)
+	(command "circle" (strcat "-234.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 1.0)
+	(command "line" (strcat "-232.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) (strcat "-231.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) "")
+	
+	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "铝质泥岩")
+ ) 
+ 
+  ;炭质泥岩
+ 
+ (defun drawTanZhiNiYan()
+	(drawTanZhiNiYanTop)
+  	(drawTanZhiNiYanBottom)
+ )
+ 
+ (defun drawTanZhiNiYanOne()
+	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	;rowOne
+	(command "line" (strcat "-191," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-189.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	
+	(command "line" (strcat "-185.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-184," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	
+	(command "circle" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	(command "-hatch" "W" "N" (strcat "-187.9," (rtos (- (* drillDeepMaxData -5) 40.5) 2 2)) (strcat "-186.7," (rtos (- (* drillDeepMaxData -5) 40.5) 2 2)) (strcat "-187.1," (rtos (- (* drillDeepMaxData -5) 42) 2 2))  (strcat "-188.3," (rtos (- (* drillDeepMaxData -5) 42) 2 2)) "C" "" "P" "SOLID" "")
+ )
+ 
+(defun drawTanZhiNiYanTop()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "line" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) "")
+	(command "line" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) "")
+	
+	;rowOne
+	(command "line" (strcat "-191," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-189.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	
+	(command "line" (strcat "-185.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-184," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
+	
+	(command "circle" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
+	
+	(command "-hatch" "W" "N" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 40.5) 2 2)) (strcat "-186.3," (rtos (- (* drillDeepMaxData -5) 40.5) 2 2)) (strcat "-187," (rtos (- (* drillDeepMaxData -5) 42) 2 2))  (strcat "-188.2," (rtos (- (* drillDeepMaxData -5) 42) 2 2)) "C" "" "P" "SOLID" "")
+
+	;rowTwo
+	(command "line" (strcat "-192.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-194," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+	(command "line" (strcat "-186.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-188.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+	(command "line" (strcat "-182.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-181.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
+
+)
+
+(defun drawTanZhiNiYanBottom()
+  	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) " ")
+	(command "line" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) "")
+	
+	;rowThree
+	(command "line" (strcat "-191," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-189.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
+	
+	(command "line" (strcat "-185.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-184," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
+	
+	(command "circle" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
+	
+	(command "-hatch" "W" "N" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 45.5) 2 2)) (strcat "-186.3," (rtos (- (* drillDeepMaxData -5) 45.5) 2 2)) (strcat "-187," (rtos (- (* drillDeepMaxData -5) 47) 2 2))  (strcat "-188.2," (rtos (- (* drillDeepMaxData -5) 47) 2 2)) "C" "" "P" "SOLID" "")
+
+	;rowFour
+	(command "line" (strcat "-192.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-194," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	(command "line" (strcat "-186.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-188.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	(command "line" (strcat "-182.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-181.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
+	
+	
+	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "炭质泥岩")
+   	
+)
+
+  ;煤层
+ 
+ (defun drawMeiCeng()
+	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "-hatch" "W" "Y" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 50) 2 2))  (strcat "-245," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) "C" "" "P" "SOLID" "")
+	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "煤层")
+
+ )
+ 
+   ;假整合
+(defun drawJiaZhengHe()
+	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) " ")
+	(command "line" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-192.85," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	(command "line" (strcat "-190.7," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-188.55," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	(command "line" (strcat "-186.4," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-184.25," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+	(command "line" (strcat "-182.1," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
+
+	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "假整合")
+)
+
+   ;角度不整合
+(defun drawJiaoDuBuZhengHe()
+	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+	(command "Rectang" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) " ")
+	(command "SPLine" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-143," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) (strcat "-141," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-139," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) (strcat "-137," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-135," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) (strcat "-133," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) "" "" "")
+	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "角度不整合")
+)
+
+;黄土层
+(defun drawHuangTuCeng()
+	(drawHuangTuCengTop)
+	(drawHuangTuCengBottom)
+)
+
+(defun drawHuangTuCengTop()
+	(command "line" (strcat "-394.5," (rtos (- (* drillDeepMaxData -5) 6.5) 2 2)) (strcat "-393," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) "")
+	(command "line" (strcat "-394," (rtos (- (* drillDeepMaxData -5) 7.5) 2 2)) (strcat "-391," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) "")
+	(command "line" (strcat "-393.5," (rtos (- (* drillDeepMaxData -5) 7.165) 2 2)) "@1.5<300" "")
+	(command "line" (strcat "-392.5," (rtos (- (* drillDeepMaxData -5) 6.5) 2 2)) "@1.5<300" "")
+	(command "-hatch" "W" "Y" (strcat "-388," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) (strcat "-390," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) (strcat "-389," (rtos (- (* drillDeepMaxData -5) 8) 2 2)) "C" "" "P" "SOLID" "")
+	
+	
+	(command "line" (strcat "-387," (rtos (- (* drillDeepMaxData -5) 6.5) 2 2)) (strcat "-385.5," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) "")
+	(command "line" (strcat "-386.5," (rtos (- (* drillDeepMaxData -5) 7.5) 2 2)) (strcat "-383.5," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) "")
+	(command "line" (strcat "-386," (rtos (- (* drillDeepMaxData -5) 7.165) 2 2)) "@1.5<300" "")
+	(command "line" (strcat "-385," (rtos (- (* drillDeepMaxData -5) 6.5) 2 2)) "@1.5<300" "")
+	(command "-hatch" "W" "Y" (strcat "-380.5," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) (strcat "-382.5," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) (strcat "-381.5," (rtos (- (* drillDeepMaxData -5) 8) 2 2)) "C" "" "P" "SOLID" "")
+) 
+
+(defun drawHuangTuCengBottom()
+	(command "Rectang" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "黄土")
+	
+	(command "line" (strcat "-393.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
+	(command "line" (strcat "-390.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
+	(command "line" (strcat "-387.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
+	(command "line" (strcat "-384.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
+	(command "line" (strcat "-381.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
+
+)
+
+(defun drawHuangTuCengBottomLineWithRockThinkness()
+	(command "line" (strcat (strcat (rtos (- RockHatchXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
+	(command "line" (strcat (strcat (rtos (- RockHatchXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
+	(command "line" (strcat (strcat (rtos (+ RockHatchXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
+	(command "line" (strcat (strcat (rtos (+ RockHatchXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
+)
+
+;Data
+(defun configBaseData()
+	(getBaseDataFromExcelFile)
+	(configBaseFrameworkData)
+	(configPlineData)
+)
+
+(defun configBaseFrameworkData()
+	;钻时
+	(setq drillingTimeMaxData (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "C2"))
+	;消耗量
+	(setq consumptionMaxData (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "D2"))
+	;水位
+	(setq waterLevelMaxData (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "E2"))
+	;井深
+	(setq drillDeepMaxData (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "F2"))
+
+	(setq DN (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B1"))
+	(setq DL (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B2"))
+	(setq LX (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B3"))
+	(setq LY (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B4"))
+	(setq LH (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B5"))
+	(setq Company (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B6"))
+	(setq StartDay (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B7"))
+	(setq EndDay (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B8"))
+	(setq DrillType (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B9"))
+	(setq WaterPump (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B10"))
+	(setq MachinePower (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B11"))
+	(setq PictureMaker (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B12"))
+	(setq DrillManager (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B13"))
+	(setq PictureProofreader (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B14"))
+	(setq PictureNumber (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B15"))
+	(setq PictureChecker (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B16"))
+	(setq Proportion (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B17"))
+	(setq DrillCommander (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B18"))
+	(setq PictureTime (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B19"))
+	(setq DrillManager (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B20"))
+	(setq DataSource (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B21"))
+
+)
+
+(defun configPlineData()
+	(configDrillingTimePlineData)
+	(configConsumptionPlineData)
+	(configWaterLevelPlineData)
+)
+
+(defun configDrillingTimePlineData()
+	(setq drillingTimePlineDataRangeOfY (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻时" "A"))
+	(setq drillingTimePlineDataRangeOfX (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻时" "B"))
+	(setq drillingTimePLFactor (caculateFactor 12 (caculateMaxNum drillingTimeMaxData)))
+	(setq drillingTimeXOffset -445)
+)
+
+(defun configConsumptionPlineData()
+	(setq consumptionPlineDataRangeOfY (getBaseDataRangeForMaxRowWithSheetNameAndRowName "消耗量" "A"))
+	(setq consumptionPlineDataRangeOfX (getBaseDataRangeForMaxRowWithSheetNameAndRowName "消耗量" "B"))
+	(setq consumptionPLFactor (caculateFactor 10 (caculateMaxNum consumptionMaxData)))
+	(setq consumptionXOffset -385)
+)
+
+(defun configWaterLevelPlineData()
+	(setq waterLevelPlineDataRangeOfY (getBaseDataRangeForMaxRowWithSheetNameAndRowName "水位" "A"))
+	(setq waterLevelPlineDataRangeOfX (getBaseDataRangeForMaxRowWithSheetNameAndRowName "水位" "B"))
+	(setq waterLevelPLFactor (caculateFactor 10 (caculateMaxNum waterLevelMaxData)))
+	(setq waterLevelXOffset -385)
+)
+
+;Data-UserClient
+(defun checkLoginState()
+	(setq loginSuccess 0)
+	(loginWithUsernameAndPassword username password)
+	(if (= responseStatus 200) 
+		(progn
+			(setq loginSuccess 1)
+			(alert "登录成功！！！外挂即将启动！！！")
+			(DCLAndDataHandler)
+		)
+		(progn
+			(setq loginSuccess 0)
+			(alert "登录失败，请检查账号密码是否正确！！！如确认无错误，请与开发者联系，邮箱we1019000306@gmail.com")
+			(loginStateDataHandler)
+		)
+	)
+)
+
+(defun loginWithUsernameAndPassword(username password / xml)
+  (setq xml (vlax-create-object "Microsoft.XMLHTTP"))
+  (setq httpURL (strcat (strcat (strcat "https://api2.bmob.cn/1/login?username=" username) "&password=") password))
+  (vlax-invoke xml 'open "GET" httpURL 0)
+  (vlax-invoke xml 'setRequestHeader "X-Bmob-Application-Id" "c095f89edf7e0b4be4d046a2b758ffc6")
+  (vlax-invoke xml 'setRequestHeader "X-Bmob-REST-API-Key" "7bf79c64d21a78cdd102e3766fa2985f")
+  (vlax-invoke xml 'send)
+  (setq responseStatus (vlax-get xml "status"))
+  (vlax-release-object xml)
+)
+
 ;Tools
+(defun getBaseDataFromExcelFile()
+	(vl-load-com)
+	(Setq excel (Vlax-Get-Object "Excel.Application"))
+	(Vlax-Put-Property excel 'Visible -1)
+	(setq baseDataExcelFilePathName (getfiled "选择数据源Excel文件" "c:" "" 8))
+	(setq wbs (vlax-get-property excel "WorkBooks"))
+	(setq wb (vlax-invoke-method wbs "open" baseDataExcelFilePathName))
+	(setq shs (vlax-get-property wb "Sheets"))
+)
+
+(defun getBaseDataRangeForMaxRowWithSheetNameAndRowName(sheetName rowName)
+	(setq sh (vlax-get-property shs 'Item sheetName))
+	(setq rg (vlax-get-property sh 'Range "A65536"))
+	(setq dataRg (vlax-get-property rg 'end -4162))
+	(setq finalRow (vlax-get-property dataRg 'row))
+	(setq finalDataRg (vlax-get-property sh 'Range (strcat (strcat rowName "2:") (strcat rowName (itoa finalRow)))))
+)
+
+(defun getBaseDataCellValueWithSheetNameAndRowName(sheetName rowName)
+	(setq sh (vlax-get-property shs 'Item sheetName))
+	(setq rg (vlax-get-property sh 'Range (strcat (strcat rowName ":") rowName)))
+	(Vlax-Get (vlax-variant-value (Vlax-Get-Property rg 'Item 1)) 'Value2)
+)
+
 (defun caculateMaxNum(num);计算最高位数的最高值
   	
   	(setq numDivTen (/ num 10))
@@ -2249,24 +3733,24 @@
  
  (defun eraseXi()
  	(command "zoom" "A")
-	(command "erase" "F" (list -330 -1) (list -330 (+ (* d -5) 1)) "" "")
-	(command "erase" "F" (list -330.25 -1) (list -330.25 (+ (* d -5) 1)) "" "")
-	(command "erase" "F" (list -329.75 -1) (list -329.75 (+ (* d -5) 1)) "" "")
+	(command "erase" "F" (list -330 -1) (list -330 (+ (* drillDeepMaxData -5) 1)) "" "")
+	(command "erase" "F" (list -330.25 -1) (list -330.25 (+ (* drillDeepMaxData -5) 1)) "" "")
+	(command "erase" "F" (list -329.75 -1) (list -329.75 (+ (* drillDeepMaxData -5) 1)) "" "")
  )
  
   (defun eraseTong()
   	(command "zoom" "A")
-	(command "erase" "F" (list -320 -1) (list -320 (+ (* d -5) 1)) "" "")
-	(command "erase" "F" (list -320.25 -1) (list -320.25 (+ (* d -5) 1)) "" "")
-	(command "erase" "F" (list -319.75 -1) (list -319.75 (+ (* d -5) 1)) "" "")
+	(command "erase" "F" (list -320 -1) (list -320 (+ (* drillDeepMaxData -5) 1)) "" "")
+	(command "erase" "F" (list -320.25 -1) (list -320.25 (+ (* drillDeepMaxData -5) 1)) "" "")
+	(command "erase" "F" (list -319.75 -1) (list -319.75 (+ (* drillDeepMaxData -5) 1)) "" "")
 
  )
  
  (defun eraseZu()
  	(command "zoom" "A")
-	(command "erase" "F" (list -310 -1) (list -310 (+ (* d -5) 1)) "" "")
-	(command "erase" "F" (list -310.25 -1) (list -310.25 (+ (* d -5) 1)) "" "")
-	(command "erase" "F" (list -309.75 -1) (list -309.75 (+ (* d -5) 1)) "" "")
+	(command "erase" "F" (list -310 -1) (list -310 (+ (* drillDeepMaxData -5) 1)) "" "")
+	(command "erase" "F" (list -310.25 -1) (list -310.25 (+ (* drillDeepMaxData -5) 1)) "" "")
+	(command "erase" "F" (list -309.75 -1) (list -309.75 (+ (* drillDeepMaxData -5) 1)) "" "")
  )
  ;单独删除柱状图
  (defun eraseWellColumnarDiagram()
@@ -2277,1343 +3761,40 @@
  (defun eraseWellDrillingColumnarDiagram()
 	(command "zoom" "A")
 	;erase 床交时能识别的最近距离为5！！！
-	(command "erase" "C" (list -240 -5) (list -235 (+ (* d -5) 5)) "")
-	(command "erase" "C" (list -220 -5) (list -215 (+ (* d -5) 5)) "")
-	(command "erase" "C" (list -205 -5) (list -200 (+ (* d -5) 5)) "")
-	(command "erase" "F" (list -193.5 -5) (list -193.5 (+ (* d -5) 1)) "" "")
-	(command "erase" "C" (list -180 -5) (list -165 (+ (* d -5) 5)) "")
-	(command "erase" "C" (list -155 -5) (list -65 (+ (* d -5) 5)) "")
-	;(command "erase" "F" (list -210 (- (* d -5) 1)) (list -193.5 (+ (* d -5) 1)) "" "")
+	(command "erase" "C" (list -240 -5) (list -235 (+ (* drillDeepMaxData -5) 5)) "")
+	(command "erase" "C" (list -220 -5) (list -215 (+ (* drillDeepMaxData -5) 5)) "")
+	(command "erase" "C" (list -205 -5) (list -200 (+ (* drillDeepMaxData -5) 5)) "")
+	(command "erase" "F" (list -193.5 -5) (list -193.5 (+ (* drillDeepMaxData -5) 1)) "" "")
+	(command "erase" "C" (list -180 -5) (list -165 (+ (* drillDeepMaxData -5) 5)) "")
+	(command "erase" "C" (list -155 -5) (list -65 (+ (* drillDeepMaxData -5) 5)) "")
+	;(command "erase" "F" (list -210 (- (* drillDeepMaxData -5) 1)) (list -193.5 (+ (* drillDeepMaxData -5) 1)) "" "")
 
  )
  
  ;删除已画测井柱状图
  (defun eraseWellLoggingColumnarDiagram()
 	(command "zoom" "A")
-	(command "erase" "C" (list -300 -5) (list -295 (+ (* d -5) 5)) "")
-	(command "erase" "C" (list -285 -5) (list -280 (+ (* d -5) 5)) "")
-	(command "erase" "F" (list -272.5 -5) (list -272.5 (+ (* d -5) 5)) "" "")
-	(command "erase" "C" (list -265 -5) (list -261 (+ (* d -5) 5)) "")
+	(command "erase" "C" (list -300 -5) (list -295 (+ (* drillDeepMaxData -5) 5)) "")
+	(command "erase" "C" (list -285 -5) (list -280 (+ (* drillDeepMaxData -5) 5)) "")
+	(command "erase" "F" (list -272.5 -5) (list -272.5 (+ (* drillDeepMaxData -5) 5)) "" "")
+	(command "erase" "C" (list -265 -5) (list -261 (+ (* drillDeepMaxData -5) 5)) "")
  )
  
  (defun eraseRockSign()
 	(command "zoom" "A")
-	(command "erase" "F" (list -250 -5) (list -250 (+ (* d -5) 5)) "" "")
-	(command "erase" "F" (list -250.25 -5) (list -250.25 (+ (* d -5) 5)) "" "")
-	(command "erase" "F" (list -249.75 -5) (list -249.75 (+ (* d -5) 5)) "" "")
+	(command "erase" "F" (list -250 -5) (list -250 (+ (* drillDeepMaxData -5) 5)) "" "")
+	(command "erase" "F" (list -250.25 -5) (list -250.25 (+ (* drillDeepMaxData -5) 5)) "" "")
+	(command "erase" "F" (list -249.75 -5) (list -249.75 (+ (* drillDeepMaxData -5) 5)) "" "")
  )
  
  ;删除已画完井结构
  (defun EraseDrillCompletionStructure()
 	(command "zoom" "A")
-	(command "erase" "C" (list -55 -5) (list -5 (+ (* d -5) 5)) "")
+	(command "erase" "C" (list -55 -5) (list -5 (+ (* drillDeepMaxData -5) 5)) "")
  )
  
  ;删除已画井斜方位角
  (defun eraseEraseDrillDeviation()
  	(command "zoom" "A")
-	(command "erase" "C" (list 5 -5) (list 20 (+ (* d -5) 5)) "")
+	(command "erase" "C" (list 5 -5) (list 20 (+ (* drillDeepMaxData -5) 5)) "")
  )
- 
- ;BaseBlock
- 
-  (defun drawShaLiYanVla()
-	(vla-SendCommand thisdrawing (strcat "(drawShaLiYan)" " "))
-)
- 
-(defun drawShaLiYan()
-	(drawShaLiYanTop)
-  	(drawShaLiYanBottom)
- )
-
-
- 
- ;砂砾岩
-(defun drawShaLiYanOneVla()
-	(vla-SendCommand thisdrawing (strcat "(drawShaLiYanOne)" " "))
-)
-
- (defun drawShaLiYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "circle" (strcat "-337.5," (rtos (- (* d -5) 41.25) 2 2)) 0.35)
-	
-	(command "circle" (strcat "-340," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-341," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-335," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-334," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	 (command "-hatch" "S" (ssget "W" (list -341.5 (- (* d -5) 40.75)) (list -339.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* d -5) 40.75)) (list -333.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
- )
- 
- (defun drawShaLiYanTopVla()
-	(vla-SendCommand thisdrawing (strcat "(drawShaLiYanTop)" " "))
-)
- 
-(defun drawShaLiYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-345," (rtos (- (* d -5) 42.5) 2 2)) (strcat "-330," (rtos (- (* d -5) 42.5) 2 2)) "")
-  	
-	(command "line" (strcat "-345," (rtos (- (* d -5) 45) 2 2)) (strcat "-330," (rtos (- (* d -5) 45) 2 2)) "")
-	
-	;rowOne
-	(command "circle" (strcat "-337.5," (rtos (- (* d -5) 41.25) 2 2)) 0.35)
-	
-	(command "circle" (strcat "-340," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-341," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-335," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-334," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	
-	(command "-hatch" "S" (ssget "W" (list -341.5 (- (* d -5) 40.75)) (list -339.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	(command)
-	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* d -5) 40.75)) (list -333.5 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	;rowTwo
-	(command "circle" (strcat "-340.5," (rtos (- (* d -5) 43.75) 2 2)) 0.35)
-	
-	(command "circle" (strcat "-334.5," (rtos (- (* d -5) 43.75) 2 2)) 0.35)
-	
-	(command "circle" (strcat "-338," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-337," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-332.5," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-331.5," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-342.5," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-343.5," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-
-	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* d -5) 43.25)) (list -336.5 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -333 (- (* d -5) 43.25)) (list -331 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -344 (- (* d -5) 43.25)) (list -342 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-)
-
- (defun drawShaLiYanBottomVla()
-	(vla-SendCommand thisdrawing (strcat "(drawShaLiYanBottom)" " "))
-)
-
- (defun drawShaLiYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-345," (rtos (- (* d -5) 40) 2 2)) (strcat "-330," (rtos (- (* d -5) 50) 2 2)) " ")
-	
-	(command "line" (strcat "-345," (rtos (- (* d -5) 47.5) 2 2)) (strcat "-330," (rtos (- (* d -5) 47.5) 2 2)) "")
-	
-	;rowThree
-	(command "circle" (strcat "-337.5," (rtos (- (* d -5) 46.25) 2 2)) 0.35)
-	
-	(command "circle" (strcat "-340," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-341," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-335," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-334," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	
-	
-	(command "-hatch" "S" (ssget "W" (list -341.5 (- (* d -5) 45.75)) (list -339.5 (- (* d -5) 46.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* d -5) 45.75)) (list -333.5 (- (* d -5) 46.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	;rowFour
-	(command "circle" (strcat "-340.5," (rtos (- (* d -5) 48.75) 2 2)) 0.35)
-	
-	(command "circle" (strcat "-334.5," (rtos (- (* d -5) 48.75) 2 2)) 0.35)
-	
-	(command "circle" (strcat "-338," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-337," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-332.5," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-331.5," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-342.5," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-343.5," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-   	(command "text" "J" "C" (list -337.5 (- (* d -5) 56.5)) 3 0 "砂砾岩")
-   	
-
-	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* d -5) 48.25)) (list -336.5 (- (* d -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -333 (- (* d -5) 48.25)) (list -331 (- (* d -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -344 (- (* d -5) 48.25)) (list -342 (- (* d -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-
- ) 
-
- 
- ;砂质泥岩
- 
- (defun drawShaZhiNiYan()
-	(drawShaZhiNiYanTop)
-  	(drawShaZhiNiYanBottom)
- )
- 
- (defun drawShaZhiNiYanOne()
-	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-141," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-139.5," (rtos (- (* d -5) 41.25) 2 2)) "")
-	
-	(command "line" (strcat "-135.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-134," (rtos (- (* d -5) 41.25) 2 2)) "")
-	
-	(command "circle" (strcat "-137.5," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-  	(command "-hatch" "S" (ssget "W" (list -138 (- (* d -5) 40.75)) (list -137 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
- )
- 
-(defun drawShaZhiNiYanTop()
-  	;(command "zoom" "w" (strcat "-150," (rtos (- (* d -5) 40) 2 2)) (strcat "-125," (rtos (- (* d -5) 50) 2 2)) )
-	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-145," (rtos (- (* d -5) 42.5) 2 2)) (strcat "-130," (rtos (- (* d -5) 42.5) 2 2)) "")
-  	
-	(command "line" (strcat "-145," (rtos (- (* d -5) 45) 2 2)) (strcat "-130," (rtos (- (* d -5) 45) 2 2)) "")
-	
-	;rowOne
-	(command "line" (strcat "-141," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-139.5," (rtos (- (* d -5) 41.25) 2 2)) "")
-	
-	(command "line" (strcat "-135.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-134," (rtos (- (* d -5) 41.25) 2 2)) "")
-	
-	(command "circle" (strcat "-137.5," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -138 (- (* d -5) 40.75)) (list -137 (- (* d -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-
-
-	
-
-	;rowTwo
-	(command "line" (strcat "-142.5," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-144," (rtos (- (* d -5) 43.75) 2 2)) "")
-	(command "line" (strcat "-136.75," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-138.25," (rtos (- (* d -5) 43.75) 2 2)) "")
-	(command "line" (strcat "-132.75," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-131.25," (rtos (- (* d -5) 43.75) 2 2)) "")
-	
-	(command "circle" (strcat "-140.25," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-134.75," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -135.5 (- (* d -5) 43.25)) (list -133.5 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* d -5) 43.25)) (list -139.5 (- (* d -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-)
-
-(defun drawShaZhiNiYanBottom()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-145," (rtos (- (* d -5) 40) 2 2)) (strcat "-130," (rtos (- (* d -5) 50) 2 2)) " ")
-	(command "line" (strcat "-145," (rtos (- (* d -5) 47.5) 2 2)) (strcat "-130," (rtos (- (* d -5) 47.5) 2 2)) "")
-  		
-	;rowThree
-	(command "line" (strcat "-141," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-139.5," (rtos (- (* d -5) 46.25) 2 2)) "")
-	
-	(command "line" (strcat "-135.5," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-134," (rtos (- (* d -5) 46.25) 2 2)) "")
-	
-	(command "circle" (strcat "-137.5," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	
-  	(command "-hatch" "S" (ssget "W" (list -138 (- (* d -5) 46.75)) (list -137 (- (* d -5) 45.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	;rowFour
-	(command "line" (strcat "-142.5," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-144," (rtos (- (* d -5) 48.75) 2 2)) "")
-	(command "line" (strcat "-136.75," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-138.25," (rtos (- (* d -5) 48.75) 2 2)) "")
-	(command "line" (strcat "-132.75," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-131.25," (rtos (- (* d -5) 48.75) 2 2)) "")
-	
-	(command "circle" (strcat "-140.25," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-134.75," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-	
-	(command "-hatch" "S" (ssget "W" (list -135.5 (- (* d -5) 49.25)) (list -133.5 (- (* d -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* d -5) 49.25)) (list -139.5 (- (* d -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	
-	(command "text" "J" "C" (list -137.5 (- (* d -5) 56.5)) 3 0 "砂质泥岩")
-   	
-)
-
-
-;细粒砂岩
-
-(defun drawXiLiShaYanVla()
-	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYan)" " "))
-	
-
-)
-
- (defun drawXiLiShaYan()
-	(drawXiLiShaYanTop)
-	(drawXiLiShaYanBottom)
-)
- 
- (defun drawXiLiShaYanOneVla()
-	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYanOne)" " "))
-
-)
- 
- (defun drawXiLiShaYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "circle" (strcat "-291.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-290.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-289.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-285.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-284.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-283.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* d -5) 7.75)) (list -282.5 (- (* d -5) 6.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
- )
- 
-  (defun drawXiLiShaYanTopVla()
-	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYanTop)" " "))
-	
-)
- 
-(defun drawXiLiShaYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	(command "circle" (strcat "-291.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-290.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-289.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-285.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-284.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-283.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	
-	;rowTwo
-	(command "circle" (strcat "-287.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-286.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-288.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-291.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-292.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-293.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-283.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-282.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-281.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-
-	(command "-hatch" "S" (ssget "W" (list -294.5 (- (* d -5) 6.75)) (list -280.5 (- (* d -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-
-)
-
-  (defun drawXiLiShaYanBottomVla()
-	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYanBottom)" " "))
-)
-
- (defun drawXiLiShaYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-295," (rtos (- (* d -5) 5) 2 2)) (strcat "-280," (rtos (- (* d -5) 15) 2 2)) " ")
-	
-	;rowThree
-	(command "circle" (strcat "-291.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-290.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-289.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-285.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-284.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-283.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* d -5) 11.75)) (list -282.5 (- (* d -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-
-	(command "text" "J" "C" (list -287.5 (- (* d -5) 21.5)) 3 0 "细粒砂岩")
-   	
- ) 
- 
-;粉砂岩
-(defun drawFenShaYan()
-	(drawFenShaYanTop)
-	(drawFenShaYanBottom)
-)
-
- (defun drawFenShaYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	;left
-	(command "circle" (strcat "-339.25," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-339.75," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-340.25," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-340.75," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	;right
-	(command "circle" (strcat "-335.75," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-335.25," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-334.75," (rtos (- (* d -5)7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-334.25," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -344 (- (* d -5) 6.75)) (list -331 (- (* d -5) 7.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
- )
-
- (defun drawFenShaYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	
-	;rowOne
-	;left
-	(command "circle" (strcat "-339.25," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-339.75," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-340.25," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-340.75," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	;right
-	(command "circle" (strcat "-335.75," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-335.25," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-334.75," (rtos (- (* d -5)7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-334.25," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	;rowTwo
-	;mid
-	(command "circle" (strcat "-336.75," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-337.25," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-337.75," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-338.25," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	;left
-	(command "circle" (strcat "-341.75," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-342.25," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-342.75," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-343.25," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	;right
-	(command "circle" (strcat "-332.75," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-332.25," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-331.75," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-331.25," (rtos (- (* d -5) 9.75) 2 2)) 0.10)	
-	
-	(command "-hatch" "S" (ssget "W" (list -344 (- (* d -5) 6.75)) (list -331 (- (* d -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-)
-
- (defun drawFenShaYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-345," (rtos (- (* d -5) 5) 2 2)) (strcat "-330," (rtos (- (* d -5) 15) 2 2)) " ")
-	
-	;rowThree
-	;left
-	(command "circle" (strcat "-339.25," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-339.75," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-340.25," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-340.75," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	;right
-	(command "circle" (strcat "-335.75," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-335.25," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-334.75," (rtos (- (* d -5)12.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-334.25," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -344 (- (* d -5) 11.75)) (list -331 (- (* d -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "text" "J" "C" (list -337.5 (- (* d -5) 21.5)) 3 0 "粉砂岩")
-
- ) 
- 
- ;中粒砂岩
-(defun drawZhongLiShaYan()
-	(drawZhongLiShaYanTop)
-	(drawZhongLiShaYanBottom)
-)
-
- (defun drawZhongLiShaYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	;left
-	(command "circle" (strcat "-241," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command "circle" (strcat "-240," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	;right
-	(command "circle" (strcat "-235," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-234," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	
-	(command "-hatch" "S" (ssget "W" (list -244 (- (* d -5) 6.75)) (list -231 (- (* d -5) 7.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
- )
-
- (defun drawZhongLiShaYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	
-	;rowOne
-	;left
-	(command "circle" (strcat "-241," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command "circle" (strcat "-240," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	;right
-	(command "circle" (strcat "-235," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	(command "circle" (strcat "-234," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	;rowTwo
-	;mid
-	(command "circle" (strcat "-237," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	(command "circle" (strcat "-238," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	;left
-	(command "circle" (strcat "-242," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-243," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	;right
-	(command "circle" (strcat "-232," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-233," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -244 (- (* d -5) 6.75)) (list -231 (- (* d -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-)
-
- (defun drawZhongLiShaYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-245," (rtos (- (* d -5) 5) 2 2)) (strcat "-230," (rtos (- (* d -5) 15) 2 2)) " ")
-	
-	;rowThree
-	;left
-	(command "circle" (strcat "-241," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	(command "circle" (strcat "-240," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	;right
-	(command "circle" (strcat "-235," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	(command "circle" (strcat "-234," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -244 (- (* d -5) 11.75)) (list -231 (- (* d -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "text" "J" "C" (list -237.5 (- (* d -5) 21.5)) 3 0 "中粒砂岩")
-
- ) 
- 
-  ;粗粒砂岩
-(defun drawCuLiShaYan()
-	(drawCuLiShaYanTop)
-	(drawCuLiShaYanBottom)
-)
-
- (defun drawCuLiShaYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	;left
-	(command "circle" (strcat "-190.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-
-	;right
-	(command "circle" (strcat "-184.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-
-	(command "-hatch" "S" (ssget "W" (list -194 (- (* d -5) 6.75)) (list -181 (- (* d -5) 7.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
- )
-
- (defun drawCuLiShaYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	
-	;rowOne
-	;left
-	(command "circle" (strcat "-190.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-
-	;right
-	(command "circle" (strcat "-184.5," (rtos (- (* d -5) 7.25) 2 2)) 0.10)
-	
-	;rowTwo
-	;mid
-	(command "circle" (strcat "-187.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	;left
-	(command "circle" (strcat "-192.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	;right
-	(command "circle" (strcat "-182.5," (rtos (- (* d -5) 9.75) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -194 (- (* d -5) 6.75)) (list -181 (- (* d -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-)
-
- (defun drawCuLiShaYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-195," (rtos (- (* d -5) 5) 2 2)) (strcat "-180," (rtos (- (* d -5) 15) 2 2)) " ")
-	
-	;rowThree
-	;left
-	(command "circle" (strcat "-190.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-
-	;right
-	(command "circle" (strcat "-184.5," (rtos (- (* d -5) 12.25) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -194 (- (* d -5) 11.75)) (list -181 (- (* d -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "text" "J" "C" (list -187.5 (- (* d -5) 21.5)) 3 0 "粗粒砂岩")
-
- ) 
- 
-  ;粉砂质泥岩
-(defun drawFenShaZhiNiYan()
-	(drawFenShaZhiNiYanTop)
-	(drawFenShaZhiNiYanBottom)
-)
-
- (defun drawFenShaZhiNiYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	;mid
-	(command "circle" (strcat "-138.25," (rtos (- (* d -5) 6.25) 2 2)) 0.10)
-	(command "circle" (strcat "-137.75," (rtos (- (* d -5) 6.25) 2 2)) 0.10)
-	(command "circle" (strcat "-137.25," (rtos (- (* d -5) 6.25) 2 2)) 0.10)
-	(command "circle" (strcat "-136.75," (rtos (- (* d -5) 6.25) 2 2)) 0.10)
-	;left
-	(command "line" (strcat "-139.75," (rtos (- (* d -5) 6.25) 2 2)) (strcat "-141.25," (rtos (- (* d -5) 6.25) 2 2)) "")
-
-	;right
-	(command "line" (strcat "-135.25," (rtos (- (* d -5) 6.25) 2 2)) (strcat "-133.75," (rtos (- (* d -5) 6.25) 2 2)) "")
-
-	(command "-hatch" "S" (ssget "W" (list -144 (- (* d -5) 5.75)) (list -131 (- (* d -5) 6.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
- )
-
- (defun drawFenShaZhiNiYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-145," (rtos (- (* d -5) 7.5) 2 2)) (strcat "-130," (rtos (- (* d -5) 7.5) 2 2)) "")
-	(command "line" (strcat "-145," (rtos (- (* d -5) 10) 2 2)) (strcat "-130," (rtos (- (* d -5) 10) 2 2)) "")
-
-	;rowOne
-	;mid
-	(command "circle" (strcat "-138.25," (rtos (- (* d -5) 6.25) 2 2)) 0.10)
-	(command "circle" (strcat "-137.75," (rtos (- (* d -5) 6.25) 2 2)) 0.10)
-	(command "circle" (strcat "-137.25," (rtos (- (* d -5) 6.25) 2 2)) 0.10)
-	(command "circle" (strcat "-136.75," (rtos (- (* d -5) 6.25) 2 2)) 0.10)
-	;left
-	(command "line" (strcat "-139.75," (rtos (- (* d -5) 6.25) 2 2)) (strcat "-141.25," (rtos (- (* d -5) 6.25) 2 2)) "")
-
-	;right
-	(command "line" (strcat "-135.25," (rtos (- (* d -5) 6.25) 2 2)) (strcat "-133.75," (rtos (- (* d -5) 6.25) 2 2)) "")
-	
-	;rowTwo
-	;mid
-	(command "line" (strcat "-138.25," (rtos (- (* d -5) 8.75) 2 2)) (strcat "-136.75," (rtos (- (* d -5) 8.75) 2 2)) "")
-	
-	;left
-	(command "circle" (strcat "-139.75," (rtos (- (* d -5) 8.75) 2 2)) 0.10)
-	(command "circle" (strcat "-140.25," (rtos (- (* d -5) 8.75) 2 2)) 0.10)
-	(command "circle" (strcat "-140.75," (rtos (- (* d -5) 8.75) 2 2)) 0.10)
-	(command "circle" (strcat "-141.25," (rtos (- (* d -5) 8.75) 2 2)) 0.10)
-	
-	(command "line" (strcat "-142.75," (rtos (- (* d -5) 8.75) 2 2)) (strcat "-144.25," (rtos (- (* d -5) 8.75) 2 2)) "")
-
-
-	;right
-	(command "circle" (strcat "-135.25," (rtos (- (* d -5) 8.75) 2 2)) 0.10)
-	(command "circle" (strcat "-134.75," (rtos (- (* d -5) 8.75) 2 2)) 0.10)
-	(command "circle" (strcat "-134.25," (rtos (- (* d -5) 8.75) 2 2)) 0.10)
-	(command "circle" (strcat "-133.75," (rtos (- (* d -5) 8.75) 2 2)) 0.10)
-	
-	(command "line" (strcat "-132.25," (rtos (- (* d -5) 8.75) 2 2)) (strcat "-130.75," (rtos (- (* d -5) 8.75) 2 2)) "")	
-	(command "-hatch" "S" (ssget "W" (list -144 (- (* d -5) 5.75)) (list -131 (- (* d -5) 9.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-)
-
- (defun drawFenShaZhiNiYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-145," (rtos (- (* d -5) 5) 2 2)) (strcat "-130," (rtos (- (* d -5) 15) 2 2)) " ")
-	(command "line" (strcat "-145," (rtos (- (* d -5) 12.5) 2 2)) (strcat "-130," (rtos (- (* d -5) 12.5) 2 2)) "")
-
-	
-	(command "line" (strcat "-145," (rtos (- (* d -5) 7.5) 2 2)) (strcat "-130," (rtos (- (* d -5) 7.5) 2 2)) "")
-	(command "line" (strcat "-145," (rtos (- (* d -5) 10) 2 2)) (strcat "-130," (rtos (- (* d -5) 10) 2 2)) "")
-
-	;rowThree
-	;mid
-	(command "circle" (strcat "-138.25," (rtos (- (* d -5) 11.25) 2 2)) 0.10)
-	(command "circle" (strcat "-137.75," (rtos (- (* d -5) 11.25) 2 2)) 0.10)
-	(command "circle" (strcat "-137.25," (rtos (- (* d -5) 11.25) 2 2)) 0.10)
-	(command "circle" (strcat "-136.75," (rtos (- (* d -5) 11.25) 2 2)) 0.10)
-	;left
-	(command "line" (strcat "-139.75," (rtos (- (* d -5) 11.25) 2 2)) (strcat "-141.25," (rtos (- (* d -5) 11.25) 2 2)) "")
-
-	;right
-	(command "line" (strcat "-135.25," (rtos (- (* d -5) 11.25) 2 2)) (strcat "-133.75," (rtos (- (* d -5) 11.25) 2 2)) "")
-	
-	;rowTwo
-	;mid
-	(command "line" (strcat "-138.25," (rtos (- (* d -5) 13.75) 2 2)) (strcat "-136.75," (rtos (- (* d -5) 13.75) 2 2)) "")
-	
-	;left
-	(command "circle" (strcat "-139.75," (rtos (- (* d -5) 13.75) 2 2)) 0.10)
-	(command "circle" (strcat "-140.25," (rtos (- (* d -5) 13.75) 2 2)) 0.10)
-	(command "circle" (strcat "-140.75," (rtos (- (* d -5) 13.75) 2 2)) 0.10)
-	(command "circle" (strcat "-141.25," (rtos (- (* d -5) 13.75) 2 2)) 0.10)
-	
-	(command "line" (strcat "-142.75," (rtos (- (* d -5) 13.75) 2 2)) (strcat "-144.25," (rtos (- (* d -5) 13.75) 2 2)) "")
-
-
-	;right
-	(command "circle" (strcat "-135.25," (rtos (- (* d -5) 13.75) 2 2)) 0.10)
-	(command "circle" (strcat "-134.75," (rtos (- (* d -5) 13.75) 2 2)) 0.10)
-	(command "circle" (strcat "-134.25," (rtos (- (* d -5) 13.75) 2 2)) 0.10)
-	(command "circle" (strcat "-133.75," (rtos (- (* d -5) 13.75) 2 2)) 0.10)
-	
-	(command "line" (strcat "-132.25," (rtos (- (* d -5) 13.75) 2 2)) (strcat "-130.75," (rtos (- (* d -5) 13.75) 2 2)) "")	
-	(command "-hatch" "S" (ssget "W" (list -144 (- (* d -5) 10.75)) (list -131 (- (* d -5) 14.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "text" "J" "C" (list -137.5 (- (* d -5) 21.5)) 3 0 "粉砂质泥岩")
-
- ) 
- 
-  ;泥质粉砂岩
-(defun drawNiZhiFenShaYan()
-	(drawNiZhiFenShaYanTop)
-	(drawNiZhiFenShaYanBottom)
-)
-
- (defun drawNiZhiFenShaYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	;mid
-	(command "circle" (strcat "-387.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-388.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-387.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-386.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	;left
-	(command "line" (strcat "-389.75," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-391.25," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command "circle" (strcat "-392.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-393.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-393.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-394.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-
-	;right
-	(command "line" (strcat "-385.25," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-383.75," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command "circle" (strcat "-382.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-381.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-381.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-380.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-
-	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* d -5) 40.75)) (list -380.25 (- (* d -5) 42))) "" "P" "SOLID" "CO" "ByLayer" "")	
- )
-
- (defun drawNiZhiFenShaYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-395," (rtos (- (* d -5) 42.5) 2 2)) (strcat "-380," (rtos (- (* d -5) 42.5) 2 2)) "")
-	(command "line" (strcat "-395," (rtos (- (* d -5) 45) 2 2)) (strcat "-380," (rtos (- (* d -5) 45) 2 2)) "")
-
-	;rowOne
-	;mid
-	(command "circle" (strcat "-387.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-388.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-387.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-386.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	;left
-	(command "line" (strcat "-389.75," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-391.25," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command "circle" (strcat "-392.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-393.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-393.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-394.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-
-	;right
-	(command "line" (strcat "-385.25," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-383.75," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command "circle" (strcat "-382.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-381.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-381.25," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	(command "circle" (strcat "-380.75," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	;rowTwo
-	;mid
-	(command "line" (strcat "-388.25," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-386.75," (rtos (- (* d -5) 43.75) 2 2)) "")
-	
-	;left
-	(command "circle" (strcat "-389.75," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command "circle" (strcat "-390.25," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command "circle" (strcat "-390.75," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command "circle" (strcat "-391.25," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-	;right
-	(command "circle" (strcat "-385.25," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command "circle" (strcat "-384.75," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command "circle" (strcat "-384.25," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	(command "circle" (strcat "-383.75," (rtos (- (* d -5) 43.75) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* d -5) 40.75)) (list -380.25 (- (* d -5) 45.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-)
-
- (defun drawNiZhiFenShaYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-395," (rtos (- (* d -5) 40) 2 2)) (strcat "-380," (rtos (- (* d -5) 50) 2 2)) " ")
-	(command "line" (strcat "-395," (rtos (- (* d -5) 47.5) 2 2)) (strcat "-380," (rtos (- (* d -5) 47.5) 2 2)) "")
-
-	;rowThree
-	;mid
-	(command "circle" (strcat "-387.75," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command "circle" (strcat "-388.25," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command "circle" (strcat "-387.25," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command "circle" (strcat "-386.75," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	;left
-	(command "line" (strcat "-389.75," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-391.25," (rtos (- (* d -5) 46.25) 2 2)) "")
-	(command "circle" (strcat "-392.75," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command "circle" (strcat "-393.25," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command "circle" (strcat "-393.75," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command "circle" (strcat "-394.25," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-
-	;right
-	(command "line" (strcat "-385.25," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-383.75," (rtos (- (* d -5) 46.25) 2 2)) "")
-	(command "circle" (strcat "-382.25," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command "circle" (strcat "-381.75," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command "circle" (strcat "-381.25," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	(command "circle" (strcat "-380.75," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	
-	;rowFour
-	;mid
-	(command "line" (strcat "-388.25," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-386.75," (rtos (- (* d -5) 48.75) 2 2)) "")
-	
-	;left
-	(command "circle" (strcat "-389.75," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command "circle" (strcat "-390.25," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command "circle" (strcat "-390.75," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command "circle" (strcat "-391.25," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-	;right
-	(command "circle" (strcat "-385.25," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command "circle" (strcat "-384.75," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command "circle" (strcat "-384.25," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	(command "circle" (strcat "-383.75," (rtos (- (* d -5) 48.75) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* d -5) 45.75)) (list -380.25 (- (* d -5) 50.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "text" "J" "C" (list -387.5 (- (* d -5) 56.5)) 3 0 "泥质粉砂岩") 
- ) 
- 
-   ;泥质砂岩
-(defun drawNiZhiShaYan()
-	(drawNiZhiShaYanTop)
-	(drawNiZhiShaYanBottom)
-)
-
- (defun drawNiZhiShaYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	;mid
-	(command "circle" (strcat "-387.5," (rtos (- (* d -5) 76.25) 2 2)) 0.10)
-
-	;left
-	(command "line" (strcat "-389.75," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-391.25," (rtos (- (* d -5) 76.25) 2 2)) "")
-
-	(command "circle" (strcat "-393.5," (rtos (- (* d -5) 76.25) 2 2)) 0.10)
-
-
-	;right
-	(command "line" (strcat "-385.25," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-383.75," (rtos (- (* d -5) 76.25) 2 2)) "")
-	(command "circle" (strcat "-381.5," (rtos (- (* d -5) 76.25) 2 2)) 0.10)
-
-
-	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* d -5) 75.75)) (list -380.25 (- (* d -5) 77))) "" "P" "SOLID" "CO" "ByLayer" "")	
- )
-
- (defun drawNiZhiShaYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-395," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-380," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-395," (rtos (- (* d -5) 80) 2 2)) (strcat "-380," (rtos (- (* d -5) 80) 2 2)) "")
-
-	;rowOne
-	;mid
-	(command "circle" (strcat "-387.5," (rtos (- (* d -5) 76.25) 2 2)) 0.10)
-
-	;left
-	(command "line" (strcat "-389.75," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-391.25," (rtos (- (* d -5) 76.25) 2 2)) "")
-
-	(command "circle" (strcat "-393.5," (rtos (- (* d -5) 76.25) 2 2)) 0.10)
-
-
-	;right
-	(command "line" (strcat "-385.25," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-383.75," (rtos (- (* d -5) 76.25) 2 2)) "")
-	(command "circle" (strcat "-381.5," (rtos (- (* d -5) 76.25) 2 2)) 0.10)
-
-	
-	;rowTwo
-	;mid
-	(command "line" (strcat "-388.25," (rtos (- (* d -5) 78.75) 2 2)) (strcat "-386.75," (rtos (- (* d -5) 78.75) 2 2)) "")
-	
-	;left
-	(command "circle" (strcat "-390.5," (rtos (- (* d -5) 78.75) 2 2)) 0.10)
-
-	;right
-	(command "circle" (strcat "-384.5," (rtos (- (* d -5) 78.75) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* d -5) 75.75)) (list -380.25 (- (* d -5) 80.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-)
-
- (defun drawNiZhiShaYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-395," (rtos (- (* d -5) 75) 2 2)) (strcat "-380," (rtos (- (* d -5) 85) 2 2)) " ")
-	(command "line" (strcat "-395," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-380," (rtos (- (* d -5) 82.5) 2 2)) "")
-
-	;rowThree
-	;mid
-	(command "circle" (strcat "-387.5," (rtos (- (* d -5) 81.25) 2 2)) 0.10)
-
-	;left
-	(command "line" (strcat "-389.75," (rtos (- (* d -5) 81.25) 2 2)) (strcat "-391.25," (rtos (- (* d -5) 81.25) 2 2)) "")
-
-	(command "circle" (strcat "-393.5," (rtos (- (* d -5) 81.25) 2 2)) 0.10)
-
-
-	;right
-	(command "line" (strcat "-385.25," (rtos (- (* d -5) 81.25) 2 2)) (strcat "-383.75," (rtos (- (* d -5) 81.25) 2 2)) "")
-	(command "circle" (strcat "-381.5," (rtos (- (* d -5) 81.25) 2 2)) 0.10)
-
-	
-	;rowFour
-	;mid
-	(command "line" (strcat "-388.25," (rtos (- (* d -5) 83.75) 2 2)) (strcat "-386.75," (rtos (- (* d -5) 83.75) 2 2)) "")
-	
-	;left
-	(command "circle" (strcat "-390.5," (rtos (- (* d -5) 83.75) 2 2)) 0.10)
-
-	;right
-	(command "circle" (strcat "-384.5," (rtos (- (* d -5) 83.75) 2 2)) 0.10)
-	
-	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* d -5) 80.75)) (list -380.25 (- (* d -5) 85.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "text" "J" "C" (list -387.5 (- (* d -5) 91.5)) 3 0 "泥质砂岩")
- ) 
- 
-    ;石灰岩
-(defun drawShiHuiYan()
-	(drawShiHuiYanTop)
-	(drawShiHuiYanBottom)
-)
-
- (defun drawShiHuiYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	(command "line" (strcat "-344.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-344.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-340.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-340.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-336.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-336.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-332.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-332.5," (rtos (- (* d -5) 77.5) 2 2)) "")
- )
-
- (defun drawShiHuiYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-345," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-330," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-345," (rtos (- (* d -5) 80) 2 2)) (strcat "-330," (rtos (- (* d -5) 80) 2 2)) "")
-
-	;rowOne
-	(command "line" (strcat "-344.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-344.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-340.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-340.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-336.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-336.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-332.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-332.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-
-	;rowTwo
-	(command "line" (strcat "-330.5," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-330.5," (rtos (- (* d -5) 80) 2 2)) "")
-	(command "line" (strcat "-334.5," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-334.5," (rtos (- (* d -5) 80) 2 2)) "")
-	(command "line" (strcat "-338.5," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-338.5," (rtos (- (* d -5) 80) 2 2)) "")
-	(command "line" (strcat "-342.5," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-342.5," (rtos (- (* d -5) 80) 2 2)) "")
-	
-)
-
- (defun drawShiHuiYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-345," (rtos (- (* d -5) 75) 2 2)) (strcat "-330," (rtos (- (* d -5) 85) 2 2)) " ")
-	(command "line" (strcat "-345," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-330," (rtos (- (* d -5) 82.5) 2 2)) "")
-
-	;rowThree
-	(command "line" (strcat "-344.5," (rtos (- (* d -5) 80) 2 2)) (strcat "-344.5," (rtos (- (* d -5) 82.5) 2 2)) "")
-	(command "line" (strcat "-340.5," (rtos (- (* d -5) 80) 2 2)) (strcat "-340.5," (rtos (- (* d -5) 82.5) 2 2)) "")
-	(command "line" (strcat "-336.5," (rtos (- (* d -5) 80) 2 2)) (strcat "-336.5," (rtos (- (* d -5) 82.5) 2 2)) "")
-	(command "line" (strcat "-332.5," (rtos (- (* d -5) 80) 2 2)) (strcat "-332.5," (rtos (- (* d -5) 82.5) 2 2)) "")
-
-	;rowFour
-	(command "line" (strcat "-330.5," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-330.5," (rtos (- (* d -5) 85) 2 2)) "")
-	(command "line" (strcat "-334.5," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-334.5," (rtos (- (* d -5) 85) 2 2)) "")
-	(command "line" (strcat "-338.5," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-338.5," (rtos (- (* d -5) 85) 2 2)) "")
-	(command "line" (strcat "-342.5," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-342.5," (rtos (- (* d -5) 85) 2 2)) "")
-	
-	(command "text" "J" "C" (list -337.5 (- (* d -5) 91.5)) 3 0 "石灰岩")
- ) 
- 
-     ;泥质灰岩
-(defun drawNiZhiHuiYan()
-	(drawNiZhiHuiYanTop)
-	(drawNiZhiHuiYanBottom)
-)
-
- (defun drawNiZhiHuiYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	(command "line" (strcat "-287.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-287.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-291.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-291.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-283.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-283.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-288.75," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-290.25," (rtos (- (* d -5) 76.25) 2 2)) "")
-	(command "line" (strcat "-286.25," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-284.75," (rtos (- (* d -5) 76.25) 2 2)) "")
- )
-
- (defun drawNiZhiHuiYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-295," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-280," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-295," (rtos (- (* d -5) 80) 2 2)) (strcat "-280," (rtos (- (* d -5) 80) 2 2)) "")
-
-	;rowOne
-	(command "line" (strcat "-287.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-287.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-291.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-291.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-283.5," (rtos (- (* d -5) 75) 2 2)) (strcat "-283.5," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-288.75," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-290.25," (rtos (- (* d -5) 76.25) 2 2)) "")
-	(command "line" (strcat "-286.25," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-284.75," (rtos (- (* d -5) 76.25) 2 2)) "")
-
-
-	;rowTwo
-	(command "line" (strcat "-289.5," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-289.5," (rtos (- (* d -5) 80) 2 2)) "")
-	(command "line" (strcat "-293.5," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-293.5," (rtos (- (* d -5) 80) 2 2)) "")
-	(command "line" (strcat "-285.5," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-285.5," (rtos (- (* d -5) 80) 2 2)) "")
-	(command "line" (strcat "-281.5," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-281.5," (rtos (- (* d -5) 80) 2 2)) "")
-	
-)
-
- (defun drawNiZhiHuiYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-295," (rtos (- (* d -5) 75) 2 2)) (strcat "-280," (rtos (- (* d -5) 85) 2 2)) " ")
-	(command "line" (strcat "-295," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-280," (rtos (- (* d -5) 82.5) 2 2)) "")
-
-	;rowThree
-	(command "line" (strcat "-287.5," (rtos (- (* d -5) 80) 2 2)) (strcat "-287.5," (rtos (- (* d -5) 82.5) 2 2)) "")
-	(command "line" (strcat "-291.5," (rtos (- (* d -5) 80) 2 2)) (strcat "-291.5," (rtos (- (* d -5) 82.5) 2 2)) "")
-	(command "line" (strcat "-283.5," (rtos (- (* d -5) 80) 2 2)) (strcat "-283.5," (rtos (- (* d -5) 82.5) 2 2)) "")
-	(command "line" (strcat "-288.75," (rtos (- (* d -5) 81.25) 2 2)) (strcat "-290.25," (rtos (- (* d -5) 81.25) 2 2)) "")
-	(command "line" (strcat "-286.25," (rtos (- (* d -5) 81.25) 2 2)) (strcat "-284.75," (rtos (- (* d -5) 81.25) 2 2)) "")
-
-
-	;rowFour
-	(command "line" (strcat "-289.5," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-289.5," (rtos (- (* d -5) 85) 2 2)) "")
-	(command "line" (strcat "-293.5," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-293.5," (rtos (- (* d -5) 85) 2 2)) "")
-	(command "line" (strcat "-285.5," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-285.5," (rtos (- (* d -5) 85) 2 2)) "")
-	(command "line" (strcat "-281.5," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-281.5," (rtos (- (* d -5) 85) 2 2)) "")
-	
-	(command "text" "J" "C" (list -287.5 (- (* d -5) 91.5)) 3 0 "泥质灰岩")
- ) 
- 
-      ;泥岩
-(defun drawNiYan()
-	(drawNiYanTop)
-	(drawNiYanBottom)
-)
-
- (defun drawNiYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	(command "line" (strcat "-289.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-291," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command "line" (strcat "-285.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-284," (rtos (- (* d -5) 41.25) 2 2)) "")
-
- )
-
- (defun drawNiYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-295," (rtos (- (* d -5) 42.5) 2 2)) (strcat "-280," (rtos (- (* d -5) 42.5) 2 2)) "")
-	(command "line" (strcat "-295," (rtos (- (* d -5) 45) 2 2)) (strcat "-280," (rtos (- (* d -5) 45) 2 2)) "")
-
-	;rowOne
-	(command "line" (strcat "-289.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-291," (rtos (- (* d -5) 41.25) 2 2)) "")
-	(command "line" (strcat "-285.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-284," (rtos (- (* d -5) 41.25) 2 2)) "")
-
-
-
-	;rowTwo
-	(command "line" (strcat "-288.25," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-286.75," (rtos (- (* d -5) 43.75) 2 2)) "")
-	(command "line" (strcat "-292.25," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-293.75," (rtos (- (* d -5) 43.75) 2 2)) "")
-	(command "line" (strcat "-282.75," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-281.25," (rtos (- (* d -5) 43.75) 2 2)) "")
-
-)
-
- (defun drawNiYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-295," (rtos (- (* d -5) 40) 2 2)) (strcat "-280," (rtos (- (* d -5) 50) 2 2)) " ")
-	(command "line" (strcat "-295," (rtos (- (* d -5) 47.5) 2 2)) (strcat "-280," (rtos (- (* d -5) 47.5) 2 2)) "")
-
-	;rowThree
-	(command "line" (strcat "-289.5," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-291," (rtos (- (* d -5) 46.25) 2 2)) "")
-	(command "line" (strcat "-285.5," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-284," (rtos (- (* d -5) 46.25) 2 2)) "")
-
-	;rowFour
-	(command "line" (strcat "-288.25," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-286.75," (rtos (- (* d -5) 48.75) 2 2)) "")
-	(command "line" (strcat "-292.25," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-293.75," (rtos (- (* d -5) 48.75) 2 2)) "")
-	(command "line" (strcat "-282.75," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-281.25," (rtos (- (* d -5) 48.75) 2 2)) "")
-	
-	(command "text" "J" "C" (list -287.5 (- (* d -5) 56.5)) 3 0 "泥岩")
- ) 
- 
-       ;铝质泥岩
-(defun drawLvZhiNiYan()
-	(drawLvZhiNiYanTop)
-	(drawLvZhiNiYanBottom)
-)
-
- (defun drawLvZhiNiYanOne()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	(command "circle" (strcat "-237.5," (rtos (- (* d -5) 76.25) 2 2)) 0.30)
-	(command "circle" (strcat "-237.5," (rtos (- (* d -5) 76.25) 2 2)) 1.0)
-
-	(command "line" (strcat "-239.5," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-241," (rtos (- (* d -5) 76.25) 2 2)) "")
-	(command "line" (strcat "-235.5," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-234," (rtos (- (* d -5) 76.25) 2 2)) "")
-
- )
-
- (defun drawLvZhiNiYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-245," (rtos (- (* d -5) 77.5) 2 2)) (strcat "-230," (rtos (- (* d -5) 77.5) 2 2)) "")
-	(command "line" (strcat "-245," (rtos (- (* d -5) 80) 2 2)) (strcat "-230," (rtos (- (* d -5) 80) 2 2)) "")
-
-	;rowOne
-	(command "circle" (strcat "-237.5," (rtos (- (* d -5) 76.25) 2 2)) 0.30)
-	(command "circle" (strcat "-237.5," (rtos (- (* d -5) 76.25) 2 2)) 1.0)
-
-	(command "line" (strcat "-239.5," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-241," (rtos (- (* d -5) 76.25) 2 2)) "")
-	(command "line" (strcat "-235.5," (rtos (- (* d -5) 76.25) 2 2)) (strcat "-234," (rtos (- (* d -5) 76.25) 2 2)) "")
-
-
-
-	;rowTwo
-	;mid
-	(command "line" (strcat "-238.25," (rtos (- (* d -5) 78.75) 2 2)) (strcat "-236.75," (rtos (- (* d -5) 78.75) 2 2)) "")
-	;left
-	(command "circle" (strcat "-240.25," (rtos (- (* d -5) 78.75) 2 2)) 0.30)
-	(command "circle" (strcat "-240.25," (rtos (- (* d -5) 78.75) 2 2)) 1.0)
-	(command "line" (strcat "-242.25," (rtos (- (* d -5) 78.75) 2 2)) (strcat "-243.75," (rtos (- (* d -5) 78.75) 2 2)) "")
-	;right
-	(command "circle" (strcat "-234.75," (rtos (- (* d -5) 78.75) 2 2)) 0.30)
-	(command "circle" (strcat "-234.75," (rtos (- (* d -5) 78.75) 2 2)) 1.0)
-	(command "line" (strcat "-232.75," (rtos (- (* d -5) 78.75) 2 2)) (strcat "-231.25," (rtos (- (* d -5) 78.75) 2 2)) "")
-)
-
- (defun drawLvZhiNiYanBottom()
-   	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-245," (rtos (- (* d -5) 75) 2 2)) (strcat "-230," (rtos (- (* d -5) 85) 2 2)) " ")
-	(command "line" (strcat "-245," (rtos (- (* d -5) 82.5) 2 2)) (strcat "-230," (rtos (- (* d -5) 82.5) 2 2)) "")
-
-	;rowThree
-	(command "circle" (strcat "-237.5," (rtos (- (* d -5) 81.25) 2 2)) 0.30)
-	(command "circle" (strcat "-237.5," (rtos (- (* d -5) 81.25) 2 2)) 1.0)
-
-	(command "line" (strcat "-239.5," (rtos (- (* d -5) 81.25) 2 2)) (strcat "-241," (rtos (- (* d -5) 81.25) 2 2)) "")
-	(command "line" (strcat "-235.5," (rtos (- (* d -5) 81.25) 2 2)) (strcat "-234," (rtos (- (* d -5) 81.25) 2 2)) "")
-
-	;rowFour
-	;mid
-	(command "line" (strcat "-238.25," (rtos (- (* d -5) 83.75) 2 2)) (strcat "-236.75," (rtos (- (* d -5) 83.75) 2 2)) "")
-	;left
-	(command "circle" (strcat "-240.25," (rtos (- (* d -5) 83.75) 2 2)) 0.30)
-	(command "circle" (strcat "-240.25," (rtos (- (* d -5) 83.75) 2 2)) 1.0)
-	(command "line" (strcat "-242.25," (rtos (- (* d -5) 83.75) 2 2)) (strcat "-243.75," (rtos (- (* d -5) 83.75) 2 2)) "")
-	;right
-	(command "circle" (strcat "-234.75," (rtos (- (* d -5) 83.75) 2 2)) 0.30)
-	(command "circle" (strcat "-234.75," (rtos (- (* d -5) 83.75) 2 2)) 1.0)
-	(command "line" (strcat "-232.75," (rtos (- (* d -5) 83.75) 2 2)) (strcat "-231.25," (rtos (- (* d -5) 83.75) 2 2)) "")
-	
-	(command "text" "J" "C" (list -237.5 (- (* d -5) 91.5)) 3 0 "铝质泥岩")
- ) 
- 
-  ;炭质泥岩
- 
- (defun drawTanZhiNiYan()
-	(drawTanZhiNiYanTop)
-  	(drawTanZhiNiYanBottom)
- )
- 
- (defun drawTanZhiNiYanOne()
-	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	;rowOne
-	(command "line" (strcat "-191," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-189.5," (rtos (- (* d -5) 41.25) 2 2)) "")
-	
-	(command "line" (strcat "-185.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-184," (rtos (- (* d -5) 41.25) 2 2)) "")
-	
-	(command "circle" (strcat "-187.5," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	(command "-hatch" "W" "N" (strcat "-187.9," (rtos (- (* d -5) 40.5) 2 2)) (strcat "-186.7," (rtos (- (* d -5) 40.5) 2 2)) (strcat "-187.1," (rtos (- (* d -5) 42) 2 2))  (strcat "-188.3," (rtos (- (* d -5) 42) 2 2)) "C" "" "P" "SOLID" "")
- )
- 
-(defun drawTanZhiNiYanTop()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "line" (strcat "-195," (rtos (- (* d -5) 42.5) 2 2)) (strcat "-180," (rtos (- (* d -5) 42.5) 2 2)) "")
-	(command "line" (strcat "-195," (rtos (- (* d -5) 45) 2 2)) (strcat "-180," (rtos (- (* d -5) 45) 2 2)) "")
-	
-	;rowOne
-	(command "line" (strcat "-191," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-189.5," (rtos (- (* d -5) 41.25) 2 2)) "")
-	
-	(command "line" (strcat "-185.5," (rtos (- (* d -5) 41.25) 2 2)) (strcat "-184," (rtos (- (* d -5) 41.25) 2 2)) "")
-	
-	(command "circle" (strcat "-187.5," (rtos (- (* d -5) 41.25) 2 2)) 0.10)
-	
-	(command "-hatch" "W" "N" (strcat "-187.5," (rtos (- (* d -5) 40.5) 2 2)) (strcat "-186.3," (rtos (- (* d -5) 40.5) 2 2)) (strcat "-187," (rtos (- (* d -5) 42) 2 2))  (strcat "-188.2," (rtos (- (* d -5) 42) 2 2)) "C" "" "P" "SOLID" "")
-
-	;rowTwo
-	(command "line" (strcat "-192.5," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-194," (rtos (- (* d -5) 43.75) 2 2)) "")
-	(command "line" (strcat "-186.75," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-188.25," (rtos (- (* d -5) 43.75) 2 2)) "")
-	(command "line" (strcat "-182.75," (rtos (- (* d -5) 43.75) 2 2)) (strcat "-181.25," (rtos (- (* d -5) 43.75) 2 2)) "")
-
-)
-
-(defun drawTanZhiNiYanBottom()
-  	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-195," (rtos (- (* d -5) 40) 2 2)) (strcat "-180," (rtos (- (* d -5) 50) 2 2)) " ")
-	(command "line" (strcat "-195," (rtos (- (* d -5) 47.5) 2 2)) (strcat "-180," (rtos (- (* d -5) 47.5) 2 2)) "")
-	
-	;rowThree
-	(command "line" (strcat "-191," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-189.5," (rtos (- (* d -5) 46.25) 2 2)) "")
-	
-	(command "line" (strcat "-185.5," (rtos (- (* d -5) 46.25) 2 2)) (strcat "-184," (rtos (- (* d -5) 46.25) 2 2)) "")
-	
-	(command "circle" (strcat "-187.5," (rtos (- (* d -5) 46.25) 2 2)) 0.10)
-	
-	(command "-hatch" "W" "N" (strcat "-187.5," (rtos (- (* d -5) 45.5) 2 2)) (strcat "-186.3," (rtos (- (* d -5) 45.5) 2 2)) (strcat "-187," (rtos (- (* d -5) 47) 2 2))  (strcat "-188.2," (rtos (- (* d -5) 47) 2 2)) "C" "" "P" "SOLID" "")
-
-	;rowFour
-	(command "line" (strcat "-192.5," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-194," (rtos (- (* d -5) 48.75) 2 2)) "")
-	(command "line" (strcat "-186.75," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-188.25," (rtos (- (* d -5) 48.75) 2 2)) "")
-	(command "line" (strcat "-182.75," (rtos (- (* d -5) 48.75) 2 2)) (strcat "-181.25," (rtos (- (* d -5) 48.75) 2 2)) "")
-	
-	
-	(command "text" "J" "C" (list -187.5 (- (* d -5) 56.5)) 3 0 "炭质泥岩")
-   	
-)
-
-  ;煤层
- 
- (defun drawMeiCeng()
-	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "-hatch" "W" "Y" (strcat "-245," (rtos (- (* d -5) 40) 2 2)) (strcat "-230," (rtos (- (* d -5) 40) 2 2)) (strcat "-230," (rtos (- (* d -5) 50) 2 2))  (strcat "-245," (rtos (- (* d -5) 50) 2 2)) "C" "" "P" "SOLID" "")
-	(command "text" "J" "C" (list -237.5 (- (* d -5) 56.5)) 3 0 "煤层")
-
- )
- 
-   ;假整合
-(defun drawJiaZhengHe()
-	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-195," (rtos (- (* d -5) 75) 2 2)) (strcat "-180," (rtos (- (* d -5) 85) 2 2)) " ")
-	(command "line" (strcat "-195," (rtos (- (* d -5) 80) 2 2)) (strcat "-192.85," (rtos (- (* d -5) 80) 2 2)) "")
-	(command "line" (strcat "-190.7," (rtos (- (* d -5) 80) 2 2)) (strcat "-188.55," (rtos (- (* d -5) 80) 2 2)) "")
-	(command "line" (strcat "-186.4," (rtos (- (* d -5) 80) 2 2)) (strcat "-184.25," (rtos (- (* d -5) 80) 2 2)) "")
-	(command "line" (strcat "-182.1," (rtos (- (* d -5) 80) 2 2)) (strcat "-180," (rtos (- (* d -5) 80) 2 2)) "")
-
-	(command "text" "J" "C" (list -187.5 (- (* d -5) 91.5)) 3 0 "假整合")
-)
-
-   ;角度不整合
-(defun drawJiaoDuBuZhengHe()
-	(command "zoom" "C" (list -222.5 (* d -5)) "250")
-	(command "Rectang" (strcat "-145," (rtos (- (* d -5) 75) 2 2)) (strcat "-130," (rtos (- (* d -5) 85) 2 2)) " ")
-	(command "SPLine" (strcat "-145," (rtos (- (* d -5) 79) 2 2)) (strcat "-143," (rtos (- (* d -5) 81) 2 2)) (strcat "-141," (rtos (- (* d -5) 79) 2 2)) (strcat "-139," (rtos (- (* d -5) 81) 2 2)) (strcat "-137," (rtos (- (* d -5) 79) 2 2)) (strcat "-135," (rtos (- (* d -5) 81) 2 2)) (strcat "-133," (rtos (- (* d -5) 79) 2 2)) (strcat "-130," (rtos (- (* d -5) 81) 2 2)) "" "" "")
-	(command "text" "J" "C" (list -137.5 (- (* d -5) 91.5)) 3 0 "角度不整合")
-)
-
-;黄土层
-(defun drawHuangTuCeng()
-	(drawHuangTuCengTop)
-	(drawHuangTuCengBottom)
-)
-
-(defun drawHuangTuCengTop()
-	(command "line" (strcat "-394.5," (rtos (- (* d -5) 6.5) 2 2)) (strcat "-393," (rtos (- (* d -5) 5.5) 2 2)) "")
-	(command "line" (strcat "-394," (rtos (- (* d -5) 7.5) 2 2)) (strcat "-391," (rtos (- (* d -5) 5.5) 2 2)) "")
-	(command "line" (strcat "-393.5," (rtos (- (* d -5) 7.165) 2 2)) "@1.5<300" "")
-	(command "line" (strcat "-392.5," (rtos (- (* d -5) 6.5) 2 2)) "@1.5<300" "")
-	(command "-hatch" "W" "Y" (strcat "-388," (rtos (- (* d -5) 5.5) 2 2)) (strcat "-390," (rtos (- (* d -5) 5.5) 2 2)) (strcat "-389," (rtos (- (* d -5) 8) 2 2)) "C" "" "P" "SOLID" "")
-	
-	
-	(command "line" (strcat "-387," (rtos (- (* d -5) 6.5) 2 2)) (strcat "-385.5," (rtos (- (* d -5) 5.5) 2 2)) "")
-	(command "line" (strcat "-386.5," (rtos (- (* d -5) 7.5) 2 2)) (strcat "-383.5," (rtos (- (* d -5) 5.5) 2 2)) "")
-	(command "line" (strcat "-386," (rtos (- (* d -5) 7.165) 2 2)) "@1.5<300" "")
-	(command "line" (strcat "-385," (rtos (- (* d -5) 6.5) 2 2)) "@1.5<300" "")
-	(command "-hatch" "W" "Y" (strcat "-380.5," (rtos (- (* d -5) 5.5) 2 2)) (strcat "-382.5," (rtos (- (* d -5) 5.5) 2 2)) (strcat "-381.5," (rtos (- (* d -5) 8) 2 2)) "C" "" "P" "SOLID" "")
-) 
-
-(defun drawHuangTuCengBottom()
-	(command "Rectang" (strcat "-395," (rtos (- (* d -5) 5) 2 2)) (strcat "-380," (rtos (- (* d -5) 15) 2 2)) " ")
-	(command "text" "J" "C" (list -387.5 (- (* d -5) 21.5)) 3 0 "黄土")
-	
-	(command "line" (strcat "-393.5," (rtos (- (* d -5) 9) 2 2)) "@5.5<270" "")
-	(command "line" (strcat "-390.5," (rtos (- (* d -5) 9) 2 2)) "@5.5<270" "")
-	(command "line" (strcat "-387.5," (rtos (- (* d -5) 9) 2 2)) "@5.5<270" "")
-	(command "line" (strcat "-384.5," (rtos (- (* d -5) 9) 2 2)) "@5.5<270" "")
-	(command "line" (strcat "-381.5," (rtos (- (* d -5) 9) 2 2)) "@5.5<270" "")
-
-)
-
-(defun drawHuangTuCengBottomLineWithRockThinkness()
-	(command "line" (strcat (strcat (rtos (- RockHatchXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
-	(command "line" (strcat (strcat (rtos (- RockHatchXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
-	(command "line" (strcat (strcat (rtos (+ RockHatchXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
-	(command "line" (strcat (strcat (rtos (+ RockHatchXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
-)
-
-;UserClient
-(defun checkLoginState()
-	(setq loginSuccess 0)
-	(loginWithUsernameAndPassword username password)
-	(if (= responseStatus 200) 
-		(progn
-			(setq loginSuccess 1)
-			(alert "登录成功！！！外挂即将启动！！！")
-			(DCLAndDataHandler)
-		)
-		(progn
-			(setq loginSuccess 0)
-			(alert "登录失败，请检查账号密码是否正确！！！如确认无错误，请与开发者联系，邮箱we1019000306@gmail.com")
-			(loginStateDataHandler)
-		)
-	)
-)
-
-(defun loginWithUsernameAndPassword(username password / xml)
-  (setq xml (vlax-create-object "Microsoft.XMLHTTP"))
-  (setq httpURL (strcat (strcat (strcat "https://api2.bmob.cn/1/login?username=" username) "&password=") password))
-  (vlax-invoke xml 'open "GET" httpURL 0)
-  (vlax-invoke xml 'setRequestHeader "X-Bmob-Application-Id" "c095f89edf7e0b4be4d046a2b758ffc6")
-  (vlax-invoke xml 'setRequestHeader "X-Bmob-REST-API-Key" "7bf79c64d21a78cdd102e3766fa2985f")
-  (vlax-invoke xml 'send)
-  (setq responseStatus (vlax-get xml "status"))
-  (vlax-release-object xml)
-)

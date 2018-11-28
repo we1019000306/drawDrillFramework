@@ -3,7 +3,7 @@
 		(Setq excel (Vlax-Get-Object "Excel.Application"))
 		(Vlax-Put-Property excel 'Visible -1)
 
-			(setq baseDataExcelFilePathName (getfiled "选择*文件" "c:" "" 8))
+		(setq baseDataExcelFilePathName (getfiled "选择数据源Excel文件" "c:" "" 8))
 		
 		(setq wbs (vlax-get-property excel "WorkBooks"))
 		(setq wb (vlax-invoke-method wbs "open" baseDataExcelFilePathName))

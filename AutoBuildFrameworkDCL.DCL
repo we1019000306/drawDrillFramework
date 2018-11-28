@@ -232,18 +232,26 @@
 					}//加框列引用结束
 					
 		}//行引用结束
-		
-	:button{
-		  key = "startBtn"; 
-		  label = "启动";
-		  is_default = true;
-		  fixed_width = true;
-		  alignment=centered;             
-		}
-		:button{
-			  key = "cancelBtn";  
-			  label = "退出";
+	
+	:row{
+			:button{
+			  key = "startBtn"; 
+			  label = "启动";
+			  is_default = true;
 			  fixed_width = true;
 			  alignment=centered;             
-		}
+			}
+			:button{
+			  key = "filePathBtn"; 
+			  label = "选择数据源文件";
+			  fixed_width = true;
+			  alignment=centered;             
+			}
+			:button{
+				  key = "cancelBtn";  
+				  label = "退出";
+				  fixed_width = true;
+				  alignment=centered;             
+			}
+	}
 }
