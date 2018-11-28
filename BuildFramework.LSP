@@ -609,33 +609,66 @@
 
 ;绘制系统组
 (defun drawRockStructure()
-  		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
-		(vl-load-com)
-		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
-		(Vlax-Put-Property EXCEL 'Visible -1 )
-		(setq cells (Vlax-Get excel 'Cells ))
-		(setq rockStructureDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockStructureOne))
-		(setq rockStructureDataThickness (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockStructureTwo))
-		(setq rockStructureDataHoleName (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockStructureThree))
-		(setq rockStructureDataSimpleName (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockStructureFour))
-		(setq rockStructureLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Value2))))
+	(drawXiStructure)
+	(drawTongStructure)
+	(drawZuStructure)
+)
 
-	 
-		(setq indexRS 1)
-		(setq rockStructureListLength (length rockStructureLst))
-		(while (<= indexRS rockStructureListLength)
-			(if (> indexRS 0)
-				  (progn
-				  	 	(setq rockStructureDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Item indexRS)) 'Value2))
-						(setq rockStructureThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataThickness 'Item indexRS)) 'Value2))
-						(setq rockStructureHoleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataHoleName 'Item indexRS)) 'Value2))
-						(setq rockStructureSimpleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataSimpleName 'Item indexRS)) 'Value2))
-						(drawRockStructureLineAndTextLabel)
-					
-				)
+;系
+(defun drawXiStructure()
+	(setq xiStructureLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property xiDataOfYRange 'Value2))))
+	(setq xiIndexA 1)
+	(setq xiStructureListLength (length xiStructureLst))
+	(while (<= xiIndexA xiStructureListLength)
+		(if (> xiIndexA 0)
+			  (progn
+					(setq xiStructureDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property xiDataOfYRange 'Item xiIndexA)) 'Value2))
+					(setq xiStructureThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property xiDataThicknessRange 'Item xiIndexA)) 'Value2))
+					(setq xiStructureHoleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property xiDataHoleNameRange 'Item xiIndexA)) 'Value2))
+					(setq xiStructureSimpleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property xiDataSimpleNameRange 'Item xiIndexA)) 'Value2))
+					(drawRockStructureLineAndTextLabel xiDataOfYRange xiStructureDeep xiStructureThickness xiStructureHoleName xiStructureSimpleName -330 xiIndexA)
 			)
-			(setq indexRS (1+ indexRS))
 		)
+		(setq xiIndexA (1+ xiIndexA))
+	)
+)
+
+;统
+(defun drawTongStructure()
+	(setq tongStructureLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property tongDataOfYRange 'Value2))))
+	(setq tongIndexA 1)
+	(setq tongStructureListLength (length tongStructureLst))
+	(while (<= tongIndexA tongStructureListLength)
+		(if (> tongIndexA 0)
+			  (progn
+					(setq tongStructureDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property tongDataOfYRange 'Item tongIndexA)) 'Value2))
+					(setq tongStructureThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property tongDataThicknessRange 'Item tongIndexA)) 'Value2))
+					(setq tongStructureHoleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property tongDataHoleNameRange 'Item tongIndexA)) 'Value2))
+					(setq tongStructureSimpleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property tongDataSimpleNameRange 'Item tongIndexA)) 'Value2))
+					(drawRockStructureLineAndTextLabel tongDataOfYRange tongStructureDeep tongStructureThickness tongStructureHoleName tongStructureSimpleName -320 tongIndexA)
+			)
+		)
+		(setq tongIndexA (1+ tongIndexA))
+	)
+)
+
+;组
+(defun drawZuStructure()
+	(setq zuStructureLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property zuDataOfYRange 'Value2))))
+	(setq zuIndexA 1)
+	(setq zuStructureListLength (length zuStructureLst))
+	(while (<= zuIndexA zuStructureListLength)
+		(if (> xiIndexA 0)
+			  (progn
+					(setq zuStructureDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property zuDataOfYRange 'Item zuIndexA)) 'Value2))
+					(setq zuStructureThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property zuDataThicknessRange 'Item zuIndexA)) 'Value2))
+					(setq zuStructureHoleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property zuDataHoleNameRange 'Item zuIndexA)) 'Value2))
+					(setq zuStructureSimpleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property zuDataSimpleNameRange 'Item zuIndexA)) 'Value2))
+					(drawRockStructureLineAndTextLabel zuDataOfYRange zuStructureDeep zuStructureThickness zuStructureHoleName zuStructureSimpleName -310 zuIndexA)
+			)
+		)
+		(setq zuIndexA (1+ zuIndexA))
+	)
 )
 
 ;绘制钻井和测井柱状图
@@ -993,7 +1026,7 @@
   	(command "line" "55,30" (strcat "55," strThinTopPy) "");备注分界线
 )
 
-(defun drawRockStructureLineAndTextLabel()
+(defun drawRockStructureLineAndTextLabel(rockStructureDataRangeOfY rockStructureDeep rockStructureThickness rockStructureHoleName rockStructureSimpleName RockStructureXOffset indexRS)
 	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Item indexRS)) 'Value2))
 	(setq pyA (* pyA -5))
 	(setq pxA  RockStructureXOffset)
@@ -1006,7 +1039,6 @@
 			(if (<= rockStructureThickness 8)
 				(progn
 					(command "text" "J" "C" (list pxA  (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 rockStructureSimpleName)
-
 				)
 				(progn
 					(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 8)) (- rockStructureTextSize 1) 0 rockStructureHoleName)
@@ -3387,6 +3419,7 @@
 	(getBaseDataFromExcelFile)
 	(configBaseFrameworkData)
 	(configPlineData)
+	(configRockStrctureData)
 )
 
 (defun configBaseFrameworkData()
@@ -3447,6 +3480,34 @@
 	(setq waterLevelPlineDataRangeOfX (getBaseDataRangeForMaxRowWithSheetNameAndRowName "水位" "B"))
 	(setq waterLevelPLFactor (caculateFactor 10 (caculateMaxNum waterLevelMaxData)))
 	(setq waterLevelXOffset -385)
+)
+
+(defun configRockStrctureData()
+	(setq rockStructureTextSize 3)
+	(configXiData)
+	(configZuData)
+	(configTongData)
+)
+
+(defun configXiData()
+	(setq xiDataOfYRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "系" "A"))
+	(setq xiDataThicknessRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "系" "B"))
+	(setq xiDataHoleNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "系" "C"))
+	(setq xiDataSimpleNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "系" "D"))
+)
+
+(defun configTongData()
+	(setq tongDataOfYRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "统" "A"))
+	(setq tongDataThicknessRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "统" "B"))
+	(setq tongDataHoleNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "统" "C"))
+	(setq tongDataSimpleNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "统" "D"))
+)
+
+(defun configZuData()
+	(setq zuDataOfYRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "组" "A"))
+	(setq zuDataThicknessRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "组" "B"))
+	(setq zuDataHoleNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "组" "C"))
+	(setq zuDataSimpleNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "组" "D"))
 )
 
 ;Data-UserClient
