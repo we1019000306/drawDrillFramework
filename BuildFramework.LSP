@@ -100,7 +100,7 @@
 			)
 	)
 	;存储上次输入记录
-  	(storageLastDCLValue)
+  	;(storageLastDCLValue)
  	(setq std (start_dialog))
   	(unload_dialog id)
 	(cond 
@@ -210,7 +210,7 @@
 					)
 					((= std 0)
 						(progn
-							(setq baseDataExcelFilePathName (getfiled "选择*文件" "c:" "" 8))
+							(configBaseData)
 						  	(c:buildFramework)
 						)
 					)
@@ -391,65 +391,16 @@
 
 (defun configbaseDataBtn()
 	;此处可增加初始化代码，预留位置
-	(setq drillDeepMaxData (atof (get_tile "D")))
-	(setq drillingTimeMaxData (atof (get_tile "DT")))
- 	(setq consumptionMaxData (atof (get_tile "MC")))
-  	(setq waterLevelMaxData (atof (get_tile "WL")))
+	(print 111111)
 )
 
 (defun configDFSBtn()
 	(print 111111)
-;;;	(setq DN (get_tile "DN"))
-;;;	(setq DL (get_tile "DL"))
-;;;	(setq LX (get_tile "LX"))
-;;;	(setq LY (get_tile "LY"))
-;;;	(setq LH (get_tile "LH"))
-;;;	(setq Company (get_tile "Company"))
-;;;	(setq StartDay (get_tile "StartDay"))
-;;;	(setq EndDay (get_tile "EndDay"))
-;;;	(setq DrillType (get_tile "DrillType"))
-;;;	(setq WaterPump (get_tile "WaterPump"))
-;;;	(setq MachinePower (get_tile "MachinePower"))
-;;;	(setq PictureMaker (get_tile "PictureMaker"))
-;;;	(setq PictureProofreader (get_tile "PictureProofreader"))
-;;;	(setq PictureChecker (get_tile "PictureChecker"))
-;;;	(setq DrillCommander (get_tile "DrillCommander"))
-;;;	(setq TechnicalLeader (get_tile "TechnicalLeader"))
-;;;	(setq DrillManager (get_tile "DrillManager"))
-;;;	(setq PictureNumber (get_tile "PictureNumber"))
-;;;	(setq Proportion (get_tile "Proportion"))
-;;;	(setq PictureTime (get_tile "PictureTime"))
-;;;	(setq DataSource (get_tile "DataSource"))
-;;;	
 )
 
 ;配置画线按钮属性
 (defun configDLBtn()
   (print 11111)
-;;;	(setq PLFactor 1)
-;;;	(setq columnPLineOne  (get_tile "columnPLineOne"))
-;;;	(setq columnPLineTwo  (get_tile "columnPLineTwo"))
-;;;	(setq lineNameNum  (atoi (get_tile "LineName_List")))
-;;;	(setq PLXOffset -445)
-;;;	(cond ((= lineNameNum 0)  
-;;;					(progn
-;;;						(setq PLFactor (caculateFactor 12 (caculateMaxNum drillingTimeMaxData)))
-;;;						(setq PLXOffset -445)			
-;;;					) 
-;;;				)
-;;;			   ((= lineNameNum 1)
-;;;					(progn 
-;;;						(setq PLFactor (caculateFactor 10 (caculateMaxNum consumptionMaxData)))
-;;;						(setq PLXOffset -385)	
-;;;					)
-;;;				)
-;;;		       ((= lineNameNum 2)  
-;;;					(progn 
-;;;						(setq PLFactor (caculateFactor 10 (caculateMaxNum waterLevelMaxData)))
-;;;						(setq PLXOffset -385)					
-;;;					)
-;;;				)
-;;;	)
 )
 
 
@@ -576,89 +527,6 @@
 ;;;	(setq columnDrillDeviationTwo  (get_tile "columnDrillDeviationTwo"))
 ;;;	(setq columnDrillDeviationThree  (get_tile "columnDrillDeviationThree"))
 ;;;	(setq DrillDeviationXOffset 0)
-)
-
-
-;根据DCL配置多线段属性
-(defun configPLineAttribute()
-;配置多线段线型
-  (print 11111)
-;;;	(cond ((= lineNameNum 0)
-;;;					(progn
-;;;							(command "LineType" "s" "ByLayer" "")
-;;;							(command "lweight" "ByLayer")
-;;;
-;;;					)
-;;;				)
-;;;				((= lineNameNum 1)
-;;;					(progn
-;;;							(command "LineType" "s" "ByLayer" "")
-;;;							(command "lweight" "ByLayer")
-;;;
-;;;					)
-;;;				)
-;;;				((= lineNameNum 2)
-;;;					(progn 
-;;;							(command "LineType" "s" "ACAD_ISO02W100" "")
-;;;							(command "lweight" "ByLayer")
-;;;
-;;;					)   
-;;;				)
-;;;	)
-)
-
-;备用配置多段线属性
-(defun configPLineAttributeBeiyong()
-	;配置多线段线型
-  	(print 11111)
-;;;	(cond ((= lineTypeNum 0)
-;;;					(progn
-;;;							(command "LineType" "s"  "ByLayer" "")
-;;;					)
-;;;				)
-;;;				((= lineTypeNum 1)
-;;;					(progn
-;;;							(command "LineType" "s"  "ACAD_ISO02W100" "")
-;;;					)
-;;;				)
-;;;				((= lineTypeNum 2)
-;;;					(progn
-;;;							(command "LineType" "s"  "ByLayer" "")
-;;;					)
-;;;				)
-;;;	)
-;;;	;配置多线段线宽
-;;;	(cond ((= lineWeightNum 0)
-;;;					(progn
-;;;							(command "lweight" "ByLayer")
-;;;					)
-;;;				)
-;;;				((= lineWeightNum 1)
-;;;					(progn
-;;;							(command "lweight" 1.00)
-;;;					)
-;;;				)
-;;;				((= lineWeightNum 2)
-;;;					(progn
-;;;							(command "lweight" "ByLayer")
-;;;					)
-;;;				)
-;;;	)	
-)
-
-;配置线型popList动作属性
-(defun configLineNamePopListAction()
-    (print 11111)
-;;;    (setq lineNameNum (atoi (get_tile "LineName_List")))
-
-)
-
-;配置系统组popList动作属性
-(defun configRockStructurePopListAction()
-(print 11111)
-;;;  (setq rockStructureTypeNum  (atoi (get_tile "RockStructureType_List")))
-	
-
 )
 
 ;配置二开三开popList动作属性
@@ -883,14 +751,17 @@
 
 ;drillingTimePline
 (defun drawDrillingTimePLine()
-
+	
+	(command "LineType" "s" "ByLayer" "")
+	(command "lweight" "ByLayer")
+	
 	(setq drillingTimePlineLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfY 'Value2))))
 	(setq drillingTimeIndexA 1)
   	(setq drillingTimePlineListLength (length drillingTimePlineLst))
 	(setq drillingTimePlineListPT '())
 	(while (<= drillingTimeIndexA drillingTimePlineListLength)
 			(print (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfY 'Item drillingTimeIndexA )) 'Value2 ))
-		(if (> drillingTimeIndexA 1)
+		(if (> drillingTimeIndexA 0)
 			  (progn
 				(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfY 'Item drillingTimeIndexA)) 'Value2))
 				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfX 'Item drillingTimeIndexA)) 'Value2))
@@ -905,8 +776,7 @@
 		)
 		(setq drillingTimeIndexA (1+ drillingTimeIndexA))
 	)
-				;配置多线段属性
-				;(configPLineAttribute)
+			
 	 ;;;;有顺序，不可改
 				(entmake 
 					(append 
@@ -925,6 +795,8 @@
 
 ;consumptionPline
 (defun drawConsumptionPline()
+	(command "LineType" "s" "ByLayer" "")
+	(command "lweight" "ByLayer")
 
 	(setq consumptionPlineLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property consumptionPlineDataRangeOfY 'Value2))))
 	(setq consumptionIndexA 1)
@@ -932,7 +804,7 @@
 	(setq consumptionPlineListPT '())
 	(while (<= consumptionIndexA drillingTimePlineListLength)
 			(print (Vlax-Get (vlax-variant-value (Vlax-Get-Property consumptionPlineDataRangeOfY 'Item consumptionIndexA )) 'Value2 ))
-		(if (> consumptionIndexA 1)
+		(if (> consumptionIndexA 0)
 			  (progn
 				(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property consumptionPlineDataRangeOfY 'Item consumptionIndexA)) 'Value2))
 				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property consumptionPlineDataRangeOfX 'Item consumptionIndexA)) 'Value2))
@@ -947,8 +819,7 @@
 		)
 		(setq consumptionIndexA (1+ consumptionIndexA))
 	)
-				;配置多线段属性
-				;(configPLineAttribute)
+		
 	 ;;;;有顺序，不可改
 				(entmake 
 					(append 
@@ -965,48 +836,54 @@
   	(print c)
 )
 
-(defun drawPLine()
-	(vl-load-com)
-	(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
-	(Vlax-Put-Property EXCEL 'Visible -1 )
-	(setq cells (Vlax-Get excel 'Cells ))
-	(setq plineDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnPLineOne))
-	(setq plineDataRangeOfX (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnPLineTwo))
-	(setq plineLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property plineDataRangeOfY 'Value2))))
- 
-	(setq indexA 1)
-  	(setq plineListLength (length plineLst))
-	(setq plineListPT '())
-	(while (<= indexA plineListLength)
-			(print (Vlax-Get (vlax-variant-value (Vlax-Get-Property plineDataRangeOfY 'Item indexA )) 'Value2 ))
-		(if (> indexA 0)
+;waterLevel
+(defun drawWaterLevelPline()
+	(command "LineType" "s" "ACAD_ISO02W100" "")
+	(command "lweight" "ByLayer")
+	(setq waterLevelPlineLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property waterLevelPlineDataRangeOfY 'Value2))))
+	(setq waterLevelIndexA 1)
+  	(setq waterLevelPlineListLength (length waterLevelPlineLst))
+	(setq waterLevelPlineListPT '())
+	(while (<= waterLevelIndexA waterLevelPlineListLength)
+			(print (Vlax-Get (vlax-variant-value (Vlax-Get-Property waterLevelPlineDataRangeOfY 'Item waterLevelIndexA )) 'Value2 ))
+		(if (> waterLevelIndexA 0)
 			  (progn
-				(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property plineDataRangeOfY 'Item indexA)) 'Value2))
-				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property plineDataRangeOfX 'Item indexA)) 'Value2))
+				(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property waterLevelPlineDataRangeOfY 'Item waterLevelIndexA)) 'Value2))
+				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property waterLevelPlineDataRangeOfX 'Item waterLevelIndexA)) 'Value2))
 				(setq pyA (* pyA -5))
-				(setq pxA (+ (* pxA PLFactor) PLXOffset))
+				;drillingTimeFactor
+			
+				(setq pxA (+ (* pxA waterLevelPLFactor) waterLevelXOffset))
+					
 				(setq ptA (strcat (strcat (strcat (strcat "(" (rtos pxA 2 6)) " ") (rtos pyA 2 6)) ")"))
-				(setq plineListPT (cons (read ptA) plineListPT))
+				(setq waterLevelPlineListPT (cons (read ptA) waterLevelPlineListPT))
 			)
 		)
-		(setq indexA (1+ indexA))
+		(setq waterLevelIndexA (1+ waterLevelIndexA))
 	)
-				;配置多线段属性
-				(configPLineAttribute)
+
 	 ;;;;有顺序，不可改
 				(entmake 
 					(append 
 						(list '(0 . "LWPOLYLINE")
 							 '(100 . "AcDbEntity")
 							 '(100 . "AcDbPolyline")
-							 (cons 90 (length plineListPT)) ; 顶点个数
+							 (cons 90 (length waterLevelPlineListPT)) ; 顶点个数
 							'(70 . 0) ; 1 闭合 0 不闭合 不是必须，默认为0
 						)
-						(mapcar '(lambda (x) (cons 10 x)) plineListPT)
+						(mapcar '(lambda (x) (cons 10 x)) waterLevelPlineListPT)
 				 ;二维坐标列表 加组码 10
 					)    ;append end
 				)
-  	(print plineListPT)
+  	(print c)
+	(command "LineType" "s" "ByLayer" "")
+	(command "lweight" "ByLayer")
+)
+
+(defun drawPLine()
+	(drawDrillingTimePLine)
+	(drawConsumptionPline)
+	(drawWaterLevelPline)
 )
 
 
@@ -3543,7 +3420,6 @@
 	(setq PictureTime (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B19"))
 	(setq DrillManager (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B20"))
 	(setq DataSource (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B21"))
-
 )
 
 (defun configPlineData()
