@@ -45,10 +45,11 @@
 	(action_tile "DCDBtn" "(configDCDBtn)  (done_dialog 6)")
 	;
 	(action_tile "DRSignBtn" "(configDRSignBtn)  (done_dialog 7)")
+		;配置完井结构按钮
+	(action_tile "DDCSBtn" "(configDDBtn)  (done_dialog 8)")
 	;
-	(action_tile "DDDBtn" "(configDDDBtn)  (done_dialog 8)")
-	;配置完井结构按钮
-	(action_tile "DDCSBtn" "(configDDBtn)  (done_dialog 9)")
+	(action_tile "DDDBtn" "(configDDDBtn)  (done_dialog 9)")
+
 	;配置单独清除已绘模型按钮群
 	(action_tile "ELBtn" "(done_dialog 11)")
 	(action_tile "ERSBtn" "(done_dialog 12)")
@@ -59,8 +60,6 @@
 	(action_tile "filePathBtn" "(done_dialog 0)")
 	(action_tile "cancelBtn" "(done_dialog -1)")
 	
-
-
 	(if (= initSuccessValue 1)  
 			(progn
 				(mode_tile  "startBtn" 1)
@@ -108,6 +107,7 @@
 						(progn
 							(alert "辅助程序启动完毕，请开始绘图！！")
 							(configInitValue)
+							(configBaseData)
 						  	(c:buildFramework)
 						)
 					)
@@ -155,14 +155,14 @@
 					)
 					((= std 8)
 						(progn
-							(drawDrillDeviation)
-							(c:buildFramework)
+							(drawDrillStructure)
+						  	(c:buildFramework)
 						)
 					)
 					((= std 9)
 						(progn		
-							(drawDrillStructure)
-						  	(c:buildFramework)
+							(drawDrillDeviation)
+							(c:buildFramework)
 						)
 					)
 					((= std 11)
@@ -599,14 +599,16 @@
 ;UI
 ;UI-Frame
 (defun drawFrame()
-		(drawFrameLine)
-		(drawFrameTextLabel)
-		(drawBaseDataTable)
-		(drawPictureDataTable)
+	(configNormalLineType)
+	(drawFrameLine)
+	(drawFrameTextLabel)
+	(drawBaseDataTable)
+	(drawPictureDataTable)
 )
 
 ;绘制系统组
 (defun drawRockStructure()
+	(configNormalLineType)
 	(drawXiStructure)
 	(drawTongStructure)
 	(drawZuStructure)
@@ -671,6 +673,7 @@
 
 ;绘制钻井和测井柱状图
 (defun drawColumnarDiagram()
+	(configNormalLineType)
   	(drawWellLoggingColumnarDiagram)
 	(drawWellDrillingColumnarDiagram)
 )
@@ -735,34 +738,28 @@
 
 ;绘制系统组
 (defun drawRockSign()
-  		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
-		(vl-load-com)
-		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
-		(Vlax-Put-Property EXCEL 'Visible -1 )
-		(setq cells (Vlax-Get excel 'Cells ))
-		(setq rockSignDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockSignOne))
-		(setq rockSignDataThickness (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockSignTwo))
-		(setq rockSignDataName (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnRockSignThree))
-		(setq rockSignLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property rockSignDataRangeOfY 'Value2))))
+		(configNormalLineType)
 
-		(setq indexRSign 1)
+		(setq rockSignLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property rockSignDataOfYRange 'Value2))))
+
+		(setq RSignIndexA 1)
 		(setq rockSignListLength (length rockSignLst))
-		(while (<= indexRSign rockSignListLength)
-			(if (> indexRSign 0)
+		(while (<= RSignIndexA rockSignListLength)
+			(if (> RSignIndexA 0)
 				  (progn
-				  	 	(setq rockSignDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataRangeOfY 'Item indexRSign)) 'Value2))
-						(setq rockSignThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataThickness 'Item indexRSign)) 'Value2))
-						(setq rockSignName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataName 'Item indexRSign)) 'Value2))
+				  	 	(setq rockSignDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataOfYRange 'Item RSignIndexA)) 'Value2))
+						(setq rockSignThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataThicknessRange 'Item RSignIndexA)) 'Value2))
+						(setq rockSignName (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataNameRange 'Item RSignIndexA)) 'Value2))
 						(drawRockSignTextLabel)
 				)
 			)
-			(setq indexRSign (+ 1 indexRSign))
+			(setq RSignIndexA (+ 1 RSignIndexA))
 		)
 )
 
 ;完井结构
 (defun drawDrillStructure()
-	(command "LineType" "s" "ByLayer" "")
+	(configNormalLineType)
 	(drawDrillStructureLine)
 	(drawDrillStructureTextLabel)
 	(drawDrillStructureDimlinear)
@@ -772,32 +769,33 @@
 ;绘制井斜方位
 (defun drawDrillDeviation()
   		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
-		(vl-load-com)
-		(Setq EXCEL (Vlax-Get-Or-Create-Object "Excel.Application"))
-		(Vlax-Put-Property EXCEL 'Visible -1 )
-		(setq cells (Vlax-Get excel 'Cells ))
-		(setq drillDeviationDataRangeOfY (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnDrillDeviationOne))
-		(setq drillDeviationDataDeviation (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnDrillDeviationTwo))
-		(setq drillDeviationDataAzimuth (Vlax-Get-Property (Vlax-Get excel 'ActiveSheet) 'Range columnDrillDeviationThree))
-		(setq drillDeviationLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property drillDeviationDataRangeOfY 'Value2))))
+	
+		(configNormalLineType)
+		(setq drillDeviationLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property drillDeviationDataOfYRange 'Value2))))
 
-		(setq indexDDD 1)
+		(setq drillDeviationIndexA 1)
 		(setq drillDeviationListLength (length drillDeviationLst))
-		(while (<= indexDDD drillDeviationListLength)
-			(if (> indexDDD 0)
+		(while (<= drillDeviationIndexA drillDeviationListLength)
+			(if (> drillDeviationIndexA 0)
 				  (progn
-				  	 	(setq drillDeviationDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataRangeOfY 'Item indexDDD)) 'Value2))
-						(setq drillDeviationDeviation (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataDeviation 'Item indexDDD)) 'Value2))
-						(setq drillDeviationAzimuth (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataAzimuth 'Item indexDDD)) 'Value2))
+				  	 	(setq drillDeviationDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataOfYRange 'Item drillDeviationIndexA)) 'Value2))
+						(setq drillDeviationDeviation (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataDeviationRange 'Item drillDeviationIndexA)) 'Value2))
+						(setq drillDeviationAzimuth (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataAzimuthRange 'Item drillDeviationIndexA)) 'Value2))
 						(drawDrillDeviationLineAndTextLabel)
 				)
 			)
-			(setq indexDDD (+ 1 indexDDD))
+			(setq drillDeviationIndexA (+ 1 drillDeviationIndexA))
 		)
 )
 
 ;UI-PLine
 
+(defun drawPLine()
+	(configNormalLineType)
+	(drawDrillingTimePLine)
+	(drawConsumptionPline)
+	(drawWaterLevelPline)
+)
 ;drillingTimePline
 (defun drawDrillingTimePLine()
 	
@@ -839,7 +837,6 @@
 				 ;二维坐标列表 加组码 10
 					)    ;append end
 				)
-  	(print c)
 )
 
 ;consumptionPline
@@ -882,7 +879,6 @@
 				 ;二维坐标列表 加组码 10
 					)    ;append end
 				)
-  	(print c)
 )
 
 ;waterLevel
@@ -924,15 +920,7 @@
 				 ;二维坐标列表 加组码 10
 					)    ;append end
 				)
-  	(print c)
-	(command "LineType" "s" "ByLayer" "")
-	(command "lweight" "ByLayer")
-)
-
-(defun drawPLine()
-	(drawDrillingTimePLine)
-	(drawConsumptionPline)
-	(drawWaterLevelPline)
+	(configNormalLineType)
 )
 
 
@@ -1537,7 +1525,8 @@
 
 ;井斜方位角
 (defun drawDrillDeviationLineAndTextLabel()
-	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataRangeOfY 'Item indexDDD)) 'Value2))
+	(configNormalLineType)
+	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillDeviationDataOfYRange 'Item drillDeviationIndexA)) 'Value2))
 	(setq pyA (* pyA -5))
 	(setq pxA  DrillDeviationXOffset)
 	;1.2 2.5 3.75
@@ -1697,7 +1686,7 @@
 )
 
 (defun drawRockSignTextLabel()
-	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataRangeOfY 'Item indexRSign)) 'Value2))
+	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockSignDataOfYRange 'Item RSignIndexA)) 'Value2))
 	(setq pyA (* pyA -5))
 	(setq pxA  RockSignXOffset)
 	;1.2 2.5 3.75
@@ -3643,6 +3632,9 @@
 	(configPlineData)
 	(configRockStrctureData)
 	(configColumnarDiagramData)
+	(configRockSignData)
+	(configDrillStructureData)
+	(configDrillDeviationData)
 )
 
 (defun configBaseFrameworkData()
@@ -3733,6 +3725,7 @@
 	(setq zuDataSimpleNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "组" "D"))
 )
 
+;柱状图数据
 (defun configColumnarDiagramData()
 	(setq rockTextSize 3)
 	(configWellLoggingColumnarDiagramData)
@@ -3754,6 +3747,55 @@
 	(setq wdcdDataNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻井柱状图" "C"))
 	(setq wdcdDataDescription (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻井柱状图" "D"))
 	(setq wdcdDataNumber (getBaseDataRangeForMaxRowWithSheetNameAndRowName "钻井柱状图" "E"))
+)
+
+;标志层代号数据
+(defun configRockSignData()
+	(setq RockSignXOffset -250)
+	(setq rockSignDataOfYRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "标志层代号" "A"))
+	(setq rockSignDataThicknessRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "标志层代号" "B"))
+	(setq rockSignDataNameRange  (getBaseDataRangeForMaxRowWithSheetNameAndRowName "标志层代号" "D"))
+)
+
+;完井结构数据
+(defun configDrillStructureData()
+	(setq HoleNum (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B1")) 
+	(setq holeOneDrillDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B2"))
+	(setq holeOneDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B3"))
+	(setq holeOneBushDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B4")) 	
+	(setq holeOneBushDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B5") )
+	(setq holeOneCement  (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B6"))
+	(setq holeTwoDrillDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B7"))
+	(setq holeTwoDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B8"))
+	(setq holeTwoBushDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B9"))
+	(setq holeTwoBushDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B10"))
+	(setq holeTwoCement (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B11"))
+	(setq holeArtificialDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "D1"))
+	(setq holeDamperLocation (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "D2"))
+	(setq bushShoes (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "D3"))
+	(setq holeThreeDrillDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B12"))
+	(setq holeThreeDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B13"))
+	(setq holeThreeBushDiameter (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B14"))
+	(setq holeThreeBushDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B15"))
+	(setq holeThreeCement (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B16"))
+	(cond ((= HoleNum 2.0)  
+					(progn
+					  	(setq HoleNumFactor 1)
+					) 
+				)
+			   ((= HoleNum 3.0)
+					(progn 
+						(setq HoleNumFactor 2)
+					)
+				)	 
+	)
+)
+
+(defun configDrillDeviationData()
+	(setq DrillDeviationXOffset 0)
+	(setq drillDeviationDataOfYRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "井斜方位角" "A"))
+	(setq drillDeviationDataDeviationRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "井斜方位角" "B"))
+	(setq drillDeviationDataAzimuthRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "井斜方位角" "C"))
 )
 
 ;Data-UserClient
@@ -3853,6 +3895,11 @@
 
 (defun refresh()
 	(command "regen")
+ )
+ 
+ (defun configNormalLineType()
+	(command "LineType" "s" "ByLayer" "")
+	(command "lweight" "ByLayer")
  )
 
  (defun eraseLastEnt()
