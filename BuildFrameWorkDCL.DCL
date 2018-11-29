@@ -354,7 +354,7 @@ framework:dialog{ //定义名字为yuan的对话框
 					  alignment=left;             
 					}
 					:button{
-					  key = "DCDBtn";  //DrawColumnarDiagramButton
+					  key = "DRBtn";  //DrawRockButton
 					  label = "绘制";
 					  fixed_width = true;
 					  alignment=right;             

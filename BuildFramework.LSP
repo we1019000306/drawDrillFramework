@@ -29,12 +29,14 @@
 ;Data
 (defun DCLAndDataHandler()
 	(setq std 0)
-  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\AutoBuildFrameworkDCL.DCL"));BuildFrameWorkDCL testDCL Login AutoBuildFrameworkDCL
+  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\AutoBuildFrameworkSimpleDCL.DCL"));BuildFrameWorkDCL testDCL Login AutoBuildFrameworkDCL
 	(if (not (new_dialog "framework" id)) (exit))
 	;配置启动按钮
-  	(action_tile "startBtn" "(configStartBtn) (done_dialog 1)")
+  	(action_tile "startBtn" "(configStartBtn) (done_dialog 0)")
 	;配置基础数据按钮
-	(action_tile "baseDataBtn" "(configbaseDataBtn) (done_dialog 2)")
+	(action_tile "baseDataBtn" "(configbaseDataBtn) (done_dialog 1)")
+	;自动绘制按钮
+	(action_tile "automationDrawBtn" "(done_dialog 2)")
 	;配置框架按钮
 	(action_tile "DFSBtn" "(configDFSBtn)  (done_dialog 3)")
 	;配置曲线按钮
@@ -42,7 +44,7 @@
 	;
 	(action_tile "DRSBtn" "(configDRSBtn)  (done_dialog 5)")
 	;
-	(action_tile "DCDBtn" "(configDCDBtn)  (done_dialog 6)")
+	(action_tile "DCDBtn" "(configDCDBtn) (done_dialog 6)")
 	;
 	(action_tile "DRSignBtn" "(configDRSignBtn)  (done_dialog 7)")
 		;配置完井结构按钮
@@ -51,19 +53,20 @@
 	(action_tile "DDDBtn" "(configDDDBtn)  (done_dialog 9)")
 
 	;配置单独清除已绘模型按钮群
+	(action_tile "EFSBtn" "(done_dialog 10)")
 	(action_tile "ELBtn" "(done_dialog 11)")
 	(action_tile "ERSBtn" "(done_dialog 12)")
 	(action_tile "ECDBtn" "(done_dialog 13)")
 	(action_tile "ERSignBtn" "(done_dialog 14)")
 	(action_tile "EDCSBtn" "(done_dialog 15)")
 	(action_tile "EDDBtn" "(done_dialog 16)")	
-	(action_tile "filePathBtn" "(done_dialog 0)")
 	(action_tile "cancelBtn" "(done_dialog -1)")
 	
 	(if (= initSuccessValue 1)  
 			(progn
 				(mode_tile  "startBtn" 1)
 				(mode_tile  "baseDataBtn" 0)
+				(mode_tile  "automationDrawBtn" 0)
 				(mode_tile  "DFBtn" 0)
 				(mode_tile  "DLBtn" 0)
 				(mode_tile  "DDCSBtn" 0)
@@ -71,6 +74,7 @@
 				(mode_tile  "DRSBtn" 0)
 				(mode_tile  "DRSignBtn" 0)
 				(mode_tile  "DDDBtn" 0)
+				(mode_tile  "EFSBtn" 0)
 				(mode_tile  "ELBtn" 0)
 				(mode_tile  "ERSBtn" 0)
 				(mode_tile  "ECDBtn" 0)
@@ -82,6 +86,7 @@
 			(progn
 				(mode_tile  "startBtn" 0)
 				(mode_tile  "baseDataBtn" 1)
+				(mode_tile  "automationDrawBtn" 1)
 				(mode_tile  "DFBtn" 1)
 				(mode_tile  "DLBtn" 1)
 				(mode_tile  "DDCSBtn" 1)
@@ -89,6 +94,7 @@
 				(mode_tile  "DRSBtn" 1)
 				(mode_tile  "DRSignBtn" 1)
 				(mode_tile  "DDDBtn" 1)
+				(mode_tile  "EFSBtn" 1)
 				(mode_tile  "ELBtn" 1)
 				(mode_tile  "ERSBtn" 1)
 				(mode_tile  "ECDBtn" 1)
@@ -103,7 +109,7 @@
  	(setq std (start_dialog))
   	(unload_dialog id)
 	(cond 
-					((= std 1)
+					((= std 0)
 						(progn
 							(alert "辅助程序启动完毕，请开始绘图！！")
 							(configInitValue)
@@ -111,9 +117,16 @@
 						  	(c:buildFramework)
 						)
 					)
+					((= std 1)
+						(progn
+							(configBaseData)
+						  	(c:buildFramework)
+						)
+					)
 					((= std 2)
 						(progn
-							(alert "基础数据设置或更新完毕，可以进行绘图操作啦！！")
+							(alert "开始自动绘图了！！！！！")
+							(drawHolePictureAutomation)
 						  	(c:buildFramework)
 						)
 					)
@@ -142,7 +155,7 @@
 					((= std 6)
 						(progn
 							(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
-							(DrawColumnarDiagram)
+							(drawColumnarDiagram)
 							(c:buildFramework)
 							;当已绘制柱状图后才设置已绘标记，用来允许单独删除该部分模型
 						)
@@ -154,7 +167,7 @@
 						)
 					)
 					((= std 8)
-						(progn
+						(progn					
 							(drawDrillStructure)
 						  	(c:buildFramework)
 						)
@@ -162,6 +175,12 @@
 					((= std 9)
 						(progn		
 							(drawDrillDeviation)
+							(c:buildFramework)
+						)
+					)
+					((= std 10)
+						(progn		
+							(eraseHolePicture)
 							(c:buildFramework)
 						)
 					)
@@ -208,12 +227,6 @@
 							(c:buildFramework)
 						)
 					)
-					((= std 0)
-						(progn
-							(configBaseData)
-						  	(c:buildFramework)
-						)
-					)
   					((= std -1)
 						(progn
 							(alert "退出辅助程序成功！！")
@@ -238,136 +251,12 @@
 	(setq initSuccessValue 1)
 )
 
-;记忆初次输入的DCL的数据
-(defun storageLastDCLValue()
-	;架构绘制
-  	(if (null drillDeepMaxData) (print "nil") (set_tile "D" (rtos drillDeepMaxData 2 2)))
-	(if (null drillingTimeMaxData) (print "nil") (set_tile "DT" (rtos drillingTimeMaxData 2 2)))
-  	(if (null consumptionMaxData) (print "nil") (set_tile "MC" (rtos consumptionMaxData 2 2)))
-  	(if (null waterLevelMaxData) (print "nil") (set_tile "WL" (rtos waterLevelMaxData 2 2)))
-	;钻井基础信息
-	(if (null DN) (print "nil") (set_tile "DN" DN))
-	(if (null DL) (print "nil") (set_tile "DL" DL))
-	(if (null LX) (print "nil") (set_tile "LX" LX))
-	(if (null LY) (print "nil") (set_tile "LY" LY))
-	(if (null LH) (print "nil") (set_tile "LH" LH))
-	(if (null Company) (print "nil") (set_tile "Company" Company))
-	(if (null StartDay) (print "nil") (set_tile "StartDay" StartDay))
-	(if (null EndDay) (print "nil") (set_tile "EndDay" EndDay))
-	(if (null DrillType) (print "nil") (set_tile "DrillType" DrillType))
-	(if (null WaterPump) (print "nil") (set_tile "WaterPump" WaterPump))
-	(if (null MachinePower) (print "nil") (set_tile "MachinePower" MachinePower))
-
-	;绘图基础信息
-	(if (null PictureMaker) (print "nil") (set_tile "PictureMaker" PictureMaker))
-	(if (null PictureProofreader) (print "nil") (set_tile "PictureProofreader" PictureProofreader))
-	(if (null PictureChecker) (print "nil") (set_tile "PictureChecker" PictureChecker))
-	(if (null DrillCommander) (print "nil") (set_tile "DrillCommander" DrillCommander))
-	(if (null TechnicalLeader) (print "nil") (set_tile "TechnicalLeader" TechnicalLeader))
-	(if (null DrillManager) (print "nil") (set_tile "DrillManager" DrillManager))
-	(if (null PictureNumber) (print "nil") (set_tile "PictureNumber" PictureNumber))
-	(if (null Proportion) (print "nil") (set_tile "Proportion" Proportion))
-	(if (null PictureTime) (print "nil") (set_tile "PictureTime" PictureTime))
-	(if (null DataSource) (print "nil") (set_tile "DataSource" DataSource))
-
-	;曲线绘制
-	(if (null columnPLineOne) (print "nil") (set_tile "columnPLineOne" columnPLineOne))
-  	(if (null columnPLineTwo) (print "nil") (set_tile "columnPLineTwo" columnPLineTwo))
-  	(if (null lineNameNum) (setq lineNameNum 0) (set_tile "LineName_List" (itoa lineNameNum)))
-  	;(if (null lineTypeNum) (print "nil") (set_tile "LineType_List" (itoa lineTypeNum)))
-  	;(if (null lineWeightNum) (print "nil") (set_tile "LineWeight_List" (itoa lineWeightNum)))
-	
-	;系统组
-	(if (null rockStructureTypeNum) (setq rockStructureTypeNum 0) (set_tile "RockStructureType_List" (itoa rockStructureTypeNum)))
-	(if (null columnRockStructureOne) (print "nil") (set_tile "columnRockStructureOne" columnRockStructureOne))
-  	(if (null columnRockStructureTwo) (print "nil") (set_tile "columnRockStructureTwo" columnRockStructureTwo))
-	(if (null columnRockStructureThree) (print "nil") (set_tile "columnRockStructureThree" columnRockStructureThree))
-	(if (null columnRockStructureFour) (print "nil") (set_tile "columnRockStructureFour" columnRockStructureFour))
-	
-	;测井钻井柱状图
-	(if (null rockTypeNum) (setq rockTypeNum 0) (set_tile "RockType_List" (itoa rockTypeNum)))
-	(if (null columnRockOne) (print "nil") (set_tile "columnRockOne" columnRockOne))
-  	(if (null columnRockTwo) (print "nil") (set_tile "columnRockTwo" columnRockTwo))
-	(if (null columnRockThree) (print "nil") (set_tile "columnRockThree" columnRockThree))
-	(if (null columnRockFour) (print "nil") (set_tile "columnRockFour" columnRockFour))
-	(if (null columnRockFive) (print "nil") (set_tile "columnRockFive" columnRockFive))
-  	;(if (null rockTextSize) (print "nil") (set_tile "RockTextSize_List" (itoa rockTextSize)))
-	(cond ((= rockTypeNum 0)  
-				(progn
-					(mode_tile  "columnRockOne" 0)
-					(mode_tile  "columnRockTwo" 0)
-					(mode_tile  "columnRockThree" 0)
-					(mode_tile  "columnRockFour" 0)
-					(mode_tile  "columnRockFive" 0)
-				) 
-			)
-		   ((= rockTypeNum 1)
-				(progn 
-					(mode_tile  "columnRockOne" 0)
-					(mode_tile  "columnRockTwo" 0)
-					(mode_tile  "columnRockThree" 0)
-					(mode_tile  "columnRockFour" 1)
-					(mode_tile  "columnRockFive" 1)
-				)
-			)
-		   ((= rockTypeNum 2)  
-				(progn 
-					(print "待开发")
-				)
-			)
-	)
-	
-	;标志层代号
-	(if (null columnRockSignOne) (print "nil") (set_tile "columnRockSignOne" columnRockSignOne))
-  	(if (null columnRockSignTwo) (print "nil") (set_tile "columnRockSignTwo" columnRockSignTwo))
-	(if (null columnRockSignThree) (print "nil") (set_tile "columnRockSignThree" columnRockSignThree))
-	
-	;完井结构
-	(if (null HoleNum) (setq HoleNum 0) (set_tile "HoleNumber_List" (itoa HoleNum)))
-	(if (null holeOneDrillDiameter) (print "nil") (set_tile "HoleOneDrillDiameter" holeOneDrillDiameterStr))
-	(if (null holeOneDeep) (print "nil") (set_tile "HoleOneDeep" (rtos holeOneDeep 2 2)))
-	(if (null holeOneBushDiameter) (print "nil") (set_tile "HoleOneBushDiameter" holeOneBushDiameterStr))
-	(if (null holeOneBushDeep) (print "nil") (set_tile "HoleOneBushDeep" (rtos holeOneBushDeep 2 2)))
-	(if (null holeOneCement) (print "nil") (set_tile "HoleOneCement" (rtos holeOneCement 2 2)))
-	(if (null holeTwoDrillDiameter) (print "nil") (set_tile "HoleTwoDrillDiameter" holeTwoDrillDiameterStr))
-	(if (null holeTwoDeep) (print "nil") (set_tile "HoleTwoDeep" (rtos holeTwoDeep 2 2)))
-	(if (null holeTwoBushDiameter) (print "nil") (set_tile "HoleTwoBushDiameter" holeTwoBushDiameterStr))
-	(if (null holeTwoBushDeep) (print "nil") (set_tile "HoleTwoBushDeep" (rtos holeTwoBushDeep 2 2)))
-	(if (null holeTwoCement) (print "nil") (set_tile "HoleTwoCement" (rtos holeTwoCement 2 2)))
-	(if (null holeArtificialDeep) (print "nil") (set_tile "HoleArtificialDeep" (rtos holeArtificialDeep 2 2)))
-	(if (null holeDamperLocation) (print "nil") (set_tile "HoleDamperLocation" (rtos holeDamperLocation 2 2)))
-	(if (null bushShoes) (print "nil") (set_tile "BushShoes" (rtos bushShoes 2 2)))
-	(if (null holeThreeDrillDiameter) (print "nil") (set_tile "HoleThreeDrillDiameter" holeThreeDrillDiameterStr))
-	(if (null holeThreeDeep) (print "nil") (set_tile "HoleThreeDeep" (rtos holeThreeDeep 2 2)))
-	(if (null holeThreeBushDiameter) (print "nil") (set_tile "HoleThreeBushDiameter" holeThreeBushDiameterStr))
-	(if (null holeThreeBushDeep) (print "nil") (set_tile "HoleThreeBushDeep" (rtos holeThreeBushDeep 2 2)))
-	(if (null holeThreeCement) (print "nil") (set_tile "HoleThreeCement" (rtos holeThreeCement 2 2)))
-	(cond ((= HoleNum 0)  
-					(progn
-						(mode_tile  "HoleThreeDrillDiameter" 1)
-						(mode_tile  "HoleThreeDeep" 1)
-						(mode_tile  "HoleThreeBushDiameter" 1)
-						(mode_tile  "HoleThreeBushDeep" 1)
-						(mode_tile  "HoleThreeCement" 1)
-					  	(setq HoleNumFactor 1)
-					) 
-				)
-			   ((= HoleNum 1)
-					(progn 
-						(mode_tile  "HoleThreeDrillDiameter" 0)
-						(mode_tile  "HoleThreeDeep" 0)
-						(mode_tile  "HoleThreeBushDiameter" 0)
-						(mode_tile  "HoleThreeBushDeep" 0)
-						(mode_tile  "HoleThreeCement" 0)
-						(setq HoleNumFactor 2)
-					)
-				)	 
-	)
-	
-	;井斜方位角
-	(if (null columnDrillDeviationOne) (print "nil") (set_tile "columnDrillDeviationOne" columnDrillDeviationOne))
-  	(if (null columnDrillDeviationTwo) (print "nil") (set_tile "columnDrillDeviationTwo" columnDrillDeviationTwo))
-	(if (null columnDrillDeviationThree) (print "nil") (set_tile "columnDrillDeviationThree" columnDrillDeviationThree))
+(defun resetHatchConfiguration()
+	(command "zoom" "w" (strcat "-150," (rtos (- (* 100 -5) 40) 2 2)) (strcat "-125," (rtos (- (* 100 -5) 50) 2 2)) )
+	(command "circle" (strcat "-137.5," (rtos (- (* 100 -5) 41.25) 2 2)) 0.10)
+	(command "-hatch" "S" (ssget "W" (list -138 (- (* 100 -5) 40.75)) (list -137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	(eraseLastEnt)
+	(eraseLastEnt)
 )
 
 (defun configLoginBtn()
@@ -377,13 +266,7 @@
 
 (defun configStartBtn()
 	;此处可增加初始化代码，预留位置
-;;;	(setq drillDeepMaxData (atof (get_tile "D")))
-;;;	(setq drillingTimeMaxData (atof (get_tile "DT")))
-;;; 	(setq consumptionMaxData (atof (get_tile "MC")))
-;;;  	(setq waterLevelMaxData (atof (get_tile "WL")))
-
-	(print "click startButton")
-
+	(print 111111)
 )
 
 
@@ -405,199 +288,54 @@
 ;配置画完井结构按钮属性
 (defun configDDBtn()
 	(print 11111)
-;;;	(setq holeOneDrillDiameterStr  (get_tile "HoleOneDrillDiameter"));一开钻头直径
-;;;	(setq holeOneDeep  (atof (get_tile "HoleOneDeep")));一开井深
-;;;	(setq holeOneBushDiameterStr (get_tile "HoleOneBushDiameter"));一开套管外径
-;;;	(setq holeOneBushDeep (atof (get_tile "HoleOneBushDeep")));一开套管下深
-;;;	(setq holeOneCement  (atof (get_tile "HoleOneCement")));一开水泥上返深度
-;;;	(setq holeTwoDrillDiameterStr (get_tile "HoleTwoDrillDiameter"));二开钻头直径
-;;;	(setq holeTwoDeep  (atof (get_tile "HoleTwoDeep")));二开井深
-;;;	(setq holeTwoBushDiameterStr (get_tile "HoleTwoBushDiameter"));二开套管外径
-;;;	(setq holeTwoBushDeep  (atof (get_tile "HoleTwoBushDeep")));二开套管下深
-;;;	(setq holeTwoCement  (atof (get_tile "HoleTwoCement")));二开水泥上返深度
-;;;	(setq holeArtificialDeep  (atof (get_tile "HoleArtificialDeep")));人工井底深度
-;;;	(setq holeDamperLocation  (atof (get_tile "HoleDamperLocation")));阻流环位置
-;;;	(setq bushShoes  (atof (get_tile "BushShoes")));套管鞋
-;;;
-;;;	(setq HoleNum (atoi(get_tile "HoleNumber_List")))
-;;;	(cond ((= HoleNum 0)  
-;;;					(progn
-;;;						(mode_tile  "HoleThreeDrillDiameter" 1)
-;;;						(mode_tile  "HoleThreeDeep" 1)
-;;;						(mode_tile  "HoleThreeBushDiameter" 1)
-;;;						(mode_tile  "HoleThreeBushDeep" 1)
-;;;						(mode_tile  "HoleThreeCement" 1)
-;;;					  	(setq HoleNumFactor 1)
-;;;					) 
-;;;				)
-;;;			   ((= HoleNum 1)
-;;;					(progn 
-;;;						(mode_tile  "HoleThreeDrillDiameter" 0)
-;;;						(mode_tile  "HoleThreeDeep" 0)
-;;;						(mode_tile  "HoleThreeBushDiameter" 0)
-;;;						(mode_tile  "HoleThreeBushDeep" 0)
-;;;						(mode_tile  "HoleThreeCement" 0)
-;;;						(setq holeThreeDrillDiameterStr (get_tile "HoleThreeDrillDiameter"));三开钻头直径
-;;;						(setq holeThreeDeep  (atof (get_tile "HoleThreeDeep")));三开井深
-;;;						(setq holeThreeBushDiameterStr (get_tile "HoleThreeBushDiameter"));三开套管外径
-;;;						(setq holeThreeBushDeep  (atof (get_tile "HoleThreeBushDeep")));三开套管下深
-;;;						(setq holeThreeCement  (atof (get_tile "HoleThreeCement")));三开水泥上返深度
-;;;						(setq HoleNumFactor 2)
-;;;					)
-;;;				)
-;;;		       ((= HoleNum 2)  
-;;;					(progn 
-;;;							
-;;;					)
-;;;				)
-;;;	)
 )
 
 ;配置系统组按钮属性
 (defun configDRSBtn()
 	(print 11111)
-;;;	(setq columnRockStructureOne  (get_tile "columnRockStructureOne"))
-;;;	(setq columnRockStructureTwo  (get_tile "columnRockStructureTwo"))
-;;;	(setq columnRockStructureThree  (get_tile "columnRockStructureThree"))
-;;;	(setq columnRockStructureFour (get_tile "columnRockStructureFour"))
-;;;	(setq rockStructureTypeNum (atoi(get_tile "RockStructureType_List")))
-;;;	;(setq rockTextSizeNum (atoi(get_tile "RockTextSize_List")))
-;;;	(setq rockStructureTextSize 3)
-;;;	(setq RockStructureXOffset -330)
-;;;
-;;;	(cond ((= rockStructureTypeNum 0)  
-;;;					(progn
-;;;						(setq RockStructureXOffset -330)
-;;;					) 
-;;;				)
-;;;			   ((= rockStructureTypeNum 1)
-;;;					(progn 
-;;;						(setq RockStructureXOffset -320)
-;;;					)
-;;;				)
-;;;				 ((= rockStructureTypeNum 2)
-;;;					(progn 
-;;;						(setq RockStructureXOffset -310)
-;;;					)
-;;;				)
-;;;	)
 )
 
 ;配置井柱状图按钮属性
 (defun configDCDBtn()
 	(print 11111)
-;;;	(setq columnRockOne  (get_tile "columnRockOne"))
-;;;	(setq columnRockTwo  (get_tile "columnRockTwo"))
-;;;	(setq columnRockThree  (get_tile "columnRockThree"))
-;;;	(setq columnRockFour (get_tile "columnRockFour"))
-;;;	(setq columnRockFive  (get_tile "columnRockFive"))
-;;;	(setq rockTypeNum (atoi(get_tile "RockType_List")))
-;;;	;(setq rockTextSizeNum (atoi(get_tile "RockTextSize_List")))
-;;;	(setq rockTextSize 3)
-;;;	(setq RockXOffset -245)
-;;;
-;;;	(cond ((= rockTypeNum 0)  
-;;;					(progn
-;;;						(setq RockXOffset -245)
-;;;					) 
-;;;				)
-;;;			   ((= rockTypeNum 1)
-;;;					(progn 
-;;;						(setq RockXOffset -255)
-;;;					)
-;;;				)
-;;;	)
 )
 
 ;配置标志层按钮属性
 (defun configDRSignBtn()
   	(print 11111)
-;;;	(setq columnRockSignOne  (get_tile "columnRockSignOne"))
-;;;	(setq columnRockSignTwo  (get_tile "columnRockSignTwo"))
-;;;	(setq columnRockSignThree  (get_tile "columnRockSignThree"))
-;;;	(setq RockSignXOffset -250)
 )
 
 ;配置井斜方位角按钮属性
 (defun configDDDBtn()
  	(print 11111)
-;;;	(setq columnDrillDeviationOne  (get_tile "columnDrillDeviationOne"))
-;;;	(setq columnDrillDeviationTwo  (get_tile "columnDrillDeviationTwo"))
-;;;	(setq columnDrillDeviationThree  (get_tile "columnDrillDeviationThree"))
-;;;	(setq DrillDeviationXOffset 0)
 )
 
 ;配置二开三开popList动作属性
 (defun configHolePopListAction()
   (print 11111)
-;;;    (setq HoleNum  (atoi(get_tile "HoleNumber_List")))
-;;;	(setq HoleNumFactor 1)
-;;;	(cond ((= HoleNum 0)  
-;;;					(progn
-;;;						(mode_tile  "HoleThreeDrillDiameter" 1)
-;;;						(mode_tile  "HoleThreeDeep" 1)
-;;;						(mode_tile  "HoleThreeBushDiameter" 1)
-;;;						(mode_tile  "HoleThreeBushDeep" 1)
-;;;						(mode_tile  "HoleThreeCement" 1)
-;;;						(setq HoleNumFactor 1)
-;;;					) 
-;;;				)
-;;;			   ((= HoleNum 1)
-;;;					(progn 
-;;;						(mode_tile  "HoleThreeDrillDiameter" 0)
-;;;						(mode_tile  "HoleThreeDeep" 0)
-;;;						(mode_tile  "HoleThreeBushDiameter" 0)
-;;;						(mode_tile  "HoleThreeBushDeep" 0)
-;;;						(mode_tile  "HoleThreeCement" 0)
-;;;						(setq HoleNumFactor 2)
-;;;					)
-;;;				)
-;;;		       ((= HoleNum 2)  
-;;;					(progn 
-;;;						(print "待开发")
-;;;					)
-;;;				)
-;;;	)
-
 )
 
 ;配置岩性柱状图popList动作属性
 (defun configRockPopListAction()
   (print 11111)
-;;;    (setq rockTypeNum  (atoi(get_tile "RockType_List")))
-;;;	(cond ((= rockTypeNum 0)  
-;;;					(progn
-;;;						(mode_tile  "columnRockOne" 0)
-;;;						(mode_tile  "columnRockTwo" 0)
-;;;						(mode_tile  "columnRockThree" 0)
-;;;						(mode_tile  "columnRockFour" 0)
-;;;						(mode_tile  "columnRockFive" 0)
-;;;						(setq RockTypeName "钻井柱状图")
-;;;
-;;;					) 
-;;;				)
-;;;			   ((= rockTypeNum 1)
-;;;					(progn 
-;;;						(mode_tile  "columnRockOne" 0)
-;;;						(mode_tile  "columnRockTwo" 0)
-;;;						(mode_tile  "columnRockThree" 0)
-;;;						(mode_tile  "columnRockFour" 1)
-;;;						(mode_tile  "columnRockFive" 1)
-;;;						(setq RockTypeName "钻井柱状图")
-;;;					)
-;;;				)
-;;;		       ((= rockTypeNum 2)  
-;;;					(progn 
-;;;						(print "待开发")
-;;;					)
-;;;				)
-;;;	)
-
 )
 
 
 ;UI
 ;UI-Frame
+
+(defun drawHolePictureAutomation()
+		(drawFrame)
+		(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+		(drawPLine)
+		(drawRockStructure)
+		(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
+		(drawColumnarDiagram)
+		(drawRockSign)
+		(drawDrillStructure)
+		(drawDrillDeviation)
+)
+
 (defun drawFrame()
 	(configNormalLineType)
 	(drawFrameLine)
@@ -674,6 +412,7 @@
 ;绘制钻井和测井柱状图
 (defun drawColumnarDiagram()
 	(configNormalLineType)
+	(resetHatchConfiguration)
   	(drawWellLoggingColumnarDiagram)
 	(drawWellDrillingColumnarDiagram)
 )
@@ -3909,38 +3648,18 @@
  
  ;单独删除多段线
  (defun eraseLine()
-	 (cond ((= lineNameNum 0)
-						(progn
-							(eraseDrillTimeLine)
-						)
-					)
-					((= lineNameNum 1)
-						(progn
-							(eraseConsumptionLine)
-						)
-					)
-					((= lineNameNum 2)
-						(progn
-							(eraseWaterLevel)
-						)
-					)
-	)
+	(command "zoom" "A")
+	;erase 床交时能识别的最近距离为5！！！
+	(command "erase" "C" (list -440 -5) (list -390 (+ (* drillDeepMaxData -5) 5)) "")
+	(command "erase" "C" (list -380 -5) (list -340 (+ (* drillDeepMaxData -5) 5)) "")
  )
  
- (defun eraseDrillTimeLine()
-	(alert "钻时")
+ ;删除全图
+ (defun eraseHolePicture()
+	(command "zoom" "A")
+	;erase 床交时能识别的最近距离为5！！！
+	(command "erase" "C" (list -460 150) (list 70 (- (* drillDeepMaxData -5) 150)) "")
  )
- 
- (defun eraseConsumptionLine()
- 	(alert "消耗量")
-
- )
- 
- (defun eraseWaterLevel()
- 	(alert "水位")
-
- )
- 
  ;单独删除系统组
  (defun eraseDrillRockStructure()
 	(cond ((= rockStructureTypeNum 0)
