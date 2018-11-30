@@ -29,6 +29,7 @@
 ;Data
 (defun DCLAndDataHandler()
 	(setq std 0)
+	(setq isMutiColor 1)
   	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\AutoBuildFrameworkSimpleDCL.DCL"));BuildFrameWorkDCL testDCL Login AutoBuildFrameworkDCL
 	(if (not (new_dialog "framework" id)) (exit))
 	;配置启动按钮
@@ -67,7 +68,7 @@
 				(mode_tile  "startBtn" 1)
 				(mode_tile  "baseDataBtn" 0)
 				(mode_tile  "automationDrawBtn" 0)
-				(mode_tile  "DFBtn" 0)
+				(mode_tile  "DFSBtn" 0)
 				(mode_tile  "DLBtn" 0)
 				(mode_tile  "DDCSBtn" 0)
 				(mode_tile  "DCDBtn" 0)
@@ -87,7 +88,7 @@
 				(mode_tile  "startBtn" 0)
 				(mode_tile  "baseDataBtn" 1)
 				(mode_tile  "automationDrawBtn" 1)
-				(mode_tile  "DFBtn" 1)
+				(mode_tile  "DFSBtn" 1)
 				(mode_tile  "DLBtn" 1)
 				(mode_tile  "DDCSBtn" 1)
 				(mode_tile  "DCDBtn" 1)
@@ -540,7 +541,6 @@
 	
 	(command "LineType" "s" "ByLayer" "")
 	(command "lweight" "ByLayer")
-	
 	(setq drillingTimePlineLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfY 'Value2))))
 	(setq drillingTimeIndexA 1)
   	(setq drillingTimePlineListLength (length drillingTimePlineLst))
@@ -576,6 +576,9 @@
 				 ;二维坐标列表 加组码 10
 					)    ;append end
 				)
+				
+			(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 100 ))
+				
 )
 
 ;consumptionPline
@@ -618,6 +621,8 @@
 				 ;二维坐标列表 加组码 10
 					)    ;append end
 				)
+			(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 200 ))
+
 )
 
 ;waterLevel
@@ -659,7 +664,8 @@
 				 ;二维坐标列表 加组码 10
 					)    ;append end
 				)
-	(configNormalLineType)
+				(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 50 ))
+				(configNormalLineType)
 )
 
 
@@ -694,10 +700,13 @@
   	 
   	(command "line" "-445,30" "55,30" "");上下框线
 	(command "line" "-445,0" "-388,0" "")
+	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 100 ))
+
 	
 	(command "LineType" "s"  "ACAD_ISO02W100" "")
 	(command "line" "-388,0" "-335,0" "")
-	
+	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 50 ))
+
 	(command "LineType" "s"  "ByLayer" "")
   	(command "line" "-335,0" "55,0" "")
   
@@ -716,6 +725,8 @@
 	(command "line" "-345,10" "-345,12" "")
 	
   	(command "line" "-385,10" "-335,10" "");水位分界线
+	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 200))
+	
 	(command "line" "-375,0" "-375,2" "")
 	(command "line" "-365,0" "-365,2" "")
 	(command "line" "-355,0" "-355,2" "")
@@ -1659,7 +1670,7 @@
 																;(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
 																;(hatchRockWithMInsert rockName (list RockHatchXOffset (* rockDeep -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
 
-																(command "-hatch" "W" "N" (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2))   (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2)) "C" "" "P" "SOLID" "")
+																(command "-hatch" "W" "N" (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2))   (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2)) "C" "" "P" "SOLID" "CO" "T" "0,0,0" "")
 															)
 														)  
 														((= rockName "炭质泥岩")
@@ -1929,12 +1940,13 @@
 			;选择加密对象
  			(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 			(if (= rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace))
+			(modifyLastBlock BlockName)
 			;(command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace);用block命令制作块，然后用minsert命令制作多重引用块
 		  ;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
 			;(command "minsert"   BlockName BasicPoint 1 1 0 1 1 0 )
 			;(vla-put-name (vla-item (vla-get-blocks (vla-get-activedocument (vlax-get-acad-object))) (vla-get-name (vlax-ename->vla-object (entlast)))) "*U") 
 					;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
-			(princ "\n加密完成")
+		
   			;加密完成后恢复参考图形
 ) 
 
@@ -1945,6 +1957,8 @@
 			(progn    ;以当前时间作为块名  ;因为我们要用多重引用块进行加密，在制作多重引用块之前我们必须将我们需要 ;加密的图元制作成块，为避免与图档内块名冲突，引用了当前时间作为块名 
 				(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 				(command "block" BlockCodeName BasicPoint Selectionset "")
+				;hahaha
+
 			) 
 			 (princ "\n没有选中图元")  
 			
@@ -3703,7 +3717,8 @@
  )
  ;单独删除柱状图
  (defun eraseWellColumnarDiagram()
- 	(if (= rockTypeNum 0) (eraseWellDrillingColumnarDiagram) (eraseWellLoggingColumnarDiagram))
+	(eraseWellDrillingColumnarDiagram) 
+	(eraseWellLoggingColumnarDiagram)
  )
  
   ;删除已画钻井柱状图
@@ -3746,4 +3761,157 @@
  (defun eraseEraseDrillDeviation()
  	(command "zoom" "A")
 	(command "erase" "C" (list 5 -5) (list 20 (+ (* drillDeepMaxData -5) 5)) "")
+ )
+ 
+ ;更改各种块的颜色 
+ (defun c:tt()
+	(setq ent (car (entsel)))
+	(setq blk_name (cdr (assoc 2 (entget ent))))
+	(blk_modifyColor blk_name 200)
+	(entupd ent)
+ )
+ 
+ (defun modifyLastBlock(blkName)
+ 	(setq ent (cdr (car (entget (entlast)))))
+	(setq blk_name (cdr (assoc 2 (entget (entlast)))))
+	
+	(cond ((= blkName "黄土")  
+				(progn
+					;土黄色
+					(blk_modifyColor blk_name 40)
+				)
+			   )
+			((= blkName "表层套管")
+				(progn 
+					(print "表层套管")
+				)
+			)  
+		   ((= blkName "粉砂岩")
+				(progn 
+					;浅灰色
+					(blk_modifyColor blk_name 9)					
+				)
+			)  
+			((= blkName "细粒砂岩")
+				(progn 
+					;浅灰色
+					(blk_modifyColor blk_name 9)					
+				)
+			)  
+			((= blkName "中粒砂岩")
+				(progn 
+					;灰白色
+					(blk_modifyColor blk_name 254)					
+				)
+			)  
+			((= blkName "粗粒砂岩")
+				(progn 
+					;灰色
+					(blk_modifyColor blk_name 253)					
+				)
+			)  
+			((= blkName "粉砂质泥岩")
+				(progn 
+					;?????????????
+					(blk_modifyColor blk_name 34)
+				)
+			)  
+			((= blkName "泥质粉砂岩")
+				(progn 
+					;???????????
+					(blk_modifyColor blk_name 34)
+
+				)
+			)  
+			((= blkName "砂砾岩")
+				(progn 
+					;浅棕红
+					(blk_modifyColor blk_name 242)					
+					
+				) 
+			)					
+			((= blkName "泥岩")
+				(progn 
+					;灰黑色
+					(blk_modifyColor blk_name 251)					
+				)
+			)  
+			((= blkName "煤层")
+				(progn 
+					;黑色
+					(blk_modifyColor blk_name 250)					
+				)
+			)  
+			((= blkName "炭质泥岩")
+				(progn 
+					;浅黑色
+					(blk_modifyColor blk_name 48)
+				)
+			)  
+			((= blkName "砂质泥岩")
+				(progn 
+					;灰绿色
+					(blk_modifyColor blk_name 87)
+				)
+			)  
+			((= blkName "泥质砂岩")
+				(progn 
+					;浅棕红色
+					(blk_modifyColor blk_name 34)
+
+				)
+			)  
+			((= blkName "石灰岩")
+				(progn 
+					;灰色
+					(blk_modifyColor blk_name 252)
+				)
+			)  
+			((= blkName "泥质灰岩")
+				(progn 
+					;棕红色
+					(blk_modifyColor blk_name 24)
+				)
+			)  
+			((= blkName "铝质泥岩")
+				(progn 
+					;灰黑色
+					(blk_modifyColor blk_name 251)			
+				)
+			)  
+			((= blkName "假整合")
+				(progn 
+
+				)
+			)  
+			((= blkName "角度不整合")
+				(progn 
+
+				)
+			)  
+	)
+	
+	(entupd ent)
+ )
+
+ (defun blk_modifyColor(blk_name colorNum)
+
+	(setq blk (Vlax-Invoke-Method (Vlax-Get (Vlax-Get (Vlax-Get-Acad-Object) 'ActiveDocument) 'Blocks) 'Item blk_name))
+	(vlax-for item blk 
+		(setq typ (Vlax-Get item 'ObjectName))
+		(cond
+			((= typ "AcDbBlockReference")
+				;找到了子块
+				(blk_modifyColor (Vlax-Get item 'Name) colorNum)
+			)
+			((= typ "AcDbHatch")
+				;找到了子块
+				(Vlax-Put-Property item 'Color colorNum)
+			)
+			(1
+				(Vlax-Put-Property item 'Color colorNum)
+			)
+		)
+	)
+	
  )
