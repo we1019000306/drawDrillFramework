@@ -255,7 +255,7 @@
 (defun resetHatchConfiguration()
 	(command "zoom" "w" (strcat "-150," (rtos (- (* 100 -5) 40) 2 2)) (strcat "-125," (rtos (- (* 100 -5) 50) 2 2)) )
 	(command "circle" (strcat "-137.5," (rtos (- (* 100 -5) 41.25) 2 2)) 0.10)
-	(command "-hatch" "S" (ssget "W" (list -138 (- (* 100 -5) 40.75)) (list -137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
+	(command "-hatch" "S" (ssget "W" (list -138 (- (* 100 -5) 40.75)) (list -137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO"  "T" "255,255,255" "" "")
 	(eraseLastEnt)
 	(eraseLastEnt)
 )
@@ -365,7 +365,7 @@
 					(setq xiStructureThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property xiDataThicknessRange 'Item xiIndexA)) 'Value2))
 					(setq xiStructureHoleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property xiDataHoleNameRange 'Item xiIndexA)) 'Value2))
 					(setq xiStructureSimpleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property xiDataSimpleNameRange 'Item xiIndexA)) 'Value2))
-					(drawRockStructureLineAndTextLabel xiDataOfYRange xiStructureDeep xiStructureThickness xiStructureHoleName xiStructureSimpleName -330 xiIndexA)
+					(drawRockStructureLineAndTextLabel 0 xiDataOfYRange xiStructureDeep xiStructureThickness xiStructureHoleName xiStructureSimpleName -330 xiIndexA)
 			)
 		)
 		(setq xiIndexA (1+ xiIndexA))
@@ -384,7 +384,7 @@
 					(setq tongStructureThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property tongDataThicknessRange 'Item tongIndexA)) 'Value2))
 					(setq tongStructureHoleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property tongDataHoleNameRange 'Item tongIndexA)) 'Value2))
 					(setq tongStructureSimpleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property tongDataSimpleNameRange 'Item tongIndexA)) 'Value2))
-					(drawRockStructureLineAndTextLabel tongDataOfYRange tongStructureDeep tongStructureThickness tongStructureHoleName tongStructureSimpleName -320 tongIndexA)
+					(drawRockStructureLineAndTextLabel 1 tongDataOfYRange tongStructureDeep tongStructureThickness tongStructureHoleName tongStructureSimpleName -320 tongIndexA)
 			)
 		)
 		(setq tongIndexA (1+ tongIndexA))
@@ -403,7 +403,7 @@
 					(setq zuStructureThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property zuDataThicknessRange 'Item zuIndexA)) 'Value2))
 					(setq zuStructureHoleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property zuDataHoleNameRange 'Item zuIndexA)) 'Value2))
 					(setq zuStructureSimpleName (Vlax-Get (vlax-variant-value (Vlax-Get-Property zuDataSimpleNameRange 'Item zuIndexA)) 'Value2))
-					(drawRockStructureLineAndTextLabel zuDataOfYRange zuStructureDeep zuStructureThickness zuStructureHoleName zuStructureSimpleName -310 zuIndexA)
+					(drawRockStructureLineAndTextLabel 2 zuDataOfYRange zuStructureDeep zuStructureThickness zuStructureHoleName zuStructureSimpleName -310 zuIndexA)
 			)
 		)
 		(setq zuIndexA (1+ zuIndexA))
@@ -780,24 +780,60 @@
   	(command "line" "55,30" (strcat "55," strThinTopPy) "");备注分界线
 )
 
-(defun drawRockStructureLineAndTextLabel(rockStructureDataRangeOfY rockStructureDeep rockStructureThickness rockStructureHoleName rockStructureSimpleName RockStructureXOffset indexRS)
+(defun drawRockStructureLineAndTextLabel(rockStructureTypeNum rockStructureDataRangeOfY rockStructureDeep rockStructureThickness rockStructureHoleName rockStructureSimpleName RockStructureXOffset indexRS)
 	(setq pyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property rockStructureDataRangeOfY 'Item indexRS)) 'Value2))
 	(setq pyA (* pyA -5))
 	(setq pxA  RockStructureXOffset)
 	(setq holeNameLength (/ (strlen  rockStructureHoleName) 2)) ;strlen中文单位为2
 	(setq indexRockStructure 1.0)
+	(setq rockStructureindexA 1.0)
 	(command "line" (strcat (strcat (rtos (- RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) (strcat (strcat (rtos (+ RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) "")
 	
 	(if (<= rockStructureThickness (* (+ holeNameLength 2) 4))
 		(progn
 			(if (<= rockStructureThickness 8)
 				(progn
-					(command "text" "J" "C" (list pxA  (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 rockStructureSimpleName)
+					(cond ((= rockStructureTypeNum 0)
+								(progn
+									(command "text" "J" "C" (list pxA  (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 rockStructureSimpleName)
+								))
+								((= rockStructureTypeNum 1)
+								(progn
+								;!!!!!!!!!!!!!!!!!!!!!!!!!
+									(command "text" "J" "C" (list pxA (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
+									(command "text" "J" "C" (list (+ pxA 2) (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) 1 0 (substr rockStructureSimpleName 2))							
+
+								))
+								((= rockStructureTypeNum 2)
+								(progn
+									(command "text" "J" "C" (list pxA (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
+									(command "text" "J" "C" (list (+ pxA 2) (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) 1 0 (substr rockStructureSimpleName 2))							
+								))
+					)
+					
+					
+					
 				)
 				(progn
-					(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 8)) (- rockStructureTextSize 1) 0 rockStructureHoleName)
-					(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) (- rockStructureTextSize 1) 0 rockStructureSimpleName)
+					(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 8)) rockStructureTextSize 0 rockStructureHoleName)
 
+					(cond ((= rockStructureTypeNum 0)
+								(progn
+									(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 rockStructureSimpleName)
+								))
+								((= rockStructureTypeNum 1)
+								(progn
+								;!!!!!!!!!!!!!!!!!!!!!!!!!
+									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
+									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))							
+
+								))
+								((= rockStructureTypeNum 2)
+								(progn
+									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
+									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))							
+								))
+					)
 				)
 			)
 		)
@@ -819,7 +855,23 @@
 								((= indexRockStructure holeNameLength)   
 								(progn
 									(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 10)) rockStructureTextSize 0 (substr rockStructureHoleName (+ 1 (* 2 (- (fix indexRockStructure) 1))) 2))
-									(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 2)) (- rockStructureTextSize 1) 0 rockStructureSimpleName)
+										(cond ((= rockStructureTypeNum 0)
+												(progn
+													(command "text" "J" "C" (list pxA  (+ (* rockStructureDeep -5) 2)) rockStructureTextSize 0 rockStructureSimpleName)
+												))
+											((= rockStructureTypeNum 1)
+												(progn
+												;!!!!!!!!!!!!!!!!!!!!!!!!!
+													(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 2)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
+													(command "text" "J" "C" (list (+ pxA 2) (+ (* rockStructureDeep -5) 2)) 1 0 (substr rockStructureSimpleName 2))							
+
+												))
+											((= rockStructureTypeNum 2)
+												(progn
+													(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 2)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
+													(command "text" "J" "C" (list (+ pxA 2) (+ (* rockStructureDeep -5) 2)) 1 0 (substr rockStructureSimpleName 2))							
+												))
+											)
 
 								))
 							)
@@ -1189,12 +1241,12 @@
 							
 								(progn 
 
-									(if (< wdcdThickness 0.75) 
+									(if (< wdcdThickness 2.5) 
 														(progn
-																	(if (< (- wdcdDeep rockLineDeep) 0.75) 
+																	(if (< (- wdcdDeep rockLineDeep) 2.5) 
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
-																					(setq rockLineDeep  (+ wdcdDeep (- 0.75 (- wdcdDeep rockLineDeep))))
+																					(setq rockLineDeep  (+ wdcdDeep (- 2.5 (- wdcdDeep rockLineDeep))))
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
@@ -1210,7 +1262,7 @@
 																			)
 																			(progn
 																			;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
-																					;(setq rockLineDeep (+ (+ rockLineDeep 0.75) wdcdThickness))
+																					;(setq rockLineDeep (+ (+ rockLineDeep 2.5) wdcdThickness))
 																					(setq rockLineDeep wdcdDeep)
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
@@ -1230,10 +1282,10 @@
 														)
 														(progn
 																	;当下一层岩性深度小于已调整后的上一层最大显示的文本框的岩性深度，则也对该层进行改变
-																	(if (< (- wdcdDeep rockLineDeep) 0.75) 
+																	(if (< (- wdcdDeep rockLineDeep) 2.5) 
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
-																					(setq rockLineDeep (+ wdcdDeep (- 0.75 (- wdcdDeep rockLineDeep))))
+																					(setq rockLineDeep (+ wdcdDeep (- 2.5 (- wdcdDeep rockLineDeep))))
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
@@ -1284,11 +1336,11 @@
 	(if (null drillDeviationAzimuth)
 		(progn
 				(command "text" "J" "C" (list (+ pxA 12.5) (+ pyA 2)) 2 0 (strcat (rtos drillDeviationDeviation 2 2) "(°)"))
-				(command "text" "J" "C" (list (+ pxA 12.5) (- pyA 4.5)) 2 0 (strcat (rtos drillDeviationDeviation 2 2) "(m)"))
+				(command "text" "J" "C" (list (+ pxA 12.5) (- pyA 4.5)) 2 0 (strcat (rtos drillDeviationDeep 2 2) "(m)"))
 		)
 		(progn
 				(command "text" "J" "C" (list (+ pxA 12.5) (+ pyA 2)) 2 0 (strcat (strcat (rtos drillDeviationDeviation 2 2) "(°) / ") (strcat (rtos drillDeviationAzimuth 2 2) "(°)")))
-				(command "text" "J" "C" (list (+ pxA 12.5) (- pyA 4.5)) 2 0 (strcat (rtos drillDeviationDeviation 2 2) "(m)"))
+				(command "text" "J" "C" (list (+ pxA 12.5) (- pyA 4.5)) 2 0 (strcat (rtos drillDeviationDeep 2 2) "(m)"))
 		)
 	)
 )
@@ -1441,26 +1493,27 @@
 	(setq pxA  RockSignXOffset)
 	;1.2 2.5 3.75
 
-	(cond ((<= rockSignThickness 0.24)
-				(progn
-					;0.75*5 约等于4
-					(command "text" "J" "C" (list pxA (* (- rockSignDeep (/ rockSignThickness 2)) -5)) 0.5 0 rockSignName)
-
-				))
-				((and (> rockSignThickness 0.24) (<= rockSignThickness 0.5))
-				(progn
-					(command "text" "J" "C" (list pxA (* (- rockSignDeep (/ rockSignThickness 2)) -5)) 1 0 rockSignName)
-					
-				))
-				((and (> rockSignThickness 0.5) (<= rockSignThickness 0.75))   
-				(progn
-					(command "text" "J" "C" (list pxA (* (- rockSignDeep (/ rockSignThickness 2)) -5)) 2 0 rockSignName)
-				))
-				((> rockSignThickness 0.75)  
-				(progn
-					(command "text" "J" "C" (list pxA (* (- rockSignDeep (/ rockSignThickness 2)) -5)) 3 0 rockSignName)
-				))
-	)
+;;;	(cond ((<= rockSignThickness 0.24)
+;;;				(progn
+;;;					;0.75*5 约等于4
+;;;					(command "text" "J" "C" (list pxA (* (- rockSignDeep (/ rockSignThickness 2)) -5)) 0.5 0 rockSignName)
+;;;
+;;;				))
+;;;				((and (> rockSignThickness 0.24) (<= rockSignThickness 0.5))
+;;;				(progn
+;;;					(command "text" "J" "C" (list pxA (* (- rockSignDeep (/ rockSignThickness 2)) -5)) 1 0 rockSignName)
+;;;					
+;;;				))
+;;;				((and (> rockSignThickness 0.5) (<= rockSignThickness 0.75))   
+;;;				(progn
+;;;					(command "text" "J" "C" (list pxA (* (- rockSignDeep (/ rockSignThickness 2)) -5)) 2 0 rockSignName)
+;;;				))
+;;;				((> rockSignThickness 0.75)  
+;;;				(progn
+;;;					(command "text" "J" "C" (list pxA (* (- rockSignDeep (/ rockSignThickness 2)) -5)) 3 0 rockSignName)
+;;;				))
+;;;	)
+  (command "text" "J" "C" (list pxA (* (- rockSignDeep (/ rockSignThickness 2)) -5)) 3 0 rockSignName)
 )
 
 (defun drawDrillStructureTextLabel()
@@ -1785,7 +1838,7 @@
 															(progn 
 																(print "中粒砂岩")															
 																(drawZhongLiShaYanOne)
-																(setq Selectionset (ssget "C" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 7.75)))) 
+																(setq Selectionset (ssget "C" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 7.75)))) 
 																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
 																(configThickHatch)
 															)
@@ -3583,9 +3636,9 @@
 ;Tools
 (defun getBaseDataFromExcelFile()
 	(vl-load-com)
+	(setq baseDataExcelFilePathName (getfiled "选择数据源Excel文件" "c:" "" 0))
 	(Setq excel (Vlax-Get-Object "Excel.Application"))
 	(Vlax-Put-Property excel 'Visible -1)
-	(setq baseDataExcelFilePathName (getfiled "选择数据源Excel文件" "c:" "" 8))
 	(setq wbs (vlax-get-property excel "WorkBooks"))
 	(setq wb (vlax-invoke-method wbs "open" baseDataExcelFilePathName))
 	(setq shs (vlax-get-property wb "Sheets"))
