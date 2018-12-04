@@ -811,26 +811,24 @@
 								))
 					)
 					
-					
-					
 				)
 				(progn
-					(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 8)) rockStructureTextSize 0 rockStructureHoleName)
+					(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 8)) (- rockStructureTextSize 1) 0 rockStructureHoleName)
 
 					(cond ((= rockStructureTypeNum 0)
 								(progn
-									(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 rockStructureSimpleName)
+									(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) (- rockStructureTextSize 1) 0 rockStructureSimpleName)
 								))
 								((= rockStructureTypeNum 1)
 								(progn
 								;!!!!!!!!!!!!!!!!!!!!!!!!!
-									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
+									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) (- rockStructureTextSize 1) 0 (substr rockStructureSimpleName 1 1))							
 									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))							
 
 								))
 								((= rockStructureTypeNum 2)
 								(progn
-									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
+									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) (- rockStructureTextSize 1) 0 (substr rockStructureSimpleName 1 1))							
 									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))							
 								))
 					)
@@ -861,7 +859,6 @@
 												))
 											((= rockStructureTypeNum 1)
 												(progn
-												;!!!!!!!!!!!!!!!!!!!!!!!!!
 													(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 2)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
 													(command "text" "J" "C" (list (+ pxA 2) (+ (* rockStructureDeep -5) 2)) 1 0 (substr rockStructureSimpleName 2))							
 
@@ -1525,7 +1522,7 @@
 
 ;UI-Dimlinear
 (defun drawDrillStructureDimlinear()
-	(cond ((= HoleNum 0)  
+	(cond ((= HoleNumFactor 1)  
 					(progn
 						(command "lweight" "ByLayer")			
 						(command "dimtad" 1) 
@@ -1544,10 +1541,15 @@
 						(command "dimlinear" (strcat "-40," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) (strcat "-20," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -29.5 (+ (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 1.5) 2.5 0 holeTwoBushDiameterStr)
 						(command "text" "J" "C" (list -29.5 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 3.5) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
-						
+						;二开水泥反深标注
+						(command "line" (strcat "-43," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-40," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) "")
+						(command "line" (strcat "-20," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-17,"(rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) "")
+						(command "text" "J" "C" (list -30 (- (* (- drillDeepMaxData holeTwoCement) -5) 1)) 2 0 (strcat (rtos holeTwoCement 2 2) "m"))
+
+
 					 ))
 				
-			   ((= HoleNum 1)
+			   ((= HoleNumFactor 2)
 					(progn 
 						(command "lweight" "ByLayer")			
 						(command "dimtad" 1) 
@@ -1566,6 +1568,11 @@
 						(command "dimlinear" (strcat "-46," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) (strcat "-14," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -30 (+ (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoBushDiameterStr)
 						(command "text" "J" "C" (list -30 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3.5)) 2.5 0  (strcat (rtos HoleTwoDeep 2 2) "m"))
+						;二开水泥反深标注
+						(command "line" (strcat "-49," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-46," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) "")
+						(command "line" (strcat "-14," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-11,"(rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) "")
+						(command "text" "J" "C" (list -30 (- (* (- drillDeepMaxData holeTwoCement) -5) 1)) 2 0 (strcat (rtos holeTwoCement 2 2) "m"))
+						
 						;三开标注
 						(command "dimlinear" (strcat "-43," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2)) (strcat "-17," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -30 (+ (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 1.5)) 2.5 0 holeThreeDrillDiameterStr)
@@ -1573,6 +1580,11 @@
 						(command "dimlinear" (strcat "-40," (rtos (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 2 2)) (strcat "-20," (rtos (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -30 (+ (*(+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 1.5)) 2.5 0 holeThreeBushDiameterStr)
 						(command "text" "J" "C" (list -30 (- (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 3.5)) 2.5 0  (strcat (rtos HoleThreeDeep 2 2) "m"))
+						;三开水泥反深标注
+						(command "line" (strcat "-43," (rtos (* (- drillDeepMaxData holeThreeCement) -5) 2 2)) (strcat "-40," (rtos (* (- drillDeepMaxData holeThreeCement) -5) 2 2)) "")
+						(command "line" (strcat "-17," (rtos (* (- drillDeepMaxData holeThreeCement) -5) 2 2)) (strcat "-20,"(rtos (* (- drillDeepMaxData holeThreeCement) -5) 2 2)) "")
+						(command "text" "J" "C" (list -30 (- (* (- drillDeepMaxData holeThreeCement) -5) 1)) 2 0 (strcat (rtos holeThreeCement 2 2) "m"))
+						
 					))
 	)
 )
@@ -2020,6 +2032,7 @@
 )
 
 (defun hatchDrillStructure()
+	(command "measurement" 1)
 	(cond ((= HoleNumFactor 1)  
 						(progn
 								;一开水泥反深
