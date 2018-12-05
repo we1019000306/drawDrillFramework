@@ -799,7 +799,6 @@
 								))
 								((= rockStructureTypeNum 1)
 								(progn
-								;!!!!!!!!!!!!!!!!!!!!!!!!!
 									(command "text" "J" "C" (list pxA (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
 									(command "text" "J" "C" (list (+ pxA 2) (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) 1 0 (substr rockStructureSimpleName 2))							
 
@@ -813,22 +812,21 @@
 					
 				)
 				(progn
-					(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 8)) (- rockStructureTextSize 1) 0 rockStructureHoleName)
+					;(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 8)) (- rockStructureTextSize 1) 0 rockStructureHoleName)
 
 					(cond ((= rockStructureTypeNum 0)
 								(progn
-									(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) (- rockStructureTextSize 1) 0 rockStructureSimpleName)
+									(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 rockStructureSimpleName)
 								))
 								((= rockStructureTypeNum 1)
 								(progn
-								;!!!!!!!!!!!!!!!!!!!!!!!!!
-									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) (- rockStructureTextSize 1) 0 (substr rockStructureSimpleName 1 1))							
+									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
 									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))							
 
 								))
 								((= rockStructureTypeNum 2)
 								(progn
-									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) (- rockStructureTextSize 1) 0 (substr rockStructureSimpleName 1 1))							
+									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
 									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))							
 								))
 					)
@@ -2165,7 +2163,7 @@
 	(command "text" "J" "C" (list 30 (- (* drillDeepMaxData -5) 67)) 3 0 Proportion)
 	(command "text" "J" "C" (list -35 (- (* drillDeepMaxData -5) 79)) 3 0 DrillCommander)
 	(command "text" "J" "C" (list 30 (- (* drillDeepMaxData -5) 79)) 3 0 PictureTime)
-	(command "text" "J" "C" (list -35 (- (* drillDeepMaxData -5) 91)) 3 0 DrillManager)
+	(command "text" "J" "C" (list -35 (- (* drillDeepMaxData -5) 91)) 3 0 TechnicalLeader)
 	(command "mtext" (list 6 (- (* drillDeepMaxData -5) 84)) "h" 3 "w" "48" DataSource "")
 
 )
@@ -3477,15 +3475,16 @@
 	(setq DrillType (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B9"))
 	(setq WaterPump (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B10"))
 	(setq MachinePower (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B11"))
+	;
 	(setq PictureMaker (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B12"))
-	(setq DrillManager (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B13"))
-	(setq PictureProofreader (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B14"))
-	(setq PictureNumber (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B15"))
-	(setq PictureChecker (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B16"))
-	(setq Proportion (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B17"))
-	(setq DrillCommander (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B18"))
-	(setq PictureTime (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B19"))
-	(setq DrillManager (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B20"))
+	(setq PictureProofreader (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B13"))
+	(setq PictureChecker (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B14"))
+	(setq DrillCommander (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B15"))
+	(setq TechnicalLeader (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B16"))
+	(setq DrillManager (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B17"))
+	(setq PictureNumber (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B18"))
+	(setq Proportion (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B19"))
+	(setq PictureTime (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B20"))
 	(setq DataSource (getBaseDataCellValueWithSheetNameAndRowName "柱状图基本信息" "B21"))
 )
 
