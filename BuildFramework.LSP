@@ -1342,8 +1342,8 @@
 
 (defun drawDrillStructureLine()
 	;HoleNumFactor
-	(setq strBushShoesPtA (strcat "-40," (rtos (* BushShoes -5) 2 2)))
-	(setq strBushShoesPtB (strcat "-20," (rtos (* BushShoes -5) 2 2)))
+	(setq strBushShoesPtA (strcat "-40," (rtos (* bushShoes -5) 2 2)))
+	(setq strBushShoesPtB (strcat "-20," (rtos (* bushShoes -5) 2 2)))
 	;绘制阻流环
 	(setq strHoleDamperLocationPtA (strcat "-40," (rtos (* holeDamperLocation -5) 2 2)))
 	(setq strHoleDamperLocationPtB (strcat "-20," (rtos (* holeDamperLocation -5) 2 2)))
@@ -1369,37 +1369,46 @@
 	(cond ((= HoleNumFactor 1)  
 					(progn
 							(command "lweight" "ByLayer")
-							(command "line" (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* HoleOneDeep -5) 2 2)) "")
-							(command "line" (strcat "-17," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-17," (rtos (* HoleOneDeep -5) 2 2)) "")
-							(command "line" "-49,0" (strcat "-49," (rtos (* HoleOneDeep -5) 2 2)) "")
-							(command "line" "-11,0" (strcat "-11," (rtos (* HoleOneDeep -5) 2 2)) "")
+							(command "line" (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* holeOneDeep -5) 2 2)) "")
+							(command "line" (strcat "-17," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-17," (rtos (* holeOneDeep -5) 2 2)) "")
+							(command "line" "-49,0" (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) "")
+							(command "line" "-11,0" (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) "")
 							(command "lweight" 0.50)
-							(command "line" "-46,0" (strcat "-46," (rtos (* HoleOneDeep -5) 2 2)) "")
-							(command "line" "-14,0" (strcat "-14," (rtos (* HoleOneDeep -5) 2 2)) "")
-							
+							(command "line" "-46,0" (strcat "-46," (rtos (* holeOneDeep -5) 2 2)) "")
+							(command "line" "-14,0" (strcat "-14," (rtos (* holeOneDeep -5) 2 2)) "")
+							;二开封口线
+							(command "lweight" "ByLayer")
+							(command "line" (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) (strcat "-43," (rtos (* holeOneDeep -5) 2 2)) "")
+							(command "line" (strcat "-17," (rtos (* holeOneDeep -5) 2 2)) (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) "")
 					) 
 				)
 			   ((= HoleNumFactor 2)
 					(progn 
 							(command "lweight" "ByLayer")
 							;一开井深
-							(command "line" "-55,0" (strcat "-55," (rtos (* HoleOneDeep -5) 2 2)) "")
-							(command "line" "-5,0" (strcat "-5," (rtos (* HoleOneDeep -5) 2 2)) "")
+							(command "line" "-55,0" (strcat "-55," (rtos (* holeOneDeep -5) 2 2)) "")
+							(command "line" "-5,0" (strcat "-5," (rtos (* holeOneDeep -5) 2 2)) "")
 							;一开套管下深
 							(command "lweight" 0.50)
-							(command "line" "-52,0" (strcat "-52," (rtos (* HoleOneDeep -5) 2 2)) "")
-							(command "line" "-8,0" (strcat "-8," (rtos (* HoleOneDeep -5) 2 2)) "")
+							(command "line" "-52,0" (strcat "-52," (rtos (* holeOneDeep -5) 2 2)) "")
+							(command "line" "-8,0" (strcat "-8," (rtos (* holeOneDeep -5) 2 2)) "")
 							;二开井深
 							(command "lweight" "ByLayer")
-							(command "line" (strcat "-49," (rtos (* HoleOneDeep -5) 2 2)) (strcat "-49," (rtos (* HoleTwoDeep -5) 2 2)) "")
-							(command "line" (strcat "-11," (rtos (* HoleOneDeep -5) 2 2)) (strcat "-11," (rtos (* HoleTwoDeep -5) 2 2)) "")
-							(command "line" (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* HoleTwoDeep -5) 2 2)) "")
-							(command "line" (strcat "-17," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-17," (rtos (* HoleTwoDeep -5) 2 2)) "")
+							(command "line" (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) (strcat "-49," (rtos (* holeTwoDeep -5) 2 2)) "")
+							(command "line" (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) (strcat "-11," (rtos (* holeTwoDeep -5) 2 2)) "")
+							(command "line" (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* holeTwoDeep -5) 2 2)) "")
+							(command "line" (strcat "-17," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-17," (rtos (* holeTwoDeep -5) 2 2)) "")
 							;二开套管下深
 							(command "lweight" 0.50)
-							(command "line" (strcat "-46," (rtos (* HoleOneDeep -5) 2 2)) (strcat "-46," (rtos (* HoleTwoDeep -5) 2 2)) "")
-							(command "line" (strcat "-14," (rtos (* HoleOneDeep -5) 2 2)) (strcat "-14," (rtos (* HoleTwoDeep -5) 2 2)) "")
+							(command "line" (strcat "-46," (rtos (* holeOneDeep -5) 2 2)) (strcat "-46," (rtos (* holeTwoDeep -5) 2 2)) "")
+							(command "line" (strcat "-14," (rtos (* holeOneDeep -5) 2 2)) (strcat "-14," (rtos (* holeTwoDeep -5) 2 2)) "")
 							(command "lweight" "ByLayer")
+							;二开封口线
+							(command "line" (strcat "-55," (rtos (* holeOneDeep -5) 2 2)) (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) "")
+							(command "line" (strcat "-5," (rtos (* holeOneDeep -5) 2 2)) (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) "")
+							;三开封口线
+							(command "line" (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) (strcat "-43," (rtos (* holeOneDeep -5) 2 2)) "")
+							(command "line" (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) (strcat "-17," (rtos (* holeOneDeep -5) 2 2)) "")
 					)
 				)  
 	)
@@ -1514,7 +1523,7 @@
 (defun drawDrillStructureTextLabel()
 	(command "text" "J" "C" (list -30 (+ (* holeArtificialDeep -5) 2)) 3 0 (strcat (rtos  holeArtificialDeep 2 2) "m"))
 	(command "text" "J" "C" (list -30 (+ (* holeDamperLocation -5) 2)) 3 0 (strcat (rtos  holeDamperLocation 2 2) "m"))
-	(command "text" "J" "C" (list -30 (+ (* BushShoes -5) 2)) 3 0 (strcat (rtos  BushShoes 2 2) "m"))
+	(command "text" "J" "C" (list -30 (+ (* bushShoes -5) 2)) 3 0 (strcat (rtos  bushShoes 2 2) "m"))
 	(command "text" "J" "C" (list -30 (+ (* drillDeepMaxData -5) 2)) 3 0 (strcat (rtos drillDeepMaxData 2 2) "m"))
 )
 
@@ -1526,24 +1535,31 @@
 						(command "dimtad" 1) 
 						(command "dimasz" 2.5)
 						;一开标注
-						(command "dimlinear" (strcat "-49," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2)) (strcat "-11," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2))) ;
-						(command "text" "J" "C" (list -29.5 (+ (/ (* 1 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneDrillDiameterStr)
-						(command "text" "J" "C" (list -29.5 (- (/ (* 1 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0 (strcat (rtos holeOneDeep 2 2) "m"))
-						(command "dimlinear" (strcat "-46," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2)) (strcat "-14," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2))) ;
-						(command "text" "J" "C" (list -29.5 (+ (/ (* 2 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneBushDiameterStr)
-						(command "text" "J" "C" (list -29.5 (- (/ (* 2 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0  (strcat (rtos holeOneDeep 2 2) "m"))
+						(command "dimlinear" (strcat "-49," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2)) (strcat "-11," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2))) ;
+						(command "text" "J" "C" (list -29.5 (+ (/ (* 1 (* holeOneDeep -5)) 3) 1.5)) 2.5 0 holeOneDrillDiameterStr)
+						(command "text" "J" "C" (list -29.5 (- (/ (* 1 (* holeOneDeep -5)) 3) 3.5)) 2.5 0 (strcat (rtos holeOneDeep 2 2) "m"))
+						(command "dimlinear" (strcat "-46," (rtos (/ (* 2 (* holeOneDeep -5)) 3) 2 2)) (strcat "-14," (rtos (/ (* 2 (* holeOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 2 (* holeOneDeep -5)) 3) 2 2))) ;
+						(command "text" "J" "C" (list -29.5 (+ (/ (* 2 (* holeOneDeep -5)) 3) 1.5)) 2.5 0 holeOneBushDiameterStr)
+						(command "text" "J" "C" (list -29.5 (- (/ (* 2 (* holeOneDeep -5)) 3) 3.5)) 2.5 0  (strcat (rtos holeOneDeep 2 2) "m"))
 						;二开标注
 						(command "dimlinear" (strcat "-43," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2)) (strcat "-17," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -29.5 (+ (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoDrillDiameterStr)
-						(command "text" "J" "C" (list -29.5 (- (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 3.5)) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
+						(command "text" "J" "C" (list -29.5 (- (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 3.5)) 2.5 0 (strcat (rtos holeTwoDeep 2 2) "m"))
 						(command "dimlinear" (strcat "-40," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) (strcat "-20," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -29.5 (+ (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 1.5) 2.5 0 holeTwoBushDiameterStr)
-						(command "text" "J" "C" (list -29.5 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 3.5) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
+						(command "text" "J" "C" (list -29.5 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 3.5) 2.5 0 (strcat (rtos holeTwoDeep 2 2) "m"))
 						;二开水泥反深标注
-						(command "line" (strcat "-43," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-40," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) "")
-						(command "line" (strcat "-20," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-17,"(rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) "")
-						(command "text" "J" "C" (list -30 (- (* (- drillDeepMaxData holeTwoCement) -5) 1)) 2 0 (strcat (rtos holeTwoCement 2 2) "m"))
-
+						(if (>= holeTwoCementHign holeOneDeep)
+							(progn
+								(command "line" (strcat "-43," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* holeTwoCementHign -5) 2 2)) "")
+								(command "line" (strcat "-20," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-17," (rtos (* holeTwoCementHign -5) 2 2)) "")
+							)
+							(progn
+								(command "line" (strcat "-46," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* holeTwoCementHign -5) 2 2)) "")
+								(command "line" (strcat "-20," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-14," (rtos (* holeTwoCementHign -5) 2 2)) "")
+							)
+						)
+						(command "text" "J" "C" (list -30 (- (* holeTwoCementHign -5) 1)) 2 0 (strcat (rtos holeTwoCementHign 2 2) "m"))
 
 					 ))
 				
@@ -1553,35 +1569,35 @@
 						(command "dimtad" 1) 
 						(command "dimasz" 2.5)
 						;一开标注
-						(command "dimlinear" (strcat "-55," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2)) (strcat "-5," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 1 (* HoleOneDeep -5)) 3) 2 2))) ;
-						(command "text" "J" "C" (list -30 (+ (/ (* 1 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneDrillDiameterStr)
-						(command "text" "J" "C" (list -30 (- (/ (* 1 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0 (strcat (rtos holeOneDeep 2 2) "m"))
-						(command "dimlinear" (strcat "-52," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2)) (strcat "-8," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 2 (* HoleOneDeep -5)) 3) 2 2))) ;
-						(command "text" "J" "C" (list -30 (+ (/ (* 2 (* HoleOneDeep -5)) 3) 1.5)) 2.5 0 holeOneBushDiameterStr)
-						(command "text" "J" "C" (list -30 (- (/ (* 2 (* HoleOneDeep -5)) 3) 3.5)) 2.5 0  (strcat (rtos holeOneDeep 2 2) "m"))
+						(command "dimlinear" (strcat "-55," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2)) (strcat "-5," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2))) ;
+						(command "text" "J" "C" (list -30 (+ (/ (* 1 (* holeOneDeep -5)) 3) 1.5)) 2.5 0 holeOneDrillDiameterStr)
+						(command "text" "J" "C" (list -30 (- (/ (* 1 (* holeOneDeep -5)) 3) 3.5)) 2.5 0 (strcat (rtos holeOneDeep 2 2) "m"))
+						(command "dimlinear" (strcat "-52," (rtos (/ (* 2 (* holeOneDeep -5)) 3) 2 2)) (strcat "-8," (rtos (/ (* 2 (* holeOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 2 (* holeOneDeep -5)) 3) 2 2))) ;
+						(command "text" "J" "C" (list -30 (+ (/ (* 2 (* holeOneDeep -5)) 3) 1.5)) 2.5 0 holeOneBushDiameterStr)
+						(command "text" "J" "C" (list -30 (- (/ (* 2 (* holeOneDeep -5)) 3) 3.5)) 2.5 0  (strcat (rtos holeOneDeep 2 2) "m"))
 						;二开标注
 						(command "dimlinear" (strcat "-49," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2)) (strcat "-11," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -30 (+ (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoDrillDiameterStr)
-						(command "text" "J" "C" (list -30 (- (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 3.5)) 2.5 0 (strcat (rtos HoleTwoDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (- (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 3.5)) 2.5 0 (strcat (rtos holeTwoDeep 2 2) "m"))
 						(command "dimlinear" (strcat "-46," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) (strcat "-14," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -30 (+ (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 1.5)) 2.5 0 holeTwoBushDiameterStr)
-						(command "text" "J" "C" (list -30 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3.5)) 2.5 0  (strcat (rtos HoleTwoDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3.5)) 2.5 0  (strcat (rtos holeTwoDeep 2 2) "m"))
 						;二开水泥反深标注
-						(command "line" (strcat "-49," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-46," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) "")
-						(command "line" (strcat "-14," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-11,"(rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) "")
-						(command "text" "J" "C" (list -30 (- (* (- drillDeepMaxData holeTwoCement) -5) 1)) 2 0 (strcat (rtos holeTwoCement 2 2) "m"))
+						(command "line" (strcat "-49," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-46," (rtos (* holeTwoCementHign -5) 2 2)) "")
+						(command "line" (strcat "-14," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-11," (rtos (* holeTwoCementHign -5) 2 2)) "")
+						(command "text" "J" "C" (list -30 (- (* holeTwoCementHign -5) 1)) 2 0 (strcat (rtos holeTwoCementHign 2 2) "m"))
 						
 						;三开标注
 						(command "dimlinear" (strcat "-43," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2)) (strcat "-17," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -30 (+ (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 1.5)) 2.5 0 holeThreeDrillDiameterStr)
-						(command "text" "J" "C" (list -30 (- (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5)3.5)) 2.5 0 (strcat (rtos HoleThreeDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (- (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5)3.5)) 2.5 0 (strcat (rtos holeThreeDeep 2 2) "m"))
 						(command "dimlinear" (strcat "-40," (rtos (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 2 2)) (strcat "-20," (rtos (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -30 (+ (*(+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 1.5)) 2.5 0 holeThreeBushDiameterStr)
-						(command "text" "J" "C" (list -30 (- (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 3.5)) 2.5 0  (strcat (rtos HoleThreeDeep 2 2) "m"))
+						(command "text" "J" "C" (list -30 (- (* (+ (* (/ (- holeThreeDeep holeTwoDeep) 3) 2) holeTwoDeep) -5) 3.5)) 2.5 0  (strcat (rtos holeThreeDeep 2 2) "m"))
 						;三开水泥反深标注
-						(command "line" (strcat "-43," (rtos (* (- drillDeepMaxData holeThreeCement) -5) 2 2)) (strcat "-40," (rtos (* (- drillDeepMaxData holeThreeCement) -5) 2 2)) "")
-						(command "line" (strcat "-17," (rtos (* (- drillDeepMaxData holeThreeCement) -5) 2 2)) (strcat "-20,"(rtos (* (- drillDeepMaxData holeThreeCement) -5) 2 2)) "")
-						(command "text" "J" "C" (list -30 (- (* (- drillDeepMaxData holeThreeCement) -5) 1)) 2 0 (strcat (rtos holeThreeCement 2 2) "m"))
+						(command "line" (strcat "-43," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-40," (rtos (* holeThreeCementHign -5) 2 2)) "")
+						(command "line" (strcat "-17," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-20," (rtos (* holeThreeCementHign -5) 2 2)) "")
+						(command "text" "J" "C" (list -30 (- (* holeThreeCementHign -5) 1)) 2 0 (strcat (rtos holeThreeCementHign 2 2) "m"))
 						
 					))
 	)
@@ -2034,48 +2050,59 @@
 	(cond ((= HoleNumFactor 1)  
 						(progn
 								;一开水泥反深
-								(command "-hatch" "W" "N" "-49,0" "-46,0" (strcat "-46," (rtos (* holeOneDeep -5) 2 2))  (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
-								(command "-hatch" "W" "N" "-11,0" "-14,0" (strcat "-14," (rtos (* holeOneDeep -5) 2 2))  (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
-						
+								(command "-hatch" "W" "N" (strcat "-49," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-46," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-46," (rtos (* holeOneDeep -5) 2 2))  (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								(command "-hatch" "W" "N" (strcat "-11," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-14," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-14," (rtos (* holeOneDeep -5) 2 2))  (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								
 								;二开水泥反深
-								(command "-hatch" "W" "N" (strcat "-43," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-40," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-17," (rtos (* (- drillDeepMaxData holeTwoCement) -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								(command "-hatch" "W" "N" (strcat "-43," (rtos (*  holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-17," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 								(command "-hatch" "W" "N" strHoleDamperLocationPtC (strcat "-30," (rtos (- (* holeDamperLocation -5) 2) 2 2)) "A" "@5<270" "@5<90" "L" strHoleDamperLocationPtD strBushShoesPtB strBushShoesPtA  "C" "" "P" "DOTS" "1" "0" "")
 								(command "-hatch" "W" "N" strHoleArtificialDeepPtA strHoleArtificialDeepPtB strHoleDamperLocationPtB strHoleDamperLocationPtA "C" "" "P" "DOTS" "1" "0" "")
+						
+							(if (< holeTwoCementHign holeOneDeep)
+								(progn
+									(command "-hatch" "W" "N" (strcat "-46," (rtos (*  holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* holeOneDeep -5) 2 2)) (strcat "-20," (rtos  (* holeOneDeep -5) 2 2)) (strcat "-20," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-14," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-14," (rtos  (* holeOneDeep -5) 2 2)) (strcat "-46," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								)
+							)
+							
 						))
 				   ((= HoleNumFactor 2)
 						(progn 
 							
 								;一开水泥反深
-								(command "-hatch" "W" "N" "-55,0" "-52,0" (strcat "-52," (rtos (* holeOneDeep -5) 2 2))  (strcat "-55," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
-								(command "-hatch" "W" "N" "-5,0" "-8,0" (strcat "-8," (rtos (* holeOneDeep -5) 2 2))  (strcat "-5," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								(command "-hatch" "W" "N" (strcat "-55," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-52," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-52," (rtos (* holeOneDeep -5) 2 2))  (strcat "-55," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								(command "-hatch" "W" "N" (strcat "-5," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-8," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-8," (rtos (* holeOneDeep -5) 2 2))  (strcat "-5," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 			
 								;二开水泥反深
-								(command "-hatch" "W" "N" (strcat "-49," (rtos (* holeTwoDeep -5) 2 2))(strcat "-46," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-46," (rtos (* (- holeTwoDeep holeTwoCement) -5) 2 2))  (strcat "-49," (rtos (* (- holeTwoDeep holeTwoCement) -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
-								(command "-hatch" "W" "N" (strcat "-14," (rtos (* holeTwoDeep -5) 2 2))(strcat "-11," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-11," (rtos (* (- holeTwoDeep holeTwoCement) -5) 2 2))  (strcat "-14," (rtos (* (- holeTwoDeep holeTwoCement) -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
-								
+								(command "-hatch" "W" "N" (strcat "-49," (rtos (* holeTwoDeep -5) 2 2))(strcat "-46," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-46," (rtos (* holeTwoCementHign -5) 2 2))  (strcat "-49," (rtos (* holeTwoCementHign -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								(command "-hatch" "W" "N" (strcat "-14," (rtos (* holeTwoDeep -5) 2 2))(strcat "-11," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-11," (rtos (* holeTwoCementHign -5) 2 2))  (strcat "-14," (rtos (* holeTwoCementHign -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								(if (< holeTwoCementHign holeOneDeep)
+								(progn
+									(command "-hatch" "W" "N" (strcat "-52," (rtos (*  holeTwoCementHign -5) 2 2)) (strcat "-46," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-46," (rtos (* holeOneDeep -5) 2 2)) (strcat "-14," (rtos  (* holeOneDeep -5) 2 2)) (strcat "-14," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-8," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-8," (rtos  (* holeOneDeep -5) 2 2)) (strcat "-52," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+								)
+							)
 									
 								;三开水泥反深
-								(cond ((> holeTwoDeep holeThreeCement)  
+								(cond ((> holeTwoDeep holeThreeCementHign)  
 													;水泥反深高于二开孔径
 													(progn
-														(setq strHoleThreeCementPlusPtA  (strcat "-46," (rtos (* (- holeTwoDeep holeThreeCement) -5) 2 2)))
-														(setq strHoleThreeCementPlusPtB  (strcat "-40," (rtos (* (- holeTwoDeep holeThreeCement) -5) 2 2)))
-														(setq strHoleThreeCementPlusPtC  (strcat "-40," (rtos (* holeTwoDeep -5) 2 2)))
-														(setq strHoleThreeCementPlusPtD  (strcat "-46," (rtos (* holeTwoDeep -5) 2 2)))
-														(setq strHoleThreeCementPlusPtE  (strcat "-20," (rtos (* (- holeTwoDeep holeThreeCement) -5) 2 2)))
-														(setq strHoleThreeCementPlusPtF  (strcat "-14," (rtos (* (- holeTwoDeep holeThreeCement) -5) 2 2)))
-														(setq strHoleThreeCementPlusPtG  (strcat "-14," (rtos (* holeTwoDeep -5) 2 2)))
-														(setq strHoleThreeCementPlusPtH  (strcat "-20," (rtos (* holeTwoDeep -5) 2 2)))
-														(command "-hatch" "W" "N" strHoleThreeCementPlusPtA strHoleThreeCementPlusPtB strHoleThreeCementPlusPtC strHoleThreeCementPlusPtD "C" "" "P" "DOTS" "1" "0" "")
-														(command "-hatch" "W" "N" strHoleThreeCementPlusPtE strHoleThreeCementPlusPtF strHoleThreeCementPlusPtG strHoleThreeCementPlusPtH "C" "" "P" "DOTS" "1" "0" "")
+														(setq strholeThreeCementHignPlusPtA  (strcat "-46," (rtos (* (- holeTwoDeep holeThreeCementHign) -5) 2 2)))
+														(setq strholeThreeCementHignPlusPtB  (strcat "-40," (rtos (* (- holeTwoDeep holeThreeCementHign) -5) 2 2)))
+														(setq strholeThreeCementHignPlusPtC  (strcat "-40," (rtos (* holeTwoDeep -5) 2 2)))
+														(setq strholeThreeCementHignPlusPtD  (strcat "-46," (rtos (* holeTwoDeep -5) 2 2)))
+														(setq strholeThreeCementHignPlusPtE  (strcat "-20," (rtos (* (- holeTwoDeep holeThreeCementHign) -5) 2 2)))
+														(setq strholeThreeCementHignPlusPtF  (strcat "-14," (rtos (* (- holeTwoDeep holeThreeCementHign) -5) 2 2)))
+														(setq strholeThreeCementHignPlusPtG  (strcat "-14," (rtos (* holeTwoDeep -5) 2 2)))
+														(setq strholeThreeCementHignPlusPtH  (strcat "-20," (rtos (* holeTwoDeep -5) 2 2)))
+														(command "-hatch" "W" "N" strholeThreeCementHignPlusPtA strholeThreeCementHignPlusPtB strholeThreeCementHignPlusPtC strholeThreeCementHignPlusPtD "C" "" "P" "DOTS" "1" "0" "")
+														(command "-hatch" "W" "N" strholeThreeCementHignPlusPtE strholeThreeCementHignPlusPtF strholeThreeCementHignPlusPtG strholeThreeCementHignPlusPtH "C" "" "P" "DOTS" "1" "0" "")
 														(command "-hatch" "W" "N" (strcat "-43," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-40," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-17," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 													))
 												
-											((<= holeTwoDeep holeThreeCement)
+											((<= holeTwoDeep holeThreeCementHign)
 													;水泥反深低于二开孔径
 													(progn 
 															;三开水泥反深
-															(command "-hatch" "W" "N" (strcat "-43," (rtos (* holeThreeCement -5) 2 2)) (strcat "-40," (rtos (* holeThreeCement -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* holeThreeCement -5) 2 2)) (strcat "-17," (rtos (* holeThreeCement -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
+															(command "-hatch" "W" "N" (strcat "-43," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-40," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-17," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 													))
 									)
 									
@@ -3577,17 +3604,17 @@
 
 ;完井结构数据
 (defun configDrillStructureData()
-	(setq HoleNum (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B1")) 
+	(setq holeNum (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B1")) 
 	(setq holeOneDrillDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B2"))
 	(setq holeOneDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B3"))
 	(setq holeOneBushDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B4")) 	
 	(setq holeOneBushDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B5") )
-	(setq holeOneCement  (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B6"))
+	(setq holeOneCementHign  (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B6"))
 	(setq holeTwoDrillDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B7"))
 	(setq holeTwoDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B8"))
 	(setq holeTwoBushDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B9"))
 	(setq holeTwoBushDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B10"))
-	(setq holeTwoCement (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B11"))
+	(setq holeTwoCementHign (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B11"))
 	(setq holeArtificialDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "D1"))
 	(setq holeDamperLocation (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "D2"))
 	(setq bushShoes (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "D3"))
@@ -3595,13 +3622,13 @@
 	(setq holeThreeDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B13"))
 	(setq holeThreeBushDiameter (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B14"))
 	(setq holeThreeBushDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B15"))
-	(setq holeThreeCement (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B16"))
-	(cond ((= HoleNum 2.0)  
+	(setq holeThreeCementHign (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B16"))
+	(cond ((= holeNum 2.0)  
 					(progn
 					  	(setq HoleNumFactor 1)
 					) 
 				)
-			   ((= HoleNum 3.0)
+			   ((= holeNum 3.0)
 					(progn 
 						(setq HoleNumFactor 2)
 					)
