@@ -1547,7 +1547,7 @@
 						(command "text" "J" "C" (list -29.5 (- (* (+ (/ (- holeTwoDeep holeOneDeep) 3) holeOneDeep) -5) 3.5)) 2.5 0 (strcat (rtos holeTwoDeep 2 2) "m"))
 						(command "dimlinear" (strcat "-40," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) (strcat "-20," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -29.5 (+ (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 1.5) 2.5 0 holeTwoBushDiameterStr)
-						(command "text" "J" "C" (list -29.5 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 3.5) 2.5 0 (strcat (rtos holeTwoDeep 2 2) "m"))
+						(command "text" "J" "C" (list -29.5 (- (* (+ (* (/ (- holeTwoDeep holeOneDeep) 3) 2) holeOneDeep) -5) 3) 3.5) 2.5 0 (strcat (rtos (+ holeTwoBushDeep 0.28) 2 2) "m"))
 						;二开水泥反深标注
 						(if (>= holeTwoCementHign holeOneDeep)
 							(progn
@@ -2846,7 +2846,6 @@
 	(command "Rectang" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
 	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 12.5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 12.5) 2 2)) "")
 
-	
 	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 7.5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 7.5) 2 2)) "")
 	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 10) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 10) 2 2)) "")
 
