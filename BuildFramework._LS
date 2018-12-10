@@ -1236,7 +1236,7 @@
 									(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
 									(if (> mtextHeight 5)
 										(progn
-											(command "move" mtextEName "" "D" "0,5.5,0" "")
+											(command "move" mtextEName "" "D" "0,5,0" "")
 										)
 									)
 								)									
@@ -1261,13 +1261,7 @@
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 wdcdName)
 																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
-																					(setq mtextEName (cdr (car (entget (entlast)))))
-																					(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
-																					(if (> mtextHeight 5)
-																						(progn
-																							(command "move" mtextEName "" "D" "0,5.5,0" "")
-																						)
-																					)
+																					(entget (entlast))
 																			)
 																			(progn
 																			;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
@@ -1285,13 +1279,7 @@
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 wdcdName)
 																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
-																					(setq mtextEName (cdr (car (entget (entlast)))))
-																					(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
-																					(if (> mtextHeight 5)
-																						(progn
-																							(command "move" mtextEName "" "D" "0,5.5,0" "")
-																						)
-																					)
+																					(entget (entlast))
 																			)
 																	)
 														)
@@ -1313,13 +1301,7 @@
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 wdcdName)
 																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
-																					(setq mtextEName (cdr (car (entget (entlast)))))
-																					(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
-																					(if (> mtextHeight 5)
-																						(progn
-																							(command "move" mtextEName "" "D" "0,5.5,0" "")
-																						)
-																					)															
+																					(entget (entlast))															
 																			)
 																			;当下一层岩性深度大于或等于已调整后的上一层最大显示的文本框的岩性深度，则根据当前深度正常计算
 																			(progn
@@ -1334,13 +1316,7 @@
 																					(command "text" "J" "L" (list -194 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 wdcdName)
 																					(command "mtext" (list -159 (+ (* wdcdDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
-																					(setq mtextEName (cdr (car (entget (entlast)))))
-																					(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
-																					(if (> mtextHeight 5)
-																						(progn
-																							(command "move" mtextEName "" "D" "0,5.5,0" "")
-																						)
-																					)
+																					(entget (entlast))
 								
 																			)
 																	)	
