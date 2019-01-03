@@ -29,7 +29,7 @@
 ;Data
 (defun DCLAndDataHandler()
 	(setq std 0)
-	(setq isMutiColor 0)
+	(setq isMutiColor 1)
   	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\AutoBuildFrameworkSimpleDCL.DCL"));BuildFrameWorkDCL testDCL Login AutoBuildFrameworkDCL
 	(if (not (new_dialog "framework" id)) (exit))
 	;配置启动按钮
@@ -420,7 +420,7 @@
 
 ;测井柱状图
 (defun drawWellLoggingColumnarDiagram()
-		
+		(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 		(setq wlcdLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Value2))))
 		(command "LineType" "s" "ByLayer" "")
 		(command "lweight" "ByLayer")
@@ -447,12 +447,16 @@
 )
 
 ;钻井柱状图
-(defun drawWellDrillingColumnarDiagram()
-		
+(defun drawWellDrillingColumnarDiagramdrawWellDrillingColumnarDiagram()
+		(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")		
 		(setq wdcdLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Value2))))
 		(command "LineType" "s" "ByLayer" "")
 		(command "lweight" "ByLayer")
-	 
+		;----------------测试多线程----------------------
+		(setq wdcdDeep 0.0)
+		;(Form1_load)
+		;(setq loop Loop_Start)
+		(exam)
 		(setq wdcdIndexA 1)
 		(setq wdcdListLength (length wdcdLst))
 		(while (<= wdcdIndexA wdcdListLength)
@@ -464,15 +468,33 @@
 						(setq wdcdDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataDescription 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataNumber 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Item wdcdIndexA)) 'Value2))	
+						;(setq loop Loop_Start)
+						;---------------------预定义加载-------------------------------
+						;(vlax-add-cmd "exam" 'dynamicZooming "examX" acrx_cmd_transparent)
+						;---------------------预定义加载结束-------------------------------
 						(drawWDCDLineAndTextLabel)
 						(setq BlockCodeName (strcat (strcat (strcat wdcdName (itoa wdcdIndexA)) "钻井柱状图") (rtos (getvar "CDATE") 2 10)))
+						(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")	
 						(hatchRock wdcdName wdcdDeep wdcdThickness -237.5)
+						
+						(command "'exam")
 					
+						
+						;---------------------预定义加载-------------------------------
+						
+						;---------------------预定义加载结束-------------------------------
+						;------------------测试多线程----------------------
+						;(setq loop loop_stop)	
+								
 					)
 			)
 			(setq wdcdIndexA (1+ wdcdIndexA))
 		)
+	;(removeExam)
 	(drawFrameBaseBlock)
+	;------------------测试多线程----------------------
+	;(setq loop loop_stop)
+		
 )
 
 
@@ -1351,6 +1373,7 @@
 									;(command "line" ptA ptB "")	
 								)
 							)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
 ;井斜方位角
@@ -2007,7 +2030,7 @@
 							))
 		)
 						
-	
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
 
@@ -2029,7 +2052,7 @@
 			;选择加密对象
  			(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 			(if (= rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace))
-			(if (= isMutiColor 1) (modifyLastBlock BlockName))
+			(if (= isMutiColor 1) (modifyLastBlockColor BlockName))
 			;(command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace);用block命令制作块，然后用minsert命令制作多重引用块
 		  ;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
 			;(command "minsert"   BlockName BasicPoint 1 1 0 1 1 0 )
@@ -2336,7 +2359,7 @@
 	
 	(command "circle" (strcat "-343.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
 	
-   	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂砾岩")
+   	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂砾岩" "")
    	
 
 	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* drillDeepMaxData -5) 48.25)) (list -336.5 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
@@ -2354,6 +2377,7 @@
  (defun drawShaZhiNiYan()
 	(drawShaZhiNiYanTop)
   	(drawShaZhiNiYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
  )
  
  (defun drawShaZhiNiYanOne()
@@ -2431,7 +2455,7 @@
 	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* drillDeepMaxData -5) 49.25)) (list -139.5 (- (* drillDeepMaxData -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
 	
-	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂质泥岩")
+	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂质泥岩" "")
    	
 )
 
@@ -2447,6 +2471,7 @@
  (defun drawXiLiShaYan()
 	(drawXiLiShaYanTop)
 	(drawXiLiShaYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
  
  (defun drawXiLiShaYanOneVla()
@@ -2542,7 +2567,7 @@
 	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* drillDeepMaxData -5) 11.75)) (list -282.5 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
 
-	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "细粒砂岩")
+	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "细粒砂岩" "")
    	
  ) 
  
@@ -2550,6 +2575,7 @@
 (defun drawFenShaYan()
 	(drawFenShaYanTop)
 	(drawFenShaYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawFenShaYanOne()
@@ -2651,7 +2677,7 @@
 	
 	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 11.75)) (list -331 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
-	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂岩")
+	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂岩" "")
 
  ) 
  
@@ -2659,6 +2685,7 @@
 (defun drawZhongLiShaYan()
 	(drawZhongLiShaYanTop)
 	(drawZhongLiShaYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawZhongLiShaYanOne()
@@ -2724,7 +2751,7 @@
 	
 	(command "-hatch" "S" (ssget "W" (list -244 (- (* drillDeepMaxData -5) 11.75)) (list -231 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
-	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "中粒砂岩")
+	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "中粒砂岩" "")
 
  ) 
  
@@ -2732,6 +2759,7 @@
 (defun drawCuLiShaYan()
 	(drawCuLiShaYanTop)
 	(drawCuLiShaYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawCuLiShaYanOne()
@@ -2783,7 +2811,7 @@
 	
 	(command "-hatch" "S" (ssget "W" (list -194 (- (* drillDeepMaxData -5) 11.75)) (list -181 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
-	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粗粒砂岩")
+	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粗粒砂岩" "")
 
  ) 
  
@@ -2791,6 +2819,7 @@
 (defun drawFenShaZhiNiYan()
 	(drawFenShaZhiNiYanTop)
 	(drawFenShaZhiNiYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawFenShaZhiNiYanOne()
@@ -2893,7 +2922,7 @@
 	(command "line" (strcat "-132.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) (strcat "-130.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) "")	
 	(command "-hatch" "S" (ssget "W" (list -144 (- (* drillDeepMaxData -5) 10.75)) (list -131 (- (* drillDeepMaxData -5) 14.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
-	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂质泥岩")
+	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂质泥岩" "")
 
  ) 
  
@@ -2901,6 +2930,7 @@
 (defun drawNiZhiFenShaYan()
 	(drawNiZhiFenShaYanTop)
 	(drawNiZhiFenShaYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawNiZhiFenShaYanOne()
@@ -3015,13 +3045,14 @@
 	
 	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 45.75)) (list -380.25 (- (* drillDeepMaxData -5) 50.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
-	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥质粉砂岩") 
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥质粉砂岩" "") 
  ) 
  
    ;泥质砂岩
 (defun drawNiZhiShaYan()
 	(drawNiZhiShaYanTop)
 	(drawNiZhiShaYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawNiZhiShaYanOne()
@@ -3109,13 +3140,14 @@
 	
 	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 80.75)) (list -380.25 (- (* drillDeepMaxData -5) 85.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	
-	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质砂岩")
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质砂岩" "")
  ) 
  
     ;石灰岩
 (defun drawShiHuiYan()
 	(drawShiHuiYanTop)
 	(drawShiHuiYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawShiHuiYanOne()
@@ -3163,13 +3195,14 @@
 	(command "line" (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	(command "line" (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	
-	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "石灰岩")
+	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "石灰岩" "")
  ) 
  
      ;泥质灰岩
 (defun drawNiZhiHuiYan()
 	(drawNiZhiHuiYanTop)
 	(drawNiZhiHuiYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawNiZhiHuiYanOne()
@@ -3222,13 +3255,14 @@
 	(command "line" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	(command "line" (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	
-	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质灰岩")
+	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质灰岩" "")
  ) 
  
       ;泥岩
 (defun drawNiYan()
 	(drawNiYanTop)
 	(drawNiYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawNiYanOne()
@@ -3271,13 +3305,14 @@
 	(command "line" (strcat "-292.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-293.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-282.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-281.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	
-	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥岩")
+	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥岩" "")
  ) 
  
        ;铝质泥岩
 (defun drawLvZhiNiYan()
 	(drawLvZhiNiYanTop)
 	(drawLvZhiNiYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
  (defun drawLvZhiNiYanOne()
@@ -3342,7 +3377,7 @@
 	(command "circle" (strcat "-234.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 1.0)
 	(command "line" (strcat "-232.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) (strcat "-231.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) "")
 	
-	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "铝质泥岩")
+	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "铝质泥岩" "")
  ) 
  
   ;炭质泥岩
@@ -3350,6 +3385,7 @@
  (defun drawTanZhiNiYan()
 	(drawTanZhiNiYanTop)
   	(drawTanZhiNiYanBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
  )
  
  (defun drawTanZhiNiYanOne()
@@ -3405,7 +3441,7 @@
 	(command "line" (strcat "-182.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-181.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	
 	
-	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "炭质泥岩")
+	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "炭质泥岩" "")
    	
 )
 
@@ -3414,8 +3450,8 @@
  (defun drawMeiCeng()
 	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 	(command "-hatch" "W" "Y" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 50) 2 2))  (strcat "-245," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) "C" "" "P" "SOLID" "")
-	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "煤层")
-
+	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "煤层" "")
+	(vla-Update (vlax-ename->vla-object (entlast)))
  )
  
    ;假整合
@@ -3427,7 +3463,8 @@
 	(command "line" (strcat "-186.4," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-184.25," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
 	(command "line" (strcat "-182.1," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
 
-	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "假整合")
+	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "假整合" "")
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
    ;角度不整合
@@ -3435,13 +3472,15 @@
 	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")
 	(command "Rectang" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) " ")
 	(command "SPLine" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-143," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) (strcat "-141," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-139," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) (strcat "-137," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-135," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) (strcat "-133," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) "" "" "")
-	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "角度不整合")
+	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "角度不整合" "")
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
 ;黄土层
 (defun drawHuangTuCeng()
 	(drawHuangTuCengTop)
 	(drawHuangTuCengBottom)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
 (defun drawHuangTuCengTop()
@@ -3461,7 +3500,7 @@
 
 (defun drawHuangTuCengBottom()
 	(command "Rectang" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
-	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "黄土")
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "黄土" "")
 	
 	(command "line" (strcat "-393.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
 	(command "line" (strcat "-390.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
@@ -3872,7 +3911,7 @@
 	(entupd ent)
  )
  
- (defun modifyLastBlock(blkName)
+ (defun modifyLastBlockColor(blkName)
  	(setq ent (cdr (car (entget (entlast)))))
 	(setq blk_name (cdr (assoc 2 (entget (entlast)))))
 	
@@ -3890,25 +3929,25 @@
 		   ((= blkName "粉砂岩")
 				(progn 
 					;浅灰色
-					(blk_modifyColor blk_name 9)					
+					(blk_modifyColor blk_name 10)					
 				)
 			)  
 			((= blkName "细粒砂岩")
 				(progn 
 					;浅灰色
-					(blk_modifyColor blk_name 9)					
+					(blk_modifyColor blk_name 30)					
 				)
 			)  
 			((= blkName "中粒砂岩")
 				(progn 
 					;灰白色
-					(blk_modifyColor blk_name 254)					
+					(blk_modifyColor blk_name 210)					
 				)
 			)  
 			((= blkName "粗粒砂岩")
 				(progn 
 					;灰色
-					(blk_modifyColor blk_name 253)					
+					(blk_modifyColor blk_name 241)					
 				)
 			)  
 			((= blkName "粉砂质泥岩")
@@ -3952,7 +3991,7 @@
 			((= blkName "砂质泥岩")
 				(progn 
 					;灰绿色
-					(blk_modifyColor blk_name 87)
+					(blk_modifyColor blk_name 120)
 				)
 			)  
 			((= blkName "泥质砂岩")
@@ -4016,3 +4055,80 @@
 	)
 	
  )
+ 
+ 
+ 
+ 
+ 
+ ;---------------------------------------测试多线程--------------------------------------------------
+ 
+(defun Loop nil nil)
+(defun Loop_stop nil nil)
+;nonsmall 作品: Visual DCL 对话框自动连接程序
+;本代码全部由Visual DCL程序自动生成
+
+(defun Form1_load()
+	(vl-load-com)
+	(Loop_init)
+
+	(princ);防止函数回显
+)
+(defun Loop_init()	
+	(setq ob_shell (vlax-create-object "WScript.Shell"))
+	(if Vbs_File (vl-file-delete Vbs_File))
+	(setq Vbs_File (vl-filename-mktemp nil nil ".Vbs"))
+	(setq fresh_time "200");每200毫秒刷新一次
+	(write-line
+		(strcat "On Error Resume Next\nSet nonsmall = GetObject(, \"AutoCAD.Application\").GetInterfaceObject(\"VL.Application.16\").ActiveDocument.Functions.Item(\"Loop\")\nDo\nWScript.Sleep " fresh_time "\nnonsmall.Funcall\nLoop")
+		(setq f (open Vbs_File "w"))
+	)
+	(close f)
+	(vlax-invoke-method ob_shell 'run Vbs_File 0)
+)
+
+(defun kill_wscript( / )  
+	(setq WMI (vlax-create-object "WbemScripting.SWbemLocator") 
+	con (vlax-invoke WMI 'ConnectServer nil nil nil nil nil nil nil nil) 
+	Win32_Process (vlax-invoke con 'ExecQuery "Select * from Win32_Process"))
+	(vlax-for item Win32_Process 
+		(if (= "wscript.exe" (vlax-get item 'name))
+   	     	(vlax-invoke item 'terminate)
+    	) 
+  	)
+	(vlax-release-object WMI )
+	(vl-file-delete Vbs_File)
+)
+
+(defun Loop_Start()
+	
+	(if (null wdcdDeep) 
+			(progn
+						(print "11111111111111")
+
+			)
+			(progn
+						(print "2222222222222222")
+						(print (rtos wdcdDeep 2 2))
+						;(command "zoom" "C" (list -222.5 (* wdcdDeep -5)) "250")		
+			)
+		)
+
+)
+
+(defun exam()
+	(defun dynamicZooming()
+		;(vla-regen (vla-get-ActiveDocument (VLAX-GET-ACAD-OBJECT)) acAllViewports)
+		;(vla-Update (vlax-ename->vla-object (entlast)))
+		(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -222.5 (* wdcdDeep -5) 0)) 150)
+	)
+	(vlax-add-cmd "exam" 'dynamicZooming "examX" acrx_cmd_transparent)
+	(princ)
+)
+
+(defun removeExam()
+  	;(print "我停下来执行zoom了！！！！！！！！！！！！！！！")
+		;(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'getString "hahahaha")
+		;(getstring "hahaha")
+		;WHIPTHREAD
+	(vlax-remove-cmd "exam")
+)
