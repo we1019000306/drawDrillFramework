@@ -1,13 +1,13 @@
-﻿login:dialog{ 
-	label = "用户登录界面";
+login:dialog{ 
+	label = "login";
 		:edit_box{ 
-			label = "用户名"; 
+			label = "username"; 
 			edit_width = 20; 
 			key = "username";
 			value = "Monster";
 		}
 		:edit_box{ 
-			label = "密码"; 
+			label = "password"; 
 			edit_width = 20; 
 			key = "password";
 			value = "123456";
@@ -16,14 +16,14 @@
 	:row{
 		:button{
 				  key = "loginBtn"; 
-				  label = "登录";
+				  label = "login";
 				  is_default = true;
 				  fixed_width = true;
 				  alignment=centered;             
 				}
 		:button{
 				  key = "closeBtn";  
-				  label = "退出";
+				  label = "quit";
 				  fixed_width = true;
 				  alignment=centered;             
 				}
