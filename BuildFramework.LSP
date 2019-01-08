@@ -424,7 +424,13 @@
 		(setq wlcdLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Value2))))
 		(command "LineType" "s" "ByLayer" "")
 		(command "lweight" "ByLayer")
-	 
+		
+	 	;---------------------预定义加载-------------------------------
+		(setq wlcdRockDeep 0.0)
+		(setq wlcdThickness 0.0)
+		(loadDiaphanousZoomingCommandForWLCD)
+		;---------------------预定义加载结束-------------------------------
+		
 		(setq wlcdIndexA 1)
 		(setq wlcdListLength (length wlcdLst))
 		(while (<= wlcdIndexA wlcdListLength)
@@ -438,63 +444,61 @@
 						(drawWLCDLineAndTextLabel)
 						(setq BlockCodeName (strcat (strcat (strcat wlcdName (itoa wlcdIndexA)) "测井柱状图") (rtos (getvar "CDATE") 2 10)))
 						(hatchRock wlcdName wlcdRockDeep wlcdThickness -262.5)
-					
+						
+						;---------------------动态zoom-------------------------------
+						(command "'loadDiaphanousZoomingCommandForWLCD")
+						;---------------------动态zoom-------------------------------
 				  )
 			)
 			(setq wlcdIndexA (1+ wlcdIndexA))
 		)
-	(drawFrameBaseBlock)
+	;---------------------移除透明命令预定义-------------------------------
+	(removeLoadDiaphanousZoomingCommandForWLCD)
+	;---------------------移除透明命令预定义-------------------------------
+	;(drawFrameBaseBlock)
 )
 
 ;钻井柱状图
-(defun drawWellDrillingColumnarDiagramdrawWellDrillingColumnarDiagram()
+(defun drawWellDrillingColumnarDiagram()
 		(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")		
 		(setq wdcdLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Value2))))
 		(command "LineType" "s" "ByLayer" "")
 		(command "lweight" "ByLayer")
-		;----------------测试多线程----------------------
-		(setq wdcdDeep 0.0)
-		;(Form1_load)
-		;(setq loop Loop_Start)
-		(exam)
+		
+		;---------------------预定义加载-------------------------------
+		(setq wdcdRockDeep 0.0)
+		(setq wdcdThickness 0.0)
+		(loadDiaphanousZoomingCommandForWDCD)
+		;---------------------预定义加载结束-------------------------------
+
 		(setq wdcdIndexA 1)
 		(setq wdcdListLength (length wdcdLst))
 		(while (<= wdcdIndexA wdcdListLength)
 			(if (> wdcdIndexA 0)
 				  (progn
-				  	 	(setq wdcdDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Item wdcdIndexA)) 'Value2))
+				  	 	(setq wdcdRockDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataThicknessRange 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdName (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataNameRange 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataDescription 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataNumber 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Item wdcdIndexA)) 'Value2))	
-						;(setq loop Loop_Start)
-						;---------------------预定义加载-------------------------------
-						;(vlax-add-cmd "exam" 'dynamicZooming "examX" acrx_cmd_transparent)
-						;---------------------预定义加载结束-------------------------------
 						(drawWDCDLineAndTextLabel)
 						(setq BlockCodeName (strcat (strcat (strcat wdcdName (itoa wdcdIndexA)) "钻井柱状图") (rtos (getvar "CDATE") 2 10)))
 						(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "250")	
-						(hatchRock wdcdName wdcdDeep wdcdThickness -237.5)
+						(hatchRock wdcdName wdcdRockDeep wdcdThickness -237.5)
 						
-						(command "'exam")
-					
-						
-						;---------------------预定义加载-------------------------------
-						
-						;---------------------预定义加载结束-------------------------------
-						;------------------测试多线程----------------------
-						;(setq loop loop_stop)	
+						;---------------------动态zoom-------------------------------
+						(command "'loadDiaphanousZoomingCommandForWDCD")
+						;---------------------动态zoom-------------------------------
 								
 					)
 			)
 			(setq wdcdIndexA (1+ wdcdIndexA))
 		)
-	;(removeExam)
+	;---------------------移除透明命令预定义-------------------------------
+	(removeLoadDiaphanousZoomingCommandForWDCD)
+	;---------------------移除透明命令预定义-------------------------------
 	(drawFrameBaseBlock)
-	;------------------测试多线程----------------------
-	;(setq loop loop_stop)
-		
 )
 
 
@@ -1230,6 +1234,7 @@
 
 									)
 								)
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
 ;钻井柱状图
@@ -1243,17 +1248,17 @@
 								(progn
 									(setq pxA (+ RockXOffset 15))
 									(setq rockLineDeep 0)
-									(setq rockLineDeep wdcdDeep)
-									(command "SPLine" (strcat (strcat (rtos (+ RockXOffset 15) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 13.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 12) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 10.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 9) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 7.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 6) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 4.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 3) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 1.5) 2 2) ",") (rtos (* (- wdcdDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 0) 2 2) ",") (rtos (* wdcdDeep -5) 2 2)) "" "" "") 
+									(setq rockLineDeep wdcdRockDeep)
+									(command "SPLine" (strcat (strcat (rtos (+ RockXOffset 15) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 13.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 12) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 10.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 9) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 7.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 6) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 4.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 3) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 1.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 0) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) "" "" "") 
 									(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 									(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
 									(command "line" ptA ptB "")	
 									
-									(command "text" "J" "L" (list -224 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
-									(command "text" "J" "L" (list -209 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
-									(command "text" "J" "L" (list -194 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
-									(command "text" "J" "L" (list -184 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 wdcdName)
-									(command "mtext" (list -159 (+ (* wdcdDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
+									(command "text" "J" "L" (list -224 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
+									(command "text" "J" "L" (list -209 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
+									(command "text" "J" "L" (list -194 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
+									(command "text" "J" "L" (list -184 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 wdcdName)
+									(command "mtext" (list -159 (+ (* wdcdRockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
 									(setq mtextEName (cdr (car (entget (entlast)))))
 									(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
 									(if (> mtextHeight 5)
@@ -1267,18 +1272,18 @@
 
 									(if (< wdcdThickness 2.5) 
 														(progn
-																	(if (< (- wdcdDeep rockLineDeep) 2.5) 
+																	(if (< (- wdcdRockDeep rockLineDeep) 2.5) 
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
-																					(setq rockLineDeep  (+ wdcdDeep (- 2.5 (- wdcdDeep rockLineDeep))))
+																					(setq rockLineDeep  (+ wdcdRockDeep (- 2.5 (- wdcdRockDeep rockLineDeep))))
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
 																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")	
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")			
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")	
 																					
-																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
+																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 wdcdName)
@@ -1294,15 +1299,15 @@
 																			(progn
 																			;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
 																					;(setq rockLineDeep (+ (+ rockLineDeep 2.5) wdcdThickness))
-																					(setq rockLineDeep wdcdDeep)
+																					(setq rockLineDeep wdcdRockDeep)
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
 																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")		
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")			
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")		
 																					
-																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
+																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 wdcdName)
@@ -1319,18 +1324,18 @@
 														)
 														(progn
 																	;当下一层岩性深度小于已调整后的上一层最大显示的文本框的岩性深度，则也对该层进行改变
-																	(if (< (- wdcdDeep rockLineDeep) 2.5) 
+																	(if (< (- wdcdRockDeep rockLineDeep) 2.5) 
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
-																					(setq rockLineDeep (+ wdcdDeep (- 2.5 (- wdcdDeep rockLineDeep))))
+																					(setq rockLineDeep (+ wdcdRockDeep (- 2.5 (- wdcdRockDeep rockLineDeep))))
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
 																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdDeep -5) 2 6)) "")	
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")			
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")	
 																					
-																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
+																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 wdcdName)
@@ -1345,17 +1350,17 @@
 																			)
 																			;当下一层岩性深度大于或等于已调整后的上一层最大显示的文本框的岩性深度，则根据当前深度正常计算
 																			(progn
-																					(setq rockLineDeep wdcdDeep)
+																					(setq rockLineDeep wdcdRockDeep)
 																					;正常情况划线
 																					(setq pxA RockXOffset)
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
 																					(command "line" ptA ptB "")	
-																					(command "text" "J" "L" (list -224 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
-																					(command "text" "J" "L" (list -209 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
-																					(command "text" "J" "L" (list -194 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
-																					(command "text" "J" "L" (list -184 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 wdcdName)
-																					(command "mtext" (list -159 (+ (* wdcdDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
+																					(command "text" "J" "L" (list -224 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
+																					(command "text" "J" "L" (list -209 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
+																					(command "text" "J" "L" (list -194 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
+																					(command "text" "J" "L" (list -184 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 wdcdName)
+																					(command "mtext" (list -159 (+ (* wdcdRockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
 																					(setq mtextEName (cdr (car (entget (entlast)))))
 																					(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
 																					(if (> mtextHeight 5)
@@ -1528,11 +1533,11 @@
 
 	(cond ((= rockTypeNum 0)  
 					(progn
-						(command "text" "J" "L" (list -224 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdDeep 2 2))
-						(command "text" "J" "L" (list -209 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
-						(command "text" "J" "L" (list -194 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
-						(command "text" "J" "L" (list -184 (+ (* wdcdDeep -5) 0.5)) rockTextSize 0 wdcdName)
-						(command "mtext" (list -159 (+ (* wdcdDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
+						(command "text" "J" "L" (list -224 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
+						(command "text" "J" "L" (list -209 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
+						(command "text" "J" "L" (list -194 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
+						(command "text" "J" "L" (list -184 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 wdcdName)
+						(command "mtext" (list -159 (+ (* wdcdRockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
 					) 
 				)
 			   ((= rockTypeNum 1)
@@ -1898,7 +1903,7 @@
 																(print "中粒砂岩")															
 																(drawZhongLiShaYanOne)
 																(setq Selectionset (ssget "C" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 7.75)))) 
-																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
+																(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
 																(configThickHatch)
 															)
 														)  
@@ -4056,6 +4061,40 @@
 	
  )
  
+ ;----------------------------透明命令------------------------------
+ (defun loadDiaphanousZoomingCommandForWLCD()
+	(defun dynamicZoomingForWLCD()
+		;(vla-regen (vla-get-ActiveDocument (VLAX-GET-ACAD-OBJECT)) acAllViewports)
+		;(vla-Update (vlax-ename->vla-object (entlast)))
+		(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -262.5 (* (- wlcdRockDeep (/ wlcdThickness 2)) -5) 0)) 300)
+	)
+	(vlax-add-cmd "loadDiaphanousZoomingCommandForWLCD" 'dynamicZoomingForWLCD "loadDiaphanousZoomingCommandForWLCDX" acrx_cmd_transparent)
+	(princ)
+)
+
+(defun removeLoadDiaphanousZoomingCommandForWLCD()
+	;WHIPTHREAD
+	(vlax-remove-cmd "loadDiaphanousZoomingCommandForWLCD")
+)
+ 
+ 
+ 
+(defun loadDiaphanousZoomingCommandForWDCD()
+	(defun dynamicZoomingForWDCD()
+		;(vla-regen (vla-get-ActiveDocument (VLAX-GET-ACAD-OBJECT)) acAllViewports)
+		;(vla-Update (vlax-ename->vla-object (entlast)))
+		(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -222.5 (* (- wdcdRockDeep (/ wdcdThickness 2)) -5) 0)) 300)
+	)
+	(vlax-add-cmd "loadDiaphanousZoomingCommandForWDCD" 'dynamicZoomingForWDCD "loadDiaphanousZoomingCommandForWDCDX" acrx_cmd_transparent)
+	(princ)
+)
+
+(defun removeLoadDiaphanousZoomingCommandForWDCD()
+	;WHIPTHREAD
+	(vlax-remove-cmd "loadDiaphanousZoomingCommandForWDCD")
+)
+ 
+ 
  
  
  
@@ -4101,34 +4140,18 @@
 
 (defun Loop_Start()
 	
-	(if (null wdcdDeep) 
+	(if (null wdcdRockDeep) 
 			(progn
 						(print "11111111111111")
 
 			)
 			(progn
 						(print "2222222222222222")
-						(print (rtos wdcdDeep 2 2))
-						;(command "zoom" "C" (list -222.5 (* wdcdDeep -5)) "250")		
+						(print (rtos wdcdRockDeep 2 2))
+						;(command "zoom" "C" (list -222.5 (* wdcdRockDeep -5)) "250")		
 			)
 		)
 
 )
 
-(defun exam()
-	(defun dynamicZooming()
-		;(vla-regen (vla-get-ActiveDocument (VLAX-GET-ACAD-OBJECT)) acAllViewports)
-		;(vla-Update (vlax-ename->vla-object (entlast)))
-		(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -222.5 (* wdcdDeep -5) 0)) 150)
-	)
-	(vlax-add-cmd "exam" 'dynamicZooming "examX" acrx_cmd_transparent)
-	(princ)
-)
 
-(defun removeExam()
-  	;(print "我停下来执行zoom了！！！！！！！！！！！！！！！")
-		;(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'getString "hahahaha")
-		;(getstring "hahaha")
-		;WHIPTHREAD
-	(vlax-remove-cmd "exam")
-)

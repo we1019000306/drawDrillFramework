@@ -1,19 +1,19 @@
 framework:dialog{
-  label= "x";
+  label= "钻井柱状图自动化工具";
   :row{
 
 		:boxed_column{
-        label="x";
+        label="绘制基础框架";
         :row{
 			 :button{
 			  key = "EFSBtn";  //EraseFrameStructureButton
-			  label = "x";
+			  label = "单独删除该模块";
 			  fixed_width = true;
 			  alignment=left;             
 			}		
 			:button{
 			  key = "DFSBtn"; //DrawFrameStructureButton
-			  label = "x";
+			  label = "绘制";
 			  fixed_width = true;
 			  alignment=right;             
 			}
@@ -24,18 +24,18 @@ framework:dialog{
   			
 			
 		:boxed_column{
-			label="x";
+			label="绘制多段线";
 
 				:row{
 					 :button{
 					  key = "ELBtn";  //EraseLineButton
-					  label = "x";
+					  label = "单独删除该模块";
 					  fixed_width = true;
 					  alignment=left;             
 					}		
 					:button{
 					  key = "DLBtn";  //DrawLineButton
-					  label = "x";
+					  label = "绘制";
 					  fixed_width = true;
 					  alignment=right;             
 					}
@@ -44,17 +44,17 @@ framework:dialog{
 			
 			
 			:boxed_column{
-				label="x";
+				label="绘制系统组";
 				:row{
 					 :button{
 					  key = "ERSBtn";  //EraseRockStructureButton
-					  label = "x";
+					  label = "单独删除该模块";
 					  fixed_width = true;
 					  alignment=left;             
 					}		
 					:button{
 					  key = "DRSBtn";  //DrawRockStructureButton
-					  label = "x";
+					  label = "绘制";
 					  fixed_width = true;
 					  alignment=right;             
 					}
@@ -65,18 +65,18 @@ framework:dialog{
 		
 		:row{
 				:boxed_column{
-					label="x";
+					label="绘制钻井和测井柱状图";
 					
 					:row{
 						 :button{
 						  key = "ECDBtn";  //EraseColumnarDiagramButton
-						  label = "x";
+						  label = "单独删除该模块";
 						  fixed_width = true;
 						  alignment=left;             
 						}
 						:button{
 						  key = "DCDBtn";  //DrawColumnarDiagramButton
-						  label = "x";
+						  label = "绘制";
 						  fixed_width = true;
 						  alignment=right;             
 						}
@@ -85,17 +85,17 @@ framework:dialog{
 		
 
 				:boxed_column{
-						label="x";
+						label="绘制标志层代号";
 						:row{
 							 :button{
 							  key = "ERSignBtn";  //EraseRockSignButton
-							  label = "x";
+							  label = "单独删除该模块";
 							  fixed_width = true;
 							  alignment=left;             
 							}
 							:button{
 							  key = "DRSignBtn";  //DrawRockSignButton
-							  label = "x";
+							  label = "绘制";
 							  fixed_width = true;
 							  alignment=right;             
 							}
@@ -105,17 +105,17 @@ framework:dialog{
 				
 		
 			:boxed_column{
-					label="x";
+					label="绘制完井结构";
 					:row{
 						 :button{
 						  key = "EDCSBtn";  //EraseDrillCompletionStructureButton
-						  label = "x";
+						  label = "单独删除该模块";
 						  fixed_width = true;
 						  alignment=left;             
 						}
 						:button{
 							key = "DDCSBtn";  //DrawDrillCompletionStructureButton 
-							label = "x";
+							label = "绘制";
 							fixed_width = true;
 							alignment=right;             
 						}
@@ -125,18 +125,18 @@ framework:dialog{
 			
 			
 			:boxed_column{
-					label="x";//鍔犳鍒楃殑鏍囩    
+					label="绘制井斜方位角";
 					
 					:row{
 						 :button{
 						  key = "EDDBtn";  //EraseDrillDeviationButton
-						  label = "x";
+						  label = "单独删除该模块";
 						  fixed_width = true;
 						  alignment=left;             
 						}
 						:button{
 						  key = "DDDBtn";  //DrawDrillDeviationButton
-						  label = "x";
+						  label = "绘制";
 						  fixed_width = true;
 						  alignment=right;             
 						}
