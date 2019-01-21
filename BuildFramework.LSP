@@ -1,4 +1,7 @@
 (defun c:buildFramework()
+ ; (setq loginSuccess 1)
+ 	(vl-load-com)
+	(if (null loginSuccess) (setq loginSuccess 0))
   	(if (= loginSuccess 1) (DCLAndDataHandler) (loginStateDataHandler))
 )
 
@@ -10,13 +13,13 @@
 		(action_tile "closeBtn" "(done_dialog -1)")
 		(setq loginSdt (start_dialog))
 		(unload_dialog loginId)
-		(cond 
+		(cond
 						((= loginSdt 1)
 								(progn
 									(checkLoginState)
 							)
 						)
-		  
+
 						((= loginSdt -1)
 							(progn
 								(alert "外挂已退出")
@@ -61,10 +64,10 @@
 	(action_tile "ECDBtn" "(done_dialog 13)")
 	(action_tile "ERSignBtn" "(done_dialog 14)")
 	(action_tile "EDCSBtn" "(done_dialog 15)")
-	(action_tile "EDDBtn" "(done_dialog 16)")	
+	(action_tile "EDDBtn" "(done_dialog 16)")
 	(action_tile "cancelBtn" "(done_dialog -1)")
-	
-	(if (= initSuccessValue 1)  
+
+	(if (= initSuccessValue 1)
 			(progn
 				(mode_tile  "startBtn" 1)
 				(mode_tile  "baseDataBtn" 0)
@@ -110,7 +113,7 @@
   	;(storageLastDCLValue)
  	(setq std (start_dialog))
   	(unload_dialog id)
-	(cond 
+	(cond
 					((= std 0)
 						(progn
 							(alert "辅助程序启动完毕，请开始绘图！！")
@@ -134,26 +137,26 @@
 					)
 					((= std 3)
 						(progn
-							(drawFrame)
 							(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
+							(drawFrame)
 						  	(c:buildFramework)
 						)
 					)
-					
+
 					((= std 4)
 						(progn
 							(drawPLine)
 						  	(c:buildFramework)
 						)
 					)
-					
+
 					((= std 5)
 						(progn
 							(drawRockStructure)
 						  	(c:buildFramework)
 						)
 					)
-					
+
 					((= std 6)
 						(progn
 							(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
@@ -163,67 +166,67 @@
 						)
 					)
 					((= std 7)
-						(progn					
+						(progn
 							(drawRockSign)
 							(c:buildFramework)
 						)
 					)
 					((= std 8)
-						(progn					
+						(progn
 							(drawDrillStructure)
 						  	(c:buildFramework)
 						)
 					)
 					((= std 9)
-						(progn		
+						(progn
 							(drawDrillDeviation)
 							(c:buildFramework)
 						)
 					)
 					((= std 10)
-						(progn		
+						(progn
 							(eraseHolePicture)
 							(c:buildFramework)
 						)
 					)
 					((= std 11)
-						(progn			
+						(progn
 							;单独删除柱状图
 							(eraseLine)
 							(c:buildFramework)
 						)
 					)
 					((= std 12)
-						(progn			
+						(progn
 							;单独删除柱状图
 							(eraseDrillRockStructure)
 							(c:buildFramework)
 						)
 					)
 					((= std 13)
-						(progn			
+						(progn
 							;单独删除柱状图
-						
+
 							(eraseWellColumnarDiagram)
 							(c:buildFramework)
 						)
 					)
 					((= std 14)
-						(progn	
+						(progn
 							;单独删除标志层代号
 							(eraseRockSign)
 							(c:buildFramework)
 						)
 					)
 					((= std 15)
-						(progn				
+						(progn
 							;单独删除完井结构
 						    (EraseDrillCompletionStructure)
 							(c:buildFramework)
 						)
 					)
 					((= std 16)
-						(progn			
+						(progn
 							;单独删除井斜方位角
 						    (eraseEraseDrillDeviation)
 							(c:buildFramework)
@@ -236,7 +239,7 @@
 						)
 					)
 	)
- 	
+
   	(princ)
 )
 
@@ -425,13 +428,13 @@
 		(setq wlcdLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Value2))))
 		(command "LineType" "s" "ByLayer" "")
 		(command "lweight" "ByLayer")
-		
+
 	 	;---------------------预定义加载-------------------------------
 		(setq wlcdRockDeep 0.0)
 		(setq wlcdThickness 0.0)
 		(loadDiaphanousZoomingCommandForWLCD)
 		;---------------------预定义加载结束-------------------------------
-		
+
 		(setq wlcdIndexA 1)
 		(setq wlcdListLength (length wlcdLst))
 		(while (<= wlcdIndexA wlcdListLength)
@@ -440,14 +443,23 @@
 				  	 	(setq wlcdRockDeep (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Item wlcdIndexA)) 'Value2))
 						(setq wlcdThickness (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataThicknessRange 'Item wlcdIndexA)) 'Value2))
 						(setq wlcdName (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataNameRange 'Item wlcdIndexA)) 'Value2))
-						
-						(setq wlcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Item wlcdIndexA)) 'Value2))	
+
+						(setq wlcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Item wlcdIndexA)) 'Value2))
 						(drawWLCDLineAndTextLabel)
 						(setq BlockCodeName (strcat (strcat (strcat wlcdName (itoa wlcdIndexA)) "测井柱状图") (rtos (getvar "CDATE") 2 10)))
 						(hatchRock wlcdName wlcdRockDeep wlcdThickness -262.5)
-						
+
 						;---------------------动态zoom-------------------------------
-						(command "'loadDiaphanousZoomingCommandForWLCD")
+						(if (= isDemonstration 1)
+							(progn
+								(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -222.5 (* (- wlcdRockDeep (/ wlcdThickness 2)) -5) 0)) 300)
+								(vla-Update (vlax-ename->vla-object (entlast)))
+								(command "DELAY" "1500")
+								;---------------------动态zoom-------------------------------
+								(command "'loadDiaphanousZoomingCommandForWLCD")
+								;---------------------动态zoom-------------------------------
+							)
+						)
 						;---------------------动态zoom-------------------------------
 				  )
 			)
@@ -461,11 +473,11 @@
 
 ;钻井柱状图
 (defun drawWellDrillingColumnarDiagram()
-		(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")		
+		(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 		(setq wdcdLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Value2))))
 		(command "LineType" "s" "ByLayer" "")
 		(command "lweight" "ByLayer")
-		
+
 		;---------------------预定义加载-------------------------------
 		(setq wdcdRockDeep 0.0)
 		(setq wdcdThickness 0.0)
@@ -482,10 +494,10 @@
 						(setq wdcdName (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataNameRange 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataDescription 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataNumber 'Item wdcdIndexA)) 'Value2))
-						(setq wdcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Item wdcdIndexA)) 'Value2))	
+						(setq wdcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Item wdcdIndexA)) 'Value2))
 						(drawWDCDLineAndTextLabel)
 						(setq BlockCodeName (strcat (strcat (strcat wdcdName (itoa wdcdIndexA)) "钻井柱状图") (rtos (getvar "CDATE") 2 10)))
-						(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")	
+						(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 						(hatchRock wdcdName wdcdRockDeep wdcdThickness -237.5)
 						(if (= isDemonstration 1)
 							(progn
@@ -497,13 +509,13 @@
 								;---------------------动态zoom-------------------------------
 							)
 						)
-				
-								
+
+
 					)
 			)
 			(setq wdcdIndexA (1+ wdcdIndexA))
 		)
-		
+
 	(if (= isDemonstration 1)
 		(progn
 			;---------------------移除透明命令预定义-------------------------------
@@ -511,7 +523,7 @@
 			;---------------------移除透明命令预定义-------------------------------
 		)
 	)
-	
+
 	(drawFrameBaseBlock)
 )
 
@@ -549,7 +561,7 @@
 ;绘制井斜方位
 (defun drawDrillDeviation()
   		;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
-	
+
 		(configNormalLineType)
 		(setq drillDeviationLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property drillDeviationDataOfYRange 'Value2))))
 
@@ -578,7 +590,7 @@
 )
 ;drillingTimePline
 (defun drawDrillingTimePLine()
-	
+
 	(command "LineType" "s" "ByLayer" "")
 	(command "lweight" "ByLayer")
 	(setq drillingTimePlineLst (vlax-safearray->list (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfY 'Value2))))
@@ -593,19 +605,19 @@
 				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property drillingTimePlineDataRangeOfX 'Item drillingTimeIndexA)) 'Value2))
 				(setq pyA (* pyA -5))
 				;drillingTimeFactor
-			
+
 				(setq pxA (+ (* pxA drillingTimePLFactor) drillingTimeXOffset))
-					
+
 				(setq ptA (strcat (strcat (strcat (strcat "(" (rtos pxA 2 6)) " ") (rtos pyA 2 6)) ")"))
 				(setq drillingTimePlineListPT (cons (read ptA) drillingTimePlineListPT))
 			)
 		)
 		(setq drillingTimeIndexA (1+ drillingTimeIndexA))
 	)
-			
+
 	 ;;;;有顺序，不可改
-				(entmake 
-					(append 
+				(entmake
+					(append
 						(list '(0 . "LWPOLYLINE")
 							 '(100 . "AcDbEntity")
 							 '(100 . "AcDbPolyline")
@@ -616,9 +628,9 @@
 				 ;二维坐标列表 加组码 10
 					)    ;append end
 				)
-				
+
 			(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 100 ))
-			(vla-Update (vlax-ename->vla-object (entlast)))	
+			(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
 ;consumptionPline
@@ -638,19 +650,19 @@
 				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property consumptionPlineDataRangeOfX 'Item consumptionIndexA)) 'Value2))
 				(setq pyA (* pyA -5))
 				;drillingTimeFactor
-			
+
 				(setq pxA (+ (* pxA consumptionPLFactor) consumptionXOffset))
-					
+
 				(setq ptA (strcat (strcat (strcat (strcat "(" (rtos pxA 2 6)) " ") (rtos pyA 2 6)) ")"))
 				(setq consumptionPlineListPT (cons (read ptA) consumptionPlineListPT))
 			)
 		)
 		(setq consumptionIndexA (1+ consumptionIndexA))
 	)
-		
+
 	 ;;;;有顺序，不可改
-				(entmake 
-					(append 
+				(entmake
+					(append
 						(list '(0 . "LWPOLYLINE")
 							 '(100 . "AcDbEntity")
 							 '(100 . "AcDbPolyline")
@@ -681,9 +693,9 @@
 				(setq pxA (Vlax-Get (vlax-variant-value (Vlax-Get-Property waterLevelPlineDataRangeOfX 'Item waterLevelIndexA)) 'Value2))
 				(setq pyA (* pyA -5))
 				;drillingTimeFactor
-			
+
 				(setq pxA (+ (* pxA waterLevelPLFactor) waterLevelXOffset))
-					
+
 				(setq ptA (strcat (strcat (strcat (strcat "(" (rtos pxA 2 6)) " ") (rtos pyA 2 6)) ")"))
 				(setq waterLevelPlineListPT (cons (read ptA) waterLevelPlineListPT))
 			)
@@ -692,8 +704,8 @@
 	)
 
 	 ;;;;有顺序，不可改
-				(entmake 
-					(append 
+				(entmake
+					(append
 						(list '(0 . "LWPOLYLINE")
 							 '(100 . "AcDbEntity")
 							 '(100 . "AcDbPolyline")
@@ -702,7 +714,7 @@
 						)
 						(mapcar '(lambda (x) (cons 10 x)) waterLevelPlineListPT)
 				 ;二维坐标列表 加组码 10
-						
+
 					)    ;append end
 				)
 				(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 50 ))
@@ -726,7 +738,7 @@
   	(command "line" "-450,140" PdLeftRough "")
   	(command "line" "60,140" PdRightRough "" )
 	(command "line" PdLeftRough PdRightRough "")
-	
+
   	(command "lweight" "ByLayer")
   	(command "line" "-445,135" "55,135" "")
 	(setq PdLeftTopThin (strcat "-445," strThinTopPy));拼接坐标点PdLeftThin细线左深度坐标
@@ -738,19 +750,19 @@
   	(command "line" "55,135" PdRightDownThin "" )
   	(command "line" PdLeftDownThin PdRightDownThin "")
 
-  	 
+
   	(command "line" "-445,30" "55,30" "");上下框线
 	(command "line" "-445,0" "-388,0" "")
 	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 100 ))
 
-	
+
 	(command "LineType" "s"  "ACAD_ISO02W100" "")
 	(command "line" "-388,0" "-335,0" "")
 	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 50 ))
 
 	(command "LineType" "s"  "ByLayer" "")
   	(command "line" "-335,0" "55,0" "")
-  
+
   	(command "line" "-385,30" (strcat "-385," strThinTopPy) "");钻时分界线
 	(command "line" "-433,0" "-433,3" "")
 	(command "line" "-421,0" "-421,3" "")
@@ -758,16 +770,16 @@
 	(command "line" "-397,0" "-397,3" "")
 
   	(command "line" "-335,30" (strcat "-335," strThinTopPy) "");水文观测分界线
-  	
+
 	(command "line" "-385,20" "-335,20" "");消耗量分界线
 	(command "line" "-375,10" "-375,12" "")
 	(command "line" "-365,10" "-365,12" "")
 	(command "line" "-355,10" "-355,12" "")
 	(command "line" "-345,10" "-345,12" "")
-	
+
   	(command "line" "-385,10" "-335,10" "");水位分界线
 	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 200))
-	
+
 	(command "line" "-375,0" "-375,2" "")
 	(command "line" "-365,0" "-365,2" "")
 	(command "line" "-355,0" "-355,2" "")
@@ -778,41 +790,41 @@
   	(command "line" "-325,20" (strcat "-325," strThinTopPy) "")
 	(command "line" "-315,20" (strcat "-315," strThinTopPy) "")
 	(command "line" "-305,30" (strcat "-305," strThinTopPy) "")
-  
+
 	(command "line" "-290,30" (strcat "-290," strThinTopPy) "");深度分界线
-  
+
 	(command "line" "-275,30" (strcat "-275," strThinTopPy) "");层厚分界线
 
 	(command "lweight" 0.50)
   	(command "line" "-270,0" (strcat "-270," strThinTopPy) "");空白分界线
-  
+
   	(command "line" "-255,0" (strcat "-255," strThinTopPy) "");测井柱状分界线
-  
+
   	(command "line" "-245,0" (strcat "-245," strThinTopPy) "");标志层代号分界线
-  
+
   	(command "line" "-230,0" (strcat "-230," strThinTopPy) "");钻井柱状分界线
-	
+
 	(command "lweight" "ByLayer")
 	(command "line" "-270,30" (strcat "-270," "0") "");空白分界线
-  
+
   	(command "line" "-255,30" (strcat "-255," "0") "");测井柱状分界线
-  
+
   	(command "line" "-245,30" (strcat "-245," "0") "");标志层代号分界线
-  
+
   	(command "line" "-230,30" (strcat "-230," "0") "");钻井柱状分界线
-	
+
   	(command "line" "-225,30" (strcat "-225," strThinTopPy) "");空白分界线
-  
+
   	(command "line" "-210,30" (strcat "-210," strThinTopPy) "");深度分界线
-  
+
   	(command "line" "-195,30" (strcat "-195," strThinTopPy) "");层厚分界线
-  
+
   	(command "line" "-185,30" (strcat "-185," strThinTopPy) "");层号分界线
-  
+
  	(command "line" "-160,30" (strcat "-160," strThinTopPy) "");岩石名称分界线
-  
+
   	(command "line" "-60,30" (strcat "-60," strThinTopPy) "");岩屑描述分界线
-  
+
   	(command "line" "0,30" (strcat "0," strThinTopPy) "");完井结构分界线
 
 	(command "line" "0,15" "25,15" "")
@@ -830,7 +842,7 @@
 	(setq indexRockStructure 1.0)
 	(setq rockStructureindexA 1.0)
 	(command "line" (strcat (strcat (rtos (- RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) (strcat (strcat (rtos (+ RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) "")
-	
+
 	(if (<= rockStructureThickness (* (+ holeNameLength 2) 4))
 		(progn
 			(if (<= rockStructureThickness 8)
@@ -841,17 +853,17 @@
 								))
 								((= rockStructureTypeNum 1)
 								(progn
-									(command "text" "J" "C" (list pxA (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
-									(command "text" "J" "C" (list (+ pxA 2) (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) 1 0 (substr rockStructureSimpleName 2))							
+									(command "text" "J" "C" (list pxA (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))
+									(command "text" "J" "C" (list (+ pxA 2) (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) 1 0 (substr rockStructureSimpleName 2))
 
 								))
 								((= rockStructureTypeNum 2)
 								(progn
-									(command "text" "J" "C" (list pxA (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
-									(command "text" "J" "C" (list (+ pxA 2) (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) 1 0 (substr rockStructureSimpleName 2))							
+									(command "text" "J" "C" (list pxA (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))
+									(command "text" "J" "C" (list (+ pxA 2) (* (- rockStructureDeep (/ rockStructureThickness 4)) -5)) 1 0 (substr rockStructureSimpleName 2))
 								))
 					)
-					
+
 				)
 				(progn
 					;(command "text" "J" "C" (list pxA  (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 8)) (- rockStructureTextSize 1) 0 rockStructureHoleName)
@@ -862,14 +874,14 @@
 								))
 								((= rockStructureTypeNum 1)
 								(progn
-									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
-									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))							
+									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))
+									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))
 
 								))
 								((= rockStructureTypeNum 2)
 								(progn
-									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
-									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))							
+									(command "text" "J" "C" (list pxA (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))
+									(command "text" "J" "C" (list (+ pxA 2) (+ (* (- rockStructureDeep (/ rockStructureThickness 2)) -5) 4)) 1 0 (substr rockStructureSimpleName 2))
 								))
 					)
 				)
@@ -888,9 +900,9 @@
 								((and (> indexRockStructure 1) (< indexRockStructure holeNameLength))
 								(progn
 									(command "text" "J" "C" (list pxA  (* (- rockStructureDeep (* rockStructureThickness (- 1 (/ (- indexRockStructure 1) (- holeNameLength 1))))) -5)) rockStructureTextSize 0 (substr rockStructureHoleName (+ 1 (* 2 (- (fix indexRockStructure) 1))) 2))
-									
+
 								))
-								((= indexRockStructure holeNameLength)   
+								((= indexRockStructure holeNameLength)
 								(progn
 									(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 10)) rockStructureTextSize 0 (substr rockStructureHoleName (+ 1 (* 2 (- (fix indexRockStructure) 1))) 2))
 										(cond ((= rockStructureTypeNum 0)
@@ -899,14 +911,14 @@
 												))
 											((= rockStructureTypeNum 1)
 												(progn
-													(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 2)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
-													(command "text" "J" "C" (list (+ pxA 2) (+ (* rockStructureDeep -5) 2)) 1 0 (substr rockStructureSimpleName 2))							
+													(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 2)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))
+													(command "text" "J" "C" (list (+ pxA 2) (+ (* rockStructureDeep -5) 2)) 1 0 (substr rockStructureSimpleName 2))
 
 												))
 											((= rockStructureTypeNum 2)
 												(progn
-													(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 2)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))							
-													(command "text" "J" "C" (list (+ pxA 2) (+ (* rockStructureDeep -5) 2)) 1 0 (substr rockStructureSimpleName 2))							
+													(command "text" "J" "C" (list pxA (+ (* rockStructureDeep -5) 2)) rockStructureTextSize 0 (substr rockStructureSimpleName 1 1))
+													(command "text" "J" "C" (list (+ pxA 2) (+ (* rockStructureDeep -5) 2)) 1 0 (substr rockStructureSimpleName 2))
 												))
 											)
 
@@ -922,49 +934,49 @@
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
-(defun drawRockLineAndTextLabel()		
+(defun drawRockLineAndTextLabel()
 	;处理划线数据
 
 	(setq pyA (* pyA -5))
 	(setq pxA  RockXOffset)
 
 
-	(cond ((= rockTypeNum 0)  
+	(cond ((= rockTypeNum 0)
 					(progn
 							(setq pxA (+ RockXOffset 20))
 							(setq pxB (+ RockXOffset 185))
-							(if (= rockName "黄土")  
+							(if (= rockName "黄土")
 								(progn
 									(setq pxA (+ RockXOffset 15))
 									(setq rockLineDeep 0)
 									(setq rockLineDeep rockDeep)
-									(command "SPLine" (strcat (strcat (rtos (+ RockXOffset 15) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 13.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 12) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 10.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 9) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 6) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 3) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 0) 2 2) ",") (rtos (* rockDeep -5) 2 2)) "" "" "") 
+									(command "SPLine" (strcat (strcat (rtos (+ RockXOffset 15) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 13.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 12) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 10.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 9) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 6) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 3) 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 0) 2 2) ",") (rtos (* rockDeep -5) 2 2)) "" "" "")
 									(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 									(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-									(command "line" ptA ptB "")	
-									
+									(command "line" ptA ptB "")
+
 									(command "text" "J" "L" (list -224 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 									(command "text" "J" "L" (list -209 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
 									(command "text" "J" "L" (list -194 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
 									(command "text" "J" "L" (list -184 (+ (* rockDeep -5) 0.5)) rockTextSize 0 rockName)
 									(command "mtext" (list -159 (+ (* rockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
-								) 
-							
-								(progn 
+								)
 
-									(if (< rockThickness 0.75) 
+								(progn
+
+									(if (< rockThickness 0.75)
 														(progn
-																	(if (< (- rockDeep rockLineDeep) 0.75) 
+																	(if (< (- rockDeep rockLineDeep) 0.75)
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
 																					(setq rockLineDeep  (+ rockDeep (- 0.75 (- rockDeep rockLineDeep))))
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")	
-																					
+																					(command "line" ptA ptB "")
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+
 																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
@@ -978,38 +990,38 @@
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")		
-																					
+																					(command "line" ptA ptB "")
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+
 																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 rockName)
 																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
-																		
+
 																			)
 																	)
 														)
 														(progn
 																	;当下一层岩性深度小于已调整后的上一层最大显示的文本框的岩性深度，则也对该层进行改变
-																	(if (< (- rockDeep rockLineDeep) 0.75) 
+																	(if (< (- rockDeep rockLineDeep) 0.75)
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
 																					(setq rockLineDeep (+ rockDeep (- 0.75 (- rockDeep rockLineDeep))))
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")	
-																					
+																					(command "line" ptA ptB "")
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+
 																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 rockName)
 																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
-																		
+
 																			)
 																			;当下一层岩性深度大于或等于已调整后的上一层最大显示的文本框的岩性深度，则根据当前深度正常计算
 																			(progn
@@ -1018,37 +1030,37 @@
 																					(setq pxA RockXOffset)
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")	
+																					(command "line" ptA ptB "")
 																					(command "text" "J" "L" (list -224 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
 																					(command "text" "J" "L" (list -184 (+ (* rockDeep -5) 0.5)) rockTextSize 0 rockName)
 																					(command "mtext" (list -159 (+ (* rockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
-								
+
 																			)
-																	)	
+																	)
 														)
 									)
 									;(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 									;(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-									;(command "line" ptA ptB "")	
+									;(command "line" ptA ptB "")
 								)
 							)
 					)
-				) 
+				)
 			   ((= rockTypeNum 1)
 						(progn
-							(if (= rockName "表层套管")  
+							(if (= rockName "表层套管")
 								(progn
 									;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
 									(setq rockLineDeep 0)
 									(setq rockLineDeep rockDeep)
 									(setq pxA (- RockXOffset 15))
 									(setq pxB (- RockXOffset 50))
-									(command "Line" (strcat (strcat (rtos pxA 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos RockXOffset 2 2) ",") (rtos (* rockDeep -5) 2 2)) "") 
+									(command "Line" (strcat (strcat (rtos pxA 2 2) ",") (rtos (* rockDeep -5) 2 2)) (strcat (strcat (rtos RockXOffset 2 2) ",") (rtos (* rockDeep -5) 2 2)) "")
 									(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 									(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-									(command "line" ptA ptB "")	
+									(command "line" ptA ptB "")
 									(if (> rockThickness 20)
 										(progn
 												(command "text" "J" "L" (list -289 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
@@ -1063,15 +1075,15 @@
 
 										)
 									)
-			
-								) 
-							
-								(progn 							
+
+								)
+
+								(progn
 									(setq pxB (- RockXOffset 50))
 												;0.75是当文本框文字高度为3时能够完全战士出来的岩石厚度
-												(if (< rockThickness 0.75) 
+												(if (< rockThickness 0.75)
 														(progn
-																	(if (< (- rockDeep rockLineDeep) 0.75) 
+																	(if (< (- rockDeep rockLineDeep) 0.75)
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
 																					(setq rockLineDeep  (+ rockDeep (- 0.75 (- rockDeep rockLineDeep))))
@@ -1079,10 +1091,10 @@
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")	
-	
+																					(command "line" ptA ptB "")
+																					(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+
 																					(command "text" "J" "L" (list -289 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 																					(command "text" "J" "L" (list -304 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
 																			)
@@ -1095,19 +1107,19 @@
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
-																			
+																					(command "line" ptA ptB "")
+																					(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+
 																					(command "text" "J" "L" (list -289 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 																					(command "text" "J" "L" (list -304 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
-																		
+
 																			)
 																	)
 														)
 														(progn
 																	;当下一层岩性深度小于已调整后的上一层最大显示的文本框的岩性深度，则也对该层进行改变
-																	(if (< (- rockDeep rockLineDeep) 0.75) 
+																	(if (< (- rockDeep rockLineDeep) 0.75)
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
 																					(setq rockLineDeep (+ rockDeep (- 0.75 (- rockDeep rockLineDeep))))
@@ -1115,13 +1127,13 @@
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")	
+																					(command "line" ptA ptB "")
+																					(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")
 
 																					(command "text" "J" "L" (list -289 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 																					(command "text" "J" "L" (list -304 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
-																		
+
 																			)
 																			;当下一层岩性深度大于或等于已调整后的上一层最大显示的文本框的岩性深度，则根据当前深度正常计算
 																			(progn
@@ -1129,11 +1141,11 @@
 																					;正常情况划线
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
+																					(command "line" ptA ptB "")
 																					(command "text" "J" "L" (list -289 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
 																					(command "text" "J" "L" (list -304 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
 																			)
-																	)		
+																	)
 														)
 												)
 
@@ -1142,7 +1154,7 @@
 					)
 				)
 	)
-	(vla-Update (vlax-ename->vla-object (entlast)))	
+	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
 ;测井柱状图
@@ -1150,17 +1162,17 @@
 	(setq pyA (* wlcdPyA -5))
 	(setq RockXOffset -255)
 	(setq pxA  RockXOffset)
-	(if (= wlcdName "表层套管")  
+	(if (= wlcdName "表层套管")
 									(progn
 										;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
 										(setq rockLineDeep 0)
 										(setq rockLineDeep wlcdRockDeep)
 										(setq pxA (- RockXOffset 15))
 										(setq pxB (- RockXOffset 50))
-										(command "Line" (strcat (strcat (rtos pxA 2 2) ",") (rtos (* wlcdRockDeep -5) 2 2)) (strcat (strcat (rtos RockXOffset 2 2) ",") (rtos (* wlcdRockDeep -5) 2 2)) "") 
+										(command "Line" (strcat (strcat (rtos pxA 2 2) ",") (rtos (* wlcdRockDeep -5) 2 2)) (strcat (strcat (rtos RockXOffset 2 2) ",") (rtos (* wlcdRockDeep -5) 2 2)) "")
 										(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 										(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-										(command "line" ptA ptB "")	
+										(command "line" ptA ptB "")
 										(if (> wlcdThickness 20)
 											(progn
 													(command "text" "J" "L" (list -289 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
@@ -1175,15 +1187,15 @@
 
 											)
 										)
-				
-									) 
-								
-									(progn 							
+
+									)
+
+									(progn
 										(setq pxB (- RockXOffset 50))
 													;0.75是当文本框文字高度为3时能够完全战士出来的岩石厚度
-													(if (< wlcdThickness 0.75) 
+													(if (< wlcdThickness 0.75)
 															(progn
-																		(if (< (- wlcdRockDeep rockLineDeep) 0.75) 
+																		(if (< (- wlcdRockDeep rockLineDeep) 0.75)
 																				(progn
 																						;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
 																						(setq rockLineDeep  (+ wlcdRockDeep (- 0.75 (- wlcdRockDeep rockLineDeep))))
@@ -1191,10 +1203,10 @@
 																						(setq pyA (* rockLineDeep -5))
 																						(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																						(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																						(command "line" ptA ptB "")		
-																						(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")			
-																						(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")	
-		
+																						(command "line" ptA ptB "")
+																						(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")
+																						(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")
+
 																						(command "text" "J" "L" (list -289 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
 																						(command "text" "J" "L" (list -304 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
 																				)
@@ -1207,19 +1219,19 @@
 																						(setq pyA (* rockLineDeep -5))
 																						(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																						(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																						(command "line" ptA ptB "")		
-																						(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")			
-																						(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")			
-																				
+																						(command "line" ptA ptB "")
+																						(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")
+																						(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")
+
 																						(command "text" "J" "L" (list -289 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
 																						(command "text" "J" "L" (list -304 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
-																			
+
 																				)
 																		)
 															)
 															(progn
 																		;当下一层岩性深度小于已调整后的上一层最大显示的文本框的岩性深度，则也对该层进行改变
-																		(if (< (- wlcdRockDeep rockLineDeep) 0.75) 
+																		(if (< (- wlcdRockDeep rockLineDeep) 0.75)
 																				(progn
 																						;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
 																						(setq rockLineDeep (+ wlcdRockDeep (- 0.75 (- wlcdRockDeep rockLineDeep))))
@@ -1227,13 +1239,13 @@
 																						(setq pyA (* rockLineDeep -5))
 																						(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																						(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																						(command "line" ptA ptB "")		
-																						(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")			
-																						(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")	
+																						(command "line" ptA ptB "")
+																						(command "line" ptA (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")
+																						(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) (strcat (strcat (rtos (- RockXOffset 15) 2 6) ",") (rtos (* wlcdRockDeep -5) 2 6)) "")
 
 																						(command "text" "J" "L" (list -289 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
 																						(command "text" "J" "L" (list -304 (+ pyA 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
-																			
+
 																				)
 																				;当下一层岩性深度大于或等于已调整后的上一层最大显示的文本框的岩性深度，则根据当前深度正常计算
 																				(progn
@@ -1241,11 +1253,11 @@
 																						;正常情况划线
 																						(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																						(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																						(command "line" ptA ptB "")		
+																						(command "line" ptA ptB "")
 																						(command "text" "J" "L" (list -289 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
 																						(command "text" "J" "L" (list -304 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
 																				)
-																		)		
+																		)
 															)
 													)
 
@@ -1261,16 +1273,16 @@
 	(setq pxA  RockXOffset)
 	(setq pxA (+ RockXOffset 20))
 							(setq pxB (+ RockXOffset 185))
-							(if (= wdcdName "黄土")  
+							(if (= wdcdName "黄土")
 								(progn
 									(setq pxA (+ RockXOffset 15))
 									(setq rockLineDeep 0)
 									(setq rockLineDeep wdcdRockDeep)
-									(command "SPLine" (strcat (strcat (rtos (+ RockXOffset 15) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 13.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 12) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 10.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 9) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 7.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 6) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 4.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 3) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 1.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 0) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) "" "" "") 
+									(command "SPLine" (strcat (strcat (rtos (+ RockXOffset 15) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 13.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 12) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 10.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 9) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 7.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 6) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 4.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 3) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 1.5) 2 2) ",") (rtos (* (- wdcdRockDeep 0.2) -5) 2 2)) (strcat (strcat (rtos (+ RockXOffset 0) 2 2) ",") (rtos (* wdcdRockDeep -5) 2 2)) "" "" "")
 									(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 									(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-									(command "line" ptA ptB "")	
-									
+									(command "line" ptA ptB "")
+
 									(command "text" "J" "L" (list -224 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
 									(command "text" "J" "L" (list -209 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
 									(command "text" "J" "L" (list -194 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
@@ -1283,23 +1295,23 @@
 											(command "move" mtextEName "" "D" "0,5.5,0" "")
 										)
 									)
-								)									
-							
-								(progn 
+								)
 
-									(if (< wdcdThickness 2.5) 
+								(progn
+
+									(if (< wdcdThickness 2.5)
 														(progn
-																	(if (< (- wdcdRockDeep rockLineDeep) 2.5) 
+																	(if (< (- wdcdRockDeep rockLineDeep) 2.5)
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
 																					(setq rockLineDeep  (+ wdcdRockDeep (- 2.5 (- wdcdRockDeep rockLineDeep))))
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")	
-																					
+																					(command "line" ptA ptB "")
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")
+
 																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
@@ -1320,10 +1332,10 @@
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")		
-																					
+																					(command "line" ptA ptB "")
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")
+
 																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
@@ -1341,17 +1353,17 @@
 														)
 														(progn
 																	;当下一层岩性深度小于已调整后的上一层最大显示的文本框的岩性深度，则也对该层进行改变
-																	(if (< (- wdcdRockDeep rockLineDeep) 2.5) 
+																	(if (< (- wdcdRockDeep rockLineDeep) 2.5)
 																			(progn
 																					;由于上层岩性改变对下层造成影响时，下层只跟随改变相应的位移量即可
 																					(setq rockLineDeep (+ wdcdRockDeep (- 2.5 (- wdcdRockDeep rockLineDeep))))
 																					(setq pyA (* rockLineDeep -5))
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")		
-																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")			
-																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")	
-																					
+																					(command "line" ptA ptB "")
+																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")
+																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* wdcdRockDeep -5) 2 6)) "")
+
 																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
@@ -1363,7 +1375,7 @@
 																						(progn
 																							(command "move" mtextEName "" "D" "0,5.5,0" "")
 																						)
-																					)															
+																					)
 																			)
 																			;当下一层岩性深度大于或等于已调整后的上一层最大显示的文本框的岩性深度，则根据当前深度正常计算
 																			(progn
@@ -1372,7 +1384,7 @@
 																					(setq pxA RockXOffset)
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-																					(command "line" ptA ptB "")	
+																					(command "line" ptA ptB "")
 																					(command "text" "J" "L" (list -224 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
 																					(command "text" "J" "L" (list -209 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
 																					(command "text" "J" "L" (list -194 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
@@ -1385,14 +1397,14 @@
 																							(command "move" mtextEName "" "D" "0,5.5,0" "")
 																						)
 																					)
-								
+
 																			)
-																	)	
+																	)
 														)
 									)
 									;(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 									;(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
-									;(command "line" ptA ptB "")	
+									;(command "line" ptA ptB "")
 								)
 							)
 	(vla-Update (vlax-ename->vla-object (entlast)))
@@ -1432,7 +1444,7 @@
 	;人工井底深度
 	(setq strHoleArtificialDeepPtA (strcat "-40," (rtos (* holeArtificialDeep -5) 2 2)))
 	(setq strHoleArtificialDeepPtB (strcat "-20," (rtos (* holeArtificialDeep -5) 2 2)))
-	
+
 	;无论是二开还是三开，内部套管长度是可以确定的，由套管鞋子来确定
 	(command "lweight" 0.50)
 	(command "line" "-40,0" strBushShoesPtA "")
@@ -1444,8 +1456,8 @@
 	(command "line" strHoleDamperLocationPtC strHoleDamperLocationPtD "")
 	(command "circle" (strcat "-30," (rtos (- (* holeDamperLocation -5) 4.5) 2 2)) 2.5)
 	(command "line" strHoleArtificialDeepPtA strHoleArtificialDeepPtB "")
-	
-	(cond ((= HoleNumFactor 1)  
+
+	(cond ((= HoleNumFactor 1)
 					(progn
 							(command "lweight" "ByLayer")
 							(command "line" (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* holeOneDeep -5) 2 2)) "")
@@ -1459,10 +1471,10 @@
 							(command "lweight" "ByLayer")
 							(command "line" (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) (strcat "-43," (rtos (* holeOneDeep -5) 2 2)) "")
 							(command "line" (strcat "-17," (rtos (* holeOneDeep -5) 2 2)) (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) "")
-					) 
+					)
 				)
 			   ((= HoleNumFactor 2)
-					(progn 
+					(progn
 							(command "lweight" "ByLayer")
 							;一开井深
 							(command "line" "-55,0" (strcat "-55," (rtos (* holeOneDeep -5) 2 2)) "")
@@ -1489,7 +1501,7 @@
 							(command "line" (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) (strcat "-43," (rtos (* holeOneDeep -5) 2 2)) "")
 							(command "line" (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) (strcat "-17," (rtos (* holeOneDeep -5) 2 2)) "")
 					)
-				)  
+				)
 	)
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -1520,7 +1532,7 @@
   	(command "text" "J" "C" (list 12.5 17) 2.8 0 "井斜(°)/方位(°)")
   	(command "text" "J" "C" (list 12.5 11) 2.8 0 "井深(m)")
   	(command "text" "J" "C" (list 40 15) 3.0 0 "备      注")
-		
+
 	(drawDTTextLabel (caculateMaxNum drillingTimeMaxData))
 	(drawWLTextLabel (caculateMaxNum waterLevelMaxData))
 	(drawMCTextLabel (caculateMaxNum consumptionMaxData))
@@ -1550,24 +1562,24 @@
 
 (defun drawRockTextLabel()
 
-	(cond ((= rockTypeNum 0)  
+	(cond ((= rockTypeNum 0)
 					(progn
 						(command "text" "J" "L" (list -224 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdRockDeep 2 2))
 						(command "text" "J" "L" (list -209 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdThickness 2 2))
 						(command "text" "J" "L" (list -194 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wdcdNumber 2 0))
 						(command "text" "J" "L" (list -184 (+ (* wdcdRockDeep -5) 0.5)) rockTextSize 0 wdcdName)
 						(command "mtext" (list -159 (+ (* wdcdRockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" wdcdDescription "")
-					) 
+					)
 				)
 			   ((= rockTypeNum 1)
-					(progn 
+					(progn
 						(command "text" "J" "L" (list -304 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
 						(command "text" "J" "L" (list -289 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
 					)
 				)
 	)
 	(vla-Update (vlax-ename->vla-object (entlast)))
-	
+
 )
 
 (defun drawRockSignTextLabel()
@@ -1587,10 +1599,10 @@
 
 ;UI-Dimlinear
 (defun drawDrillStructureDimlinear()
-	(cond ((= HoleNumFactor 1)  
+	(cond ((= HoleNumFactor 1)
 					(progn
-						(command "lweight" "ByLayer")			
-						(command "dimtad" 1) 
+						(command "lweight" "ByLayer")
+						(command "dimtad" 1)
 						(command "dimasz" 2.5)
 						;一开标注
 						(command "dimlinear" (strcat "-49," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2)) (strcat "-11," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2))) ;
@@ -1620,11 +1632,11 @@
 						(command "text" "J" "C" (list -30 (- (* holeTwoCementHign -5) 1)) 2 0 (strcat (rtos holeTwoCementHign 2 2) "m"))
 
 					 ))
-				
+
 			   ((= HoleNumFactor 2)
-					(progn 
-						(command "lweight" "ByLayer")			
-						(command "dimtad" 1) 
+					(progn
+						(command "lweight" "ByLayer")
+						(command "dimtad" 1)
 						(command "dimasz" 2.5)
 						;一开标注
 						(command "dimlinear" (strcat "-55," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2)) (strcat "-5," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2)) "T" " " (strcat "-30," (rtos (/ (* 1 (* holeOneDeep -5)) 3) 2 2))) ;
@@ -1644,7 +1656,7 @@
 						(command "line" (strcat "-49," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-46," (rtos (* holeTwoCementHign -5) 2 2)) "")
 						(command "line" (strcat "-14," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-11," (rtos (* holeTwoCementHign -5) 2 2)) "")
 						(command "text" "J" "C" (list -30 (- (* holeTwoCementHign -5) 1)) 2 0 (strcat (rtos holeTwoCementHign 2 2) "m"))
-						
+
 						;三开标注
 						(command "dimlinear" (strcat "-43," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2)) (strcat "-17," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2)) "T" " " (strcat "-30," (rtos (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 2 2))) ;
 						(command "text" "J" "C" (list -30 (+ (* (+ (/ (- holeThreeDeep holeTwoDeep) 3) holeTwoDeep) -5) 1.5)) 2.5 0 holeThreeDrillDiameterStr)
@@ -1656,7 +1668,7 @@
 						(command "line" (strcat "-43," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-40," (rtos (* holeThreeCementHign -5) 2 2)) "")
 						(command "line" (strcat "-17," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-20," (rtos (* holeThreeCementHign -5) 2 2)) "")
 						(command "text" "J" "C" (list -30 (- (* holeThreeCementHign -5) 1)) 2 0 (strcat (rtos holeThreeCementHign 2 2) "m"))
-						
+
 					))
 	)
 	(vla-Update (vlax-ename->vla-object (entlast)))
@@ -1690,84 +1702,84 @@
 (defun hatchRock(rockName rockDeep rockThickness RockHatchXOffset)
 	;(setq thisdrawing (vla-get-activedocument (vlax-get-acad-object)))
 
-	(cond ((> rockThickness 1)  
+	(cond ((> rockThickness 1)
 							(progn
 										(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 										(setq rockFactor (/ rockThickness rockMaxThickness))
-										(cond ((= rockName "黄土")  
+										(cond ((= rockName "黄土")
 															(progn
 																(print "黄土")
 																(drawHuangTuCengTop)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 5.25)) (list -380.25 (- (* drillDeepMaxData -5) 8.75)))) 
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 5.25)) (list -380.25 (- (* drillDeepMaxData -5) 8.75))))
 																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 8.5)) Selectionset)
-																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (- rockThickness 0.6))-5)) 1 1 1 0)	
+																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (- rockThickness 0.6))-5)) 1 1 1 0)
 																(drawHuangTuCengBottomLineWithRockThinkness)
-															) 
+															)
 														)
 														  ((= rockName "表层套管")
-															(progn 
+															(progn
 																(print "表层套管")
-																
+
 															)
-														)  
+														)
 													   ((= rockName "粉砂岩")
-															(progn 
+															(progn
 																(print "粉砂岩")
 																(setq rockBottomDist (- rockThickness (atoi  (rtos rockThickness 2 2))))
 																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 																(setq rockFactor (/ rockThickness rockMaxThickness))
 																(drawFenShaYanTop)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 10.25)))) 
+																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 10.25))))
 																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 9.75)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
 															)
-														)  
+														)
 														((= rockName "细粒砂岩")
-															(progn 
+															(progn
 																(print "细粒砂岩")
 																(setq rockBottomDist (- rockThickness (atoi  (rtos rockThickness 2 2))))
 																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 																(setq rockFactor (/ rockThickness rockMaxThickness))
 																(drawXiLiShaYanTop)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -294.5 (- (* drillDeepMaxData -5) 6.75)) (list -280.5 (- (* drillDeepMaxData -5) 10.25)))) 
+																(setq Selectionset (ssget "C" (list -294.5 (- (* drillDeepMaxData -5) 6.75)) (list -280.5 (- (* drillDeepMaxData -5) 10.25))))
 																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 9.75)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
 
-										
+
 															)
-														)  
+														)
 														((= rockName "中粒砂岩")
-															(progn 
+															(progn
 																(print "中粒砂岩")
 																(setq rockBottomDist (- rockThickness (atoi  (rtos rockThickness 2 2))))
 																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 																(setq rockFactor (/ rockThickness rockMaxThickness))
 																(drawZhongLiShaYanTop)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 10.25)))) 
+																(setq Selectionset (ssget "C" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 10.25))))
 																(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 9.75)) Selectionset)
-																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))	
-															
+																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
+
 															)
-														)  
+														)
 														((= rockName "粗粒砂岩")
-															(progn 
+															(progn
 																(print "粗粒砂岩")
 																(setq rockBottomDist (- rockThickness (atoi  (rtos rockThickness 2 2))))
 																(setq rockMaxThickness (+ (atoi  (rtos rockThickness 2 2)) 1))
 																(setq rockFactor (/ rockThickness rockMaxThickness))
 																(drawCuLiShaYanTop)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -194 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 10.25)))) 
+																(setq Selectionset (ssget "C" (list -194 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 10.25))))
 																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 9.75)) Selectionset)
-																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))	
+																(hatchRockWithMInsert rockName (list RockHatchXOffset (* (- rockDeep (/ 0.35 2)) -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
 															)
-														)  
+														)
 														((= rockName "粉砂质泥岩")
-															(progn 
+															(progn
 																(print "粉砂质泥岩")
 																(drawFenShaZhiNiYanTop)
 																(configRatherDelayToShowOffOrNot)
@@ -1776,9 +1788,9 @@
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(configBoldHatch)
 															)
-														)  
+														)
 														((= rockName "泥质粉砂岩")
-															(progn 
+															(progn
 																(print "泥质粉砂岩")
 																(drawNiZhiFenShaYanTop)
 																(configRatherDelayToShowOffOrNot)
@@ -1787,42 +1799,42 @@
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(configBoldHatch)
 															)
-														)  
+														)
 														((= rockName "砂砾岩")
-															(progn 
+															(progn
 																(print "砂砾岩");-316,-3984.5
 																(drawShaLiYanTop)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 40.75)) (list -331 (- (* drillDeepMaxData -5) 45.25)))) 
+																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 40.75)) (list -331 (- (* drillDeepMaxData -5) 45.25))))
 																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -337.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(configBoldHatch)
-																
-															) 
-														)					
+
+															)
+														)
 														((= rockName "泥岩")
-															(progn 
+															(progn
 																(print "泥岩")
 																(drawNiYanTop)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 40.75)) (list -280.25 (- (* drillDeepMaxData -5) 45.25)))) 
+																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 40.75)) (list -280.25 (- (* drillDeepMaxData -5) 45.25))))
 																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
 																(configBoldHatch)
 															)
-														)  
+														)
 														((= rockName "煤层");！！！！！！！！！！！！！！！！！！！！！！！！！
-															(progn 
+															(progn
 																(print "煤层")
 																;(drawMeiCeng)
-																;(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 40.75)) (list -230.25 (- (* drillDeepMaxData -5) 45.25)))) 
+																;(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 40.75)) (list -230.25 (- (* drillDeepMaxData -5) 45.25))))
 																;(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
 																;(hatchRockWithMInsert rockName (list RockHatchXOffset (* rockDeep -5)) 1 rockFactor rockMaxThickness (* 5 rockFactor))
-																
+
 																(command "-hatch" "W" "N" (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2))   (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2)) "C" "" "P" "SOLID" "CO" "T" "255,255,255" "")
 															)
-														)  
+														)
 														((= rockName "炭质泥岩")
-															(progn 
+															(progn
 																(print "炭质泥岩")
 																(drawTanZhiNiYanTop)
 																(configRatherDelayToShowOffOrNot)
@@ -1830,9 +1842,9 @@
 																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
 																(configBoldHatch)
 															)
-														)  
+														)
 														((= rockName "砂质泥岩")
-															(progn 
+															(progn
 																(print "砂质泥岩")
 																(drawShaZhiNiYanTop)
 																(configRatherDelayToShowOffOrNot)
@@ -1840,11 +1852,11 @@
 																(creatBlockOrCheckBlock rockName (list -137.5 (- (* drillDeepMaxData -5) 45)) Selectionset)
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(configBoldHatch)
-																
+
 															)
-														)  
+														)
 														((= rockName "泥质砂岩")
-															(progn 
+															(progn
 																(print "泥质砂岩")
 																(drawNiZhiShaYanTop)
 																(configRatherDelayToShowOffOrNot)
@@ -1852,9 +1864,9 @@
 																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 80)) Selectionset)
 																(configBoldHatch)
 															)
-														)  
+														)
 														((= rockName "石灰岩")
-															(progn 
+															(progn
 																(print "石灰岩")
 																(drawShiHuiYanTop)
 																(configRatherDelayToShowOffOrNot)
@@ -1862,9 +1874,9 @@
 																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 80)) Selectionset)
 																(configBoldHatch)
 															)
-														)  
+														)
 														((= rockName "泥质灰岩")
-															(progn 
+															(progn
 																(print "泥质灰岩")
 																(drawNiZhiHuiYanTop)
 																(configRatherDelayToShowOffOrNot)
@@ -1872,9 +1884,9 @@
 																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 80)) Selectionset)
 																(configBoldHatch)
 															)
-														)  
+														)
 														((= rockName "铝质泥岩")
-															(progn 
+															(progn
 																(print "铝质泥岩")
 																(drawLvZhiNiYanTop)
 																(configRatherDelayToShowOffOrNot)
@@ -1882,208 +1894,208 @@
 																(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 80)) Selectionset)
 																(configBoldHatch)
 															)
-														)  
+														)
 														((= rockName "假整合")
-															(progn 
+															(progn
 																(print "假整合")
 															)
-														)  
+														)
 														((= rockName "角度不整合")
-															(progn 
+															(progn
 																(print "角度不整合")
 															)
-														)  
-											)		
+														)
+											)
 							))
-							 ((<= rockThickness 1)  
+							 ((<= rockThickness 1)
 							(progn
-										(cond ((= rockName "黄土")  
+										(cond ((= rockName "黄土")
 															(progn
 																(print "黄土")
 																(drawHuangTuCengTop)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 5.25)) (list -380.25 (- (* drillDeepMaxData -5) 8.75)))) 
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 5.25)) (list -380.25 (- (* drillDeepMaxData -5) 8.75))))
 																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 8.5)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* rockDeep -5)) 1 (/ (* rockThickness 5) 3) 1 0)
-															) 
+															)
 														)
 														 ((= rockName "表层套管")
-															(progn 
+															(progn
 																(print "表层套管")
-																
+
 															)
-														)  
+														)
 													   ((= rockName "粉砂岩")
-															(progn 
+															(progn
 																(print "粉砂岩")
 																(drawFenShaYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 7.75)))) 
+																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 7.75))))
 																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -287.5 (- (* drillDeepMaxData -5) 9.75))" " " "Selectionset)" " " ))
 																(configThickHatch)
 															)
-														)  
+														)
 														((= rockName "细粒砂岩")
-															(progn 
+															(progn
 																(print "细粒砂岩")
 																(drawXiLiShaYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -292.5 (- (* drillDeepMaxData -5) 6.75)) (list -282.5 (- (* drillDeepMaxData -5) 7.75)))) 
+																(setq Selectionset (ssget "C" (list -292.5 (- (* drillDeepMaxData -5) 6.75)) (list -282.5 (- (* drillDeepMaxData -5) 7.75))))
 																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
 																(configThickHatch)
-																
+
 															)
-														)  
+														)
 														((= rockName "中粒砂岩")
-															(progn 
-																(print "中粒砂岩")															
+															(progn
+																(print "中粒砂岩")
 																(drawZhongLiShaYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 7.75)))) 
+																(setq Selectionset (ssget "C" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 7.75))))
 																(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
 																(configThickHatch)
 															)
-														)  
+														)
 														((= rockName "粗粒砂岩")
-															(progn 
+															(progn
 																(print "粗粒砂岩")
 																(drawCuLiShaYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -194 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 7.75)))) 
+																(setq Selectionset (ssget "C" (list -194 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 7.75))))
 																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 7.25)) Selectionset)
 																(configThickHatch)
 															)
-														)  
+														)
 														((= rockName "粉砂质泥岩")
-															(progn 
+															(progn
 																(print "粉砂质泥岩")
 																(drawFenShaZhiNiYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -144 (- (* drillDeepMaxData -5) 5.75)) (list -131 (- (* drillDeepMaxData -5) 7)))) 
-															;	(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))	
+																(setq Selectionset (ssget "C" (list -144 (- (* drillDeepMaxData -5) 5.75)) (list -131 (- (* drillDeepMaxData -5) 7))))
+															;	(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(creatBlockOrCheckBlock rockName (list -137.5 (- (* drillDeepMaxData -5) 6.25)) Selectionset)
 																(configThickHatch)
 															)
-														)  
+														)
 														((= rockName "泥质粉砂岩")
-															(progn 
+															(progn
 																(print "泥质粉砂岩")
 																(drawNiZhiFenShaYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 40.75)) (list -380.25 (- (* drillDeepMaxData -5) 42)))) 
-															;	(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))	
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 40.75)) (list -380.25 (- (* drillDeepMaxData -5) 42))))
+															;	(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -137.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(configThickHatch)
 															)
-														)  
+														)
 														((= rockName "砂砾岩")
-															(progn 
+															(progn
 																(print "砂砾岩");-316,-3984.5
 																(drawShaLiYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 40.75)) (list -331 (- (* drillDeepMaxData -5) 42)))) 
+																(setq Selectionset (ssget "C" (list -344 (- (* drillDeepMaxData -5) 40.75)) (list -331 (- (* drillDeepMaxData -5) 42))))
 																;(vla-SendCommand thisdrawing (strcat "(creatBlockOrCheckBlock" " " "rockName" " " "(list -337.5 (- (* drillDeepMaxData -5) 45))" " " "Selectionset)" " " ))
 																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(configThickHatch)
-															) 
-														)					
+															)
+														)
 														((= rockName "泥岩")
-															(progn 
+															(progn
 																(print "泥岩")
 																(drawNiYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 40.75)) (list -280.25 (- (* drillDeepMaxData -5) 42)))) 
+																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 40.75)) (list -280.25 (- (* drillDeepMaxData -5) 42))))
 																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(configThickHatch)
 															)
-														)  
+														)
 														((= rockName "煤层")
-															(progn 
+															(progn
 																(print "煤层")
 																;(drawMeiCeng)
-																;(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 40.75)) (list -230.25 (- (* drillDeepMaxData -5) 42)))) 
+																;(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 40.75)) (list -230.25 (- (* drillDeepMaxData -5) 42))))
 																;(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 40)) Selectionset)
 																;(hatchRockWithMInsert rockName (list RockHatchXOffset  (* rockDeep  -5)) 1 (/ rockThickness 2) 1 0)
 																(command "-hatch" "W" "N" (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* (- rockDeep rockThickness) -5) 2 2))  (strcat (strcat (rtos (+ RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2))   (strcat (strcat (rtos (- RockHatchXOffset 7.5) 2 2) ",") (rtos (* rockDeep -5) 2 2)) "C" "" "P" "SOLID" "")
 															)
-														)  
+														)
 														((= rockName "炭质泥岩")
-															(progn 
+															(progn
 																(print "炭质泥岩")
 																(drawTanZhiNiYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -194.75 (- (* drillDeepMaxData -5) 40.75)) (list -180.25 (- (* drillDeepMaxData -5) 42)))) 
+																(setq Selectionset (ssget "C" (list -194.75 (- (* drillDeepMaxData -5) 40.75)) (list -180.25 (- (* drillDeepMaxData -5) 42))))
 																(creatBlockOrCheckBlock rockName (list -187.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 (* rockThickness 2) 1 0)
 															)
-														)  
+														)
 														((= rockName "砂质泥岩")
-															(progn 
+															(progn
 																(print "砂质泥岩")
 																(drawShaZhiNiYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -144 (- (* drillDeepMaxData -5) 40.75)) (list -131 (- (* drillDeepMaxData -5) 42)))) 
+																(setq Selectionset (ssget "C" (list -144 (- (* drillDeepMaxData -5) 40.75)) (list -131 (- (* drillDeepMaxData -5) 42))))
 																(creatBlockOrCheckBlock rockName (list -137.5 (- (* drillDeepMaxData -5) 41.25)) Selectionset)
 																(configThickHatch)
 															)
-														)  
+														)
 														((= rockName "泥质砂岩")
-															(progn 
+															(progn
 																(print "泥质砂岩")
 																(drawNiZhiShaYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 75.75)) (list -380.25 (- (* drillDeepMaxData -5) 77)))) 
+																(setq Selectionset (ssget "C" (list -394.75 (- (* drillDeepMaxData -5) 75.75)) (list -380.25 (- (* drillDeepMaxData -5) 77))))
 																(creatBlockOrCheckBlock rockName (list -387.5 (- (* drillDeepMaxData -5) 76.25)) Selectionset)
 																(configThickHatch)
 															)
-														)  
+														)
 														((= rockName "石灰岩")
-															(progn 
+															(progn
 																(print "石灰岩3")
 																(drawShiHuiYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -344.75 (- (* drillDeepMaxData -5) 75.75)) (list -330.25 (- (* drillDeepMaxData -5) 77)))) 
+																(setq Selectionset (ssget "C" (list -344.75 (- (* drillDeepMaxData -5) 75.75)) (list -330.25 (- (* drillDeepMaxData -5) 77))))
 																(creatBlockOrCheckBlock rockName (list -337.5 (- (* drillDeepMaxData -5) 76.25)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 (* rockThickness 2) 1 0)
 															)
-														)  
+														)
 														((= rockName "泥质灰岩")
-															(progn 
+															(progn
 																(print "泥质灰岩")
 																(drawNiZhiHuiYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 75.75)) (list -280.25 (- (* drillDeepMaxData -5) 77)))) 
+																(setq Selectionset (ssget "C" (list -294.75 (- (* drillDeepMaxData -5) 75.75)) (list -280.25 (- (* drillDeepMaxData -5) 77))))
 																(creatBlockOrCheckBlock rockName (list -287.5 (- (* drillDeepMaxData -5) 76.25)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 (* rockThickness 2) 1 0)
 															)
-														)  
+														)
 														((= rockName "铝质泥岩")
-															(progn 
+															(progn
 																(print "铝质泥岩")
 																(drawLvZhiNiYanOne)
 																(configRatherDelayToShowOffOrNot)
-																(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 75.75)) (list -230.25 (- (* drillDeepMaxData -5) 77)))) 
+																(setq Selectionset (ssget "C" (list -244.75 (- (* drillDeepMaxData -5) 75.75)) (list -230.25 (- (* drillDeepMaxData -5) 77))))
 																(creatBlockOrCheckBlock rockName (list -237.5 (- (* drillDeepMaxData -5) 76.25)) Selectionset)
 																(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 (* rockThickness 2) 1 0)
 															)
-														)  
+														)
 														((= rockName "假整合")
-															(progn 
+															(progn
 																(print "假整合")
 															)
-														)  
+														)
 														((= rockName "角度不整合")
-															(progn 
+															(progn
 																(print "角度不整合")
 															)
-														)  
+														)
 											)
-							
-										
+
+
 							))
 		)
-						
+
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
@@ -2095,14 +2107,14 @@
 
 (defun configThickHatch()
 ;过薄计算需要找到插图框格的中位线
-	
+
 	;(vla-SendCommand thisdrawing (strcat "(hatchRockWithMInsert" " " "rockName" " " "(list RockHatchXOffset (* rockDeep -5))" " " "1" " " "1" " " "1" " " "0)" " "))
 	(hatchRockWithMInsert rockName (list RockHatchXOffset  (* (- rockDeep (/ rockThickness 2)) -5)) 1 1 1 0)
 )
 
 ;Tool-Hatch
-(defun hatchRockWithMInsert(BlockName InsertPoint xFactor yFactor rowCount rowSpace)  ;定义函数 
-			(vl-load-com)  ;加载Vlisp函数  
+(defun hatchRockWithMInsert(BlockName InsertPoint xFactor yFactor rowCount rowSpace)  ;定义函数
+			(vl-load-com)  ;加载Vlisp函数
 			;选择加密对象
  			(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 			(if (= rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace))
@@ -2110,55 +2122,55 @@
 			;(command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace);用block命令制作块，然后用minsert命令制作多重引用块
 		  ;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
 			;(command "minsert"   BlockName BasicPoint 1 1 0 1 1 0 )
-			;(vla-put-name (vla-item (vla-get-blocks (vla-get-activedocument (vlax-get-acad-object))) (vla-get-name (vlax-ename->vla-object (entlast)))) "*U") 
+			;(vla-put-name (vla-item (vla-get-blocks (vla-get-activedocument (vlax-get-acad-object))) (vla-get-name (vlax-ename->vla-object (entlast)))) "*U")
 					;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
-		
-  			;加密完成后恢复参考图形
-) 
 
-(defun creatBlockOrCheckBlock(BlockName BasicPoint Selectionset) 
-	(vl-load-com)  ;加载Vlisp函数  
-	
-	 (if Selectionset  ;选择加密对象 
-			(progn    ;以当前时间作为块名  ;因为我们要用多重引用块进行加密，在制作多重引用块之前我们必须将我们需要 ;加密的图元制作成块，为避免与图档内块名冲突，引用了当前时间作为块名 
+  			;加密完成后恢复参考图形
+)
+
+(defun creatBlockOrCheckBlock(BlockName BasicPoint Selectionset)
+	(vl-load-com)  ;加载Vlisp函数
+
+	 (if Selectionset  ;选择加密对象
+			(progn    ;以当前时间作为块名  ;因为我们要用多重引用块进行加密，在制作多重引用块之前我们必须将我们需要 ;加密的图元制作成块，为避免与图档内块名冲突，引用了当前时间作为块名
 				(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 				(command "block" BlockCodeName BasicPoint Selectionset "")
 				;hahaha
 
-			) 
-			 (princ "\n没有选中图元")  
-			
-	) 
+			)
+			 (princ "\n没有选中图元")
+
+	)
 	 (princ)
 )
 
 (defun hatchDrillStructure()
 	(command "measurement" 1)
-	(cond ((= HoleNumFactor 1)  
+	(cond ((= HoleNumFactor 1)
 						(progn
 								;一开水泥反深
 								(command "-hatch" "W" "N" (strcat "-49," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-46," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-46," (rtos (* holeOneDeep -5) 2 2))  (strcat "-49," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 								(command "-hatch" "W" "N" (strcat "-11," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-14," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-14," (rtos (* holeOneDeep -5) 2 2))  (strcat "-11," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
-								
+
 								;二开水泥反深
 								(command "-hatch" "W" "N" (strcat "-43," (rtos (*  holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-17," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 								(command "-hatch" "W" "N" strHoleDamperLocationPtC (strcat "-30," (rtos (- (* holeDamperLocation -5) 2) 2 2)) "A" "@5<270" "@5<90" "L" strHoleDamperLocationPtD strBushShoesPtB strBushShoesPtA  "C" "" "P" "DOTS" "1" "0" "")
 								(command "-hatch" "W" "N" strHoleArtificialDeepPtA strHoleArtificialDeepPtB strHoleDamperLocationPtB strHoleDamperLocationPtA "C" "" "P" "DOTS" "1" "0" "")
-						
+
 							(if (< holeTwoCementHign holeOneDeep)
 								(progn
 									(command "-hatch" "W" "N" (strcat "-46," (rtos (*  holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-40," (rtos (* holeOneDeep -5) 2 2)) (strcat "-20," (rtos  (* holeOneDeep -5) 2 2)) (strcat "-20," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-14," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-14," (rtos  (* holeOneDeep -5) 2 2)) (strcat "-46," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 								)
 							)
-							
+
 						))
 				   ((= HoleNumFactor 2)
-						(progn 
-							
+						(progn
+
 								;一开水泥反深
 								(command "-hatch" "W" "N" (strcat "-55," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-52," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-52," (rtos (* holeOneDeep -5) 2 2))  (strcat "-55," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 								(command "-hatch" "W" "N" (strcat "-5," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-8," (rtos (* holeOneCementHign -5) 2 2)) (strcat "-8," (rtos (* holeOneDeep -5) 2 2))  (strcat "-5," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
-			
+
 								;二开水泥反深
 								(command "-hatch" "W" "N" (strcat "-49," (rtos (* holeTwoDeep -5) 2 2))(strcat "-46," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-46," (rtos (* holeTwoCementHign -5) 2 2))  (strcat "-49," (rtos (* holeTwoCementHign -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 								(command "-hatch" "W" "N" (strcat "-14," (rtos (* holeTwoDeep -5) 2 2))(strcat "-11," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-11," (rtos (* holeTwoCementHign -5) 2 2))  (strcat "-14," (rtos (* holeTwoCementHign -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
@@ -2167,9 +2179,9 @@
 									(command "-hatch" "W" "N" (strcat "-52," (rtos (*  holeTwoCementHign -5) 2 2)) (strcat "-46," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-46," (rtos (* holeOneDeep -5) 2 2)) (strcat "-14," (rtos  (* holeOneDeep -5) 2 2)) (strcat "-14," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-8," (rtos (* holeTwoCementHign -5) 2 2)) (strcat "-8," (rtos  (* holeOneDeep -5) 2 2)) (strcat "-52," (rtos (* holeOneDeep -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 								)
 							)
-									
+
 								;三开水泥反深
-								(cond ((> holeTwoDeep holeThreeCementHign)  
+								(cond ((> holeTwoDeep holeThreeCementHign)
 													;水泥反深高于二开孔径
 													(progn
 														(setq strholeThreeCementHignPlusPtA  (strcat "-46," (rtos (* (- holeTwoDeep holeThreeCementHign) -5) 2 2)))
@@ -2184,19 +2196,19 @@
 														(command "-hatch" "W" "N" strholeThreeCementHignPlusPtE strholeThreeCementHignPlusPtF strholeThreeCementHignPlusPtG strholeThreeCementHignPlusPtH "C" "" "P" "DOTS" "1" "0" "")
 														(command "-hatch" "W" "N" (strcat "-43," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-40," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (*  holeTwoDeep -5) 2 2)) (strcat "-17," (rtos (* holeTwoDeep -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 													))
-												
+
 											((<= holeTwoDeep holeThreeCementHign)
 													;水泥反深低于二开孔径
-													(progn 
+													(progn
 															;三开水泥反深
 															(command "-hatch" "W" "N" (strcat "-43," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-40," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-40," (rtos (* bushShoes -5) 2 2)) (strcat "-20," (rtos  (* bushShoes -5) 2 2)) (strcat "-20," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-17," (rtos (* holeThreeCementHign -5) 2 2)) (strcat "-17," (rtos  (* drillDeepMaxData -5) 2 2)) (strcat "-43," (rtos (* drillDeepMaxData -5) 2 2)) "C" "" "P" "DOTS" "1" "0" "")
 													))
 									)
-									
+
 									;浮箍浮鞋、、人工井底水泥填充
 									(command "-hatch" "W" "N" strHoleDamperLocationPtC (strcat "-30," (rtos (- (* holeDamperLocation -5) 2) 2 2)) "A" "@5<270" "@5<90" "L" strHoleDamperLocationPtD strBushShoesPtB strBushShoesPtA  "C" "" "P" "DOTS" "1" "0" "")
 									(command "-hatch" "W" "N" strHoleArtificialDeepPtA strHoleArtificialDeepPtB strHoleDamperLocationPtB strHoleDamperLocationPtA "C" "" "P" "DOTS" "1" "0" "")
-						))  
+						))
 		)
 
 )
@@ -2281,20 +2293,20 @@
 	(command "mtext" (list 6 (- (* drillDeepMaxData -5) 84)) "h" 3 "w" "48" DataSource "")
 
 )
- 
+
  ;BaseBlock
- 
+
   (defun drawShaLiYanVla()
 	(vla-SendCommand thisdrawing (strcat "(drawShaLiYan)" " "))
 )
- 
+
 (defun drawShaLiYan()
 	(drawShaLiYanTop)
   	(drawShaLiYanBottom)
  )
 
 
- 
+
  ;砂砾岩
 (defun drawShaLiYanOneVla()
 	(vla-SendCommand thisdrawing (strcat "(drawShaLiYanOne)" " "))
@@ -2303,69 +2315,69 @@
  (defun drawShaLiYanOne()
    	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "circle" (strcat "-337.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.35)
-	
+
 	(command "circle" (strcat "-340," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-341," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-335," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-334," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	 (command "-hatch" "S" (ssget "W" (list -341.5 (- (* drillDeepMaxData -5) 40.75)) (list -339.5 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* drillDeepMaxData -5) 40.75)) (list -333.5 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
- 
+
  (defun drawShaLiYanTopVla()
 	(vla-SendCommand thisdrawing (strcat "(drawShaLiYanTop)" " "))
 )
- 
+
 (defun drawShaLiYanTop()
   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "line" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) "")
-  	
+
 	(command "line" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) "")
-	
+
 	;rowOne
 	(command "circle" (strcat "-337.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.35)
-	
+
 	(command "circle" (strcat "-340," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-341," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-335," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-334," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
-	
+
+
 	(command "-hatch" "S" (ssget "W" (list -341.5 (- (* drillDeepMaxData -5) 40.75)) (list -339.5 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(command)
 	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* drillDeepMaxData -5) 40.75)) (list -333.5 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	;rowTwo
 	(command "circle" (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.35)
-	
+
 	(command "circle" (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.35)
-	
+
 	(command "circle" (strcat "-338," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-337," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-331.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-343.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 
 	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* drillDeepMaxData -5) 43.25)) (list -336.5 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "-hatch" "S" (ssget "W" (list -333 (- (* drillDeepMaxData -5) 43.25)) (list -331 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 43.25)) (list -342 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -2377,105 +2389,105 @@
  (defun drawShaLiYanBottom()
    	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "Rectang" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) " ")
-	
+
 	(command "line" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) "")
-	
+
 	;rowThree
 	(command "circle" (strcat "-337.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.35)
-	
+
 	(command "circle" (strcat "-340," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-341," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-335," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-334," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
-	
-	
+
+
 	(command "-hatch" "S" (ssget "W" (list -341.5 (- (* drillDeepMaxData -5) 45.75)) (list -339.5 (- (* drillDeepMaxData -5) 46.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "-hatch" "S" (ssget "W" (list -335.5 (- (* drillDeepMaxData -5) 45.75)) (list -333.5 (- (* drillDeepMaxData -5) 46.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	;rowFour
 	(command "circle" (strcat "-340.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.35)
-	
+
 	(command "circle" (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.35)
-	
+
 	(command "circle" (strcat "-338," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-337," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-332.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-331.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-343.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
+
    	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂砾岩" "")
-   	
+
 
 	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* drillDeepMaxData -5) 48.25)) (list -336.5 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -333 (- (* drillDeepMaxData -5) 48.25)) (list -331 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 48.25)) (list -342 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
 
- 
+	(command "-hatch" "S" (ssget "W" (list -333 (- (* drillDeepMaxData -5) 48.25)) (list -331 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+
+	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 48.25)) (list -342 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
+
+	(vla-Update (vlax-ename->vla-object (entlast)))
+ )
+
+
  ;砂质泥岩
- 
+
  (defun drawShaZhiNiYan()
 	(drawShaZhiNiYanTop)
   	(drawShaZhiNiYanBottom)
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
- 
+
  (defun drawShaZhiNiYanOne()
 	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "line" (strcat "-141," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-139.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
-	
+
 	(command "line" (strcat "-135.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-134," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
-	
+
 	(command "circle" (strcat "-137.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
   	(command "-hatch" "S" (ssget "W" (list -138 (- (* drillDeepMaxData -5) 40.75)) (list -137 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
- 
+
 (defun drawShaZhiNiYanTop()
   	;(command "zoom" "w" (strcat "-150," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-125," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) )
 	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) "")
-  	
+
 	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) "")
-	
+
 	;rowOne
 	(command "line" (strcat "-141," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-139.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
-	
+
 	(command "line" (strcat "-135.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-134," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
-	
+
 	(command "circle" (strcat "-137.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -138 (- (* drillDeepMaxData -5) 40.75)) (list -137 (- (* drillDeepMaxData -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 
 
-	
+
 
 	;rowTwo
 	(command "line" (strcat "-142.5," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-144," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
 	(command "line" (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
 	(command "line" (strcat "-132.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-131.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
-	
+
 	(command "circle" (strcat "-140.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-134.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -135.5 (- (* drillDeepMaxData -5) 43.25)) (list -133.5 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* drillDeepMaxData -5) 43.25)) (list -139.5 (- (* drillDeepMaxData -5) 44.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -2484,31 +2496,31 @@
   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "Rectang" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) " ")
 	(command "line" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) "")
-  		
+
 	;rowThree
 	(command "line" (strcat "-141," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-139.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
-	
+
 	(command "line" (strcat "-135.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-134," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
-	
+
 	(command "circle" (strcat "-137.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
-	
+
   	(command "-hatch" "S" (ssget "W" (list -138 (- (* drillDeepMaxData -5) 46.75)) (list -137 (- (* drillDeepMaxData -5) 45.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	;rowFour
 	(command "line" (strcat "-142.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-144," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-132.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-131.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
-	
+
 	(command "circle" (strcat "-140.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-134.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
-	
+
+
 	(command "-hatch" "S" (ssget "W" (list -135.5 (- (* drillDeepMaxData -5) 49.25)) (list -133.5 (- (* drillDeepMaxData -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* drillDeepMaxData -5) 49.25)) (list -139.5 (- (* drillDeepMaxData -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	
+
+
 	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂质泥岩" "")
    	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -2518,7 +2530,7 @@
 
 (defun drawXiLiShaYanVla()
 	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYan)" " "))
-	
+
 
 )
 
@@ -2527,73 +2539,73 @@
 	(drawXiLiShaYanBottom)
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
- 
+
  (defun drawXiLiShaYanOneVla()
 	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYanOne)" " "))
 
 )
- 
+
  (defun drawXiLiShaYanOne()
    	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "circle" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-290.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-284.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* drillDeepMaxData -5) 7.75)) (list -282.5 (- (* drillDeepMaxData -5) 6.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
- 
+
   (defun drawXiLiShaYanTopVla()
 	(vla-SendCommand thisdrawing (strcat "(drawXiLiShaYanTop)" " "))
-	
+
 )
- 
+
 (defun drawXiLiShaYanTop()
   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	;rowOne
 	(command "circle" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-290.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-284.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
-	
+
+
 	;rowTwo
 	(command "circle" (strcat "-287.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-286.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-288.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-292.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-293.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-282.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 
 	(command "-hatch" "S" (ssget "W" (list -294.5 (- (* drillDeepMaxData -5) 6.75)) (list -280.5 (- (* drillDeepMaxData -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
@@ -2604,27 +2616,27 @@
  (defun drawXiLiShaYanBottom()
    	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "Rectang" (strcat "-295," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-280," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
-	
+
 	;rowThree
 	(command "circle" (strcat "-291.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-290.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-289.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-284.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-283.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* drillDeepMaxData -5) 11.75)) (list -282.5 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 
 	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "细粒砂岩" "")
    	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
 ;粉砂岩
 (defun drawFenShaYan()
 	(drawFenShaYanTop)
@@ -2637,72 +2649,72 @@
 	;rowOne
 	;left
 	(command "circle" (strcat "-339.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-339.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-340.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-340.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
 	;right
 	(command "circle" (strcat "-335.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-335.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-334.75," (rtos (- (* drillDeepMaxData -5)7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-334.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 7.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
 
  (defun drawFenShaYanTop()
   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
-	
+
 	;rowOne
 	;left
 	(command "circle" (strcat "-339.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-339.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-340.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-340.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
 	;right
 	(command "circle" (strcat "-335.75," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-335.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-334.75," (rtos (- (* drillDeepMaxData -5)7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-334.25," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	;rowTwo
 	;mid
 	(command "circle" (strcat "-336.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-337.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-337.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-338.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
 	;left
 	(command "circle" (strcat "-341.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-342.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-342.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-343.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
 	;right
 	(command "circle" (strcat "-332.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-332.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-331.75," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
-	(command "circle" (strcat "-331.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)	
-	
+
+	(command "circle" (strcat "-331.25," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
+
 	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 6.75)) (list -331 (- (* drillDeepMaxData -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -2710,31 +2722,31 @@
  (defun drawFenShaYanBottom()
    	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "Rectang" (strcat "-345," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-330," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
-	
+
 	;rowThree
 	;left
 	(command "circle" (strcat "-339.25," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-339.75," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-340.25," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-340.75," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
 	;right
 	(command "circle" (strcat "-335.75," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-335.25," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-334.75," (rtos (- (* drillDeepMaxData -5)12.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-334.25," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 11.75)) (list -331 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
  ;中粒砂岩
 (defun drawZhongLiShaYan()
 	(drawZhongLiShaYanTop)
@@ -2748,44 +2760,44 @@
 	;left
 	(command "circle" (strcat "-241," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
 	(command "circle" (strcat "-240," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	;right
 	(command "circle" (strcat "-235," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-234," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
-	
+
+
 	(command "-hatch" "S" (ssget "W" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 7.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
 
  (defun drawZhongLiShaYanTop()
   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
-	
+
 	;rowOne
 	;left
 	(command "circle" (strcat "-241," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
 	(command "circle" (strcat "-240," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	;right
 	(command "circle" (strcat "-235," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
 	(command "circle" (strcat "-234," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	;rowTwo
 	;mid
 	(command "circle" (strcat "-237," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
 	(command "circle" (strcat "-238," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	;left
 	(command "circle" (strcat "-242," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-243," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	;right
 	(command "circle" (strcat "-232," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "circle" (strcat "-233," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -244 (- (* drillDeepMaxData -5) 6.75)) (list -231 (- (* drillDeepMaxData -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -2793,22 +2805,22 @@
  (defun drawZhongLiShaYanBottom()
    	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "Rectang" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
-	
+
 	;rowThree
 	;left
 	(command "circle" (strcat "-241," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
 	(command "circle" (strcat "-240," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	;right
 	(command "circle" (strcat "-235," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
 	(command "circle" (strcat "-234," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -244 (- (* drillDeepMaxData -5) 11.75)) (list -231 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "中粒砂岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
   ;粗粒砂岩
 (defun drawCuLiShaYan()
 	(drawCuLiShaYanTop)
@@ -2831,24 +2843,24 @@
 
  (defun drawCuLiShaYanTop()
   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
-	
+
 	;rowOne
 	;left
 	(command "circle" (strcat "-190.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
 
 	;right
 	(command "circle" (strcat "-184.5," (rtos (- (* drillDeepMaxData -5) 7.25) 2 2)) 0.10)
-	
+
 	;rowTwo
 	;mid
 	(command "circle" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	;left
 	(command "circle" (strcat "-192.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	;right
 	(command "circle" (strcat "-182.5," (rtos (- (* drillDeepMaxData -5) 9.75) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -194 (- (* drillDeepMaxData -5) 6.75)) (list -181 (- (* drillDeepMaxData -5) 10.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -2856,20 +2868,20 @@
  (defun drawCuLiShaYanBottom()
    	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "Rectang" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
-	
+
 	;rowThree
 	;left
 	(command "circle" (strcat "-190.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
 
 	;right
 	(command "circle" (strcat "-184.5," (rtos (- (* drillDeepMaxData -5) 12.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -194 (- (* drillDeepMaxData -5) 11.75)) (list -181 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粗粒砂岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
   ;粉砂质泥岩
 (defun drawFenShaZhiNiYan()
 	(drawFenShaZhiNiYanTop)
@@ -2911,17 +2923,17 @@
 
 	;right
 	(command "line" (strcat "-135.25," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) (strcat "-133.75," (rtos (- (* drillDeepMaxData -5) 6.25) 2 2)) "")
-	
+
 	;rowTwo
 	;mid
 	(command "line" (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) "")
-	
+
 	;left
 	(command "circle" (strcat "-139.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
 	(command "circle" (strcat "-140.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
 	(command "circle" (strcat "-140.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
 	(command "circle" (strcat "-141.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
-	
+
 	(command "line" (strcat "-142.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) (strcat "-144.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) "")
 
 
@@ -2930,8 +2942,8 @@
 	(command "circle" (strcat "-134.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
 	(command "circle" (strcat "-134.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
 	(command "circle" (strcat "-133.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) 0.10)
-	
-	(command "line" (strcat "-132.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) (strcat "-130.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) "")	
+
+	(command "line" (strcat "-132.25," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) (strcat "-130.75," (rtos (- (* drillDeepMaxData -5) 8.75) 2 2)) "")
 	(command "-hatch" "S" (ssget "W" (list -144 (- (* drillDeepMaxData -5) 5.75)) (list -131 (- (* drillDeepMaxData -5) 9.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -2955,17 +2967,17 @@
 
 	;right
 	(command "line" (strcat "-135.25," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) (strcat "-133.75," (rtos (- (* drillDeepMaxData -5) 11.25) 2 2)) "")
-	
+
 	;rowTwo
 	;mid
 	(command "line" (strcat "-138.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) (strcat "-136.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) "")
-	
+
 	;left
 	(command "circle" (strcat "-139.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
 	(command "circle" (strcat "-140.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
 	(command "circle" (strcat "-140.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
 	(command "circle" (strcat "-141.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
-	
+
 	(command "line" (strcat "-142.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) (strcat "-144.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) "")
 
 
@@ -2974,14 +2986,14 @@
 	(command "circle" (strcat "-134.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
 	(command "circle" (strcat "-134.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
 	(command "circle" (strcat "-133.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) 0.10)
-	
-	(command "line" (strcat "-132.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) (strcat "-130.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) "")	
+
+	(command "line" (strcat "-132.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) (strcat "-130.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) "")
 	(command "-hatch" "S" (ssget "W" (list -144 (- (* drillDeepMaxData -5) 10.75)) (list -131 (- (* drillDeepMaxData -5) 14.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂质泥岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
   ;泥质粉砂岩
 (defun drawNiZhiFenShaYan()
 	(drawNiZhiFenShaYanTop)
@@ -3011,7 +3023,7 @@
 	(command "circle" (strcat "-381.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
 	(command "circle" (strcat "-380.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
 
-	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 40.75)) (list -380.25 (- (* drillDeepMaxData -5) 42))) "" "P" "SOLID" "CO" "ByLayer" "")	
+	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 40.75)) (list -380.25 (- (* drillDeepMaxData -5) 42))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
 
@@ -3039,23 +3051,23 @@
 	(command "circle" (strcat "-381.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
 	(command "circle" (strcat "-381.25," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
 	(command "circle" (strcat "-380.75," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	;rowTwo
 	;mid
 	(command "line" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) "")
-	
+
 	;left
 	(command "circle" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
 	(command "circle" (strcat "-390.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
 	(command "circle" (strcat "-390.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
 	(command "circle" (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 	;right
 	(command "circle" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
 	(command "circle" (strcat "-384.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
 	(command "circle" (strcat "-384.25," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
 	(command "circle" (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 43.75) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 40.75)) (list -380.25 (- (* drillDeepMaxData -5) 45.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -3084,29 +3096,29 @@
 	(command "circle" (strcat "-381.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
 	(command "circle" (strcat "-381.25," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
 	(command "circle" (strcat "-380.75," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
-	
+
 	;rowFour
 	;mid
 	(command "line" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
-	
+
 	;left
 	(command "circle" (strcat "-389.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
 	(command "circle" (strcat "-390.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
 	(command "circle" (strcat "-390.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
 	(command "circle" (strcat "-391.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
+
 	;right
 	(command "circle" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
 	(command "circle" (strcat "-384.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
 	(command "circle" (strcat "-384.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
 	(command "circle" (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 45.75)) (list -380.25 (- (* drillDeepMaxData -5) 50.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
-	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥质粉砂岩" "") 
+
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥质粉砂岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
    ;泥质砂岩
 (defun drawNiZhiShaYan()
 	(drawNiZhiShaYanTop)
@@ -3131,7 +3143,7 @@
 	(command "circle" (strcat "-381.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.10)
 
 
-	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 75.75)) (list -380.25 (- (* drillDeepMaxData -5) 77))) "" "P" "SOLID" "CO" "ByLayer" "")	
+	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 75.75)) (list -380.25 (- (* drillDeepMaxData -5) 77))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
 
@@ -3154,17 +3166,17 @@
 	(command "line" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) "")
 	(command "circle" (strcat "-381.5," (rtos (- (* drillDeepMaxData -5) 76.25) 2 2)) 0.10)
 
-	
+
 	;rowTwo
 	;mid
 	(command "line" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) "")
-	
+
 	;left
 	(command "circle" (strcat "-390.5," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) 0.10)
 
 	;right
 	(command "circle" (strcat "-384.5," (rtos (- (* drillDeepMaxData -5) 78.75) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 75.75)) (list -380.25 (- (* drillDeepMaxData -5) 80.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -3188,23 +3200,23 @@
 	(command "line" (strcat "-385.25," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) (strcat "-383.75," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) "")
 	(command "circle" (strcat "-381.5," (rtos (- (* drillDeepMaxData -5) 81.25) 2 2)) 0.10)
 
-	
+
 	;rowFour
 	;mid
 	(command "line" (strcat "-388.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) (strcat "-386.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) "")
-	
+
 	;left
 	(command "circle" (strcat "-390.5," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 0.10)
 
 	;right
 	(command "circle" (strcat "-384.5," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 0.10)
-	
+
 	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 80.75)) (list -380.25 (- (* drillDeepMaxData -5) 85.25))) "" "P" "SOLID" "CO" "ByLayer" "")
-	
+
 	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质砂岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
     ;石灰岩
 (defun drawShiHuiYan()
 	(drawShiHuiYanTop)
@@ -3257,11 +3269,11 @@
 	(command "line" (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-334.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	(command "line" (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	(command "line" (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
-	
+
 	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "石灰岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
      ;泥质灰岩
 (defun drawNiZhiHuiYan()
 	(drawNiZhiHuiYanTop)
@@ -3299,7 +3311,7 @@
 	(command "line" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
 	(command "line" (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 77.5) 2 2)) (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
-	
+
 )
 
  (defun drawNiZhiHuiYanBottom()
@@ -3320,11 +3332,11 @@
 	(command "line" (strcat "-293.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-293.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	(command "line" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	(command "line" (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
-	
+
 	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质灰岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
       ;泥岩
 (defun drawNiYan()
 	(drawNiYanTop)
@@ -3371,11 +3383,11 @@
 	(command "line" (strcat "-288.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-286.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-292.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-293.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-282.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-281.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
-	
+
 	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
        ;铝质泥岩
 (defun drawLvZhiNiYan()
 	(drawLvZhiNiYanTop)
@@ -3445,44 +3457,44 @@
 	(command "circle" (strcat "-234.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 0.30)
 	(command "circle" (strcat "-234.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 1.0)
 	(command "line" (strcat "-232.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) (strcat "-231.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) "")
-	
+
 	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "铝质泥岩" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
- ) 
- 
+ )
+
   ;炭质泥岩
- 
+
  (defun drawTanZhiNiYan()
 	(drawTanZhiNiYanTop)
   	(drawTanZhiNiYanBottom)
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
- 
+
  (defun drawTanZhiNiYanOne()
 	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	;rowOne
 	(command "line" (strcat "-191," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-189.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
-	
+
 	(command "line" (strcat "-185.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-184," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
-	
+
 	(command "circle" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "W" "N" (strcat "-187.9," (rtos (- (* drillDeepMaxData -5) 40.5) 2 2)) (strcat "-186.7," (rtos (- (* drillDeepMaxData -5) 40.5) 2 2)) (strcat "-187.1," (rtos (- (* drillDeepMaxData -5) 42) 2 2))  (strcat "-188.3," (rtos (- (* drillDeepMaxData -5) 42) 2 2)) "C" "" "P" "SOLID" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
- 
+
 (defun drawTanZhiNiYanTop()
   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "line" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 42.5) 2 2)) "")
 	(command "line" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 45) 2 2)) "")
-	
+
 	;rowOne
 	(command "line" (strcat "-191," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-189.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
-	
+
 	(command "line" (strcat "-185.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) (strcat "-184," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) "")
-	
+
 	(command "circle" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 41.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "W" "N" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 40.5) 2 2)) (strcat "-186.3," (rtos (- (* drillDeepMaxData -5) 40.5) 2 2)) (strcat "-187," (rtos (- (* drillDeepMaxData -5) 42) 2 2))  (strcat "-188.2," (rtos (- (* drillDeepMaxData -5) 42) 2 2)) "C" "" "P" "SOLID" "")
 
 	;rowTwo
@@ -3496,35 +3508,35 @@
   	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "Rectang" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) " ")
 	(command "line" (strcat "-195," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 47.5) 2 2)) "")
-	
+
 	;rowThree
 	(command "line" (strcat "-191," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-189.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
-	
+
 	(command "line" (strcat "-185.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) (strcat "-184," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) "")
-	
+
 	(command "circle" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 46.25) 2 2)) 0.10)
-	
+
 	(command "-hatch" "W" "N" (strcat "-187.5," (rtos (- (* drillDeepMaxData -5) 45.5) 2 2)) (strcat "-186.3," (rtos (- (* drillDeepMaxData -5) 45.5) 2 2)) (strcat "-187," (rtos (- (* drillDeepMaxData -5) 47) 2 2))  (strcat "-188.2," (rtos (- (* drillDeepMaxData -5) 47) 2 2)) "C" "" "P" "SOLID" "")
 
 	;rowFour
 	(command "line" (strcat "-192.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-194," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-186.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-188.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-182.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-181.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
-	
-	
+
+
 	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "炭质泥岩" "")
    	(vla-Update (vlax-ename->vla-object (entlast)))
 )
 
   ;煤层
- 
+
  (defun drawMeiCeng()
 	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "-hatch" "W" "Y" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 50) 2 2))  (strcat "-245," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) "C" "" "P" "SOLID" "")
 	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "煤层" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
  )
- 
+
    ;假整合
 (defun drawJiaZhengHe()
 	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
@@ -3560,15 +3572,15 @@
 	(command "line" (strcat "-393.5," (rtos (- (* drillDeepMaxData -5) 7.165) 2 2)) "@1.5<300" "")
 	(command "line" (strcat "-392.5," (rtos (- (* drillDeepMaxData -5) 6.5) 2 2)) "@1.5<300" "")
 	(command "-hatch" "W" "Y" (strcat "-388," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) (strcat "-390," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) (strcat "-389," (rtos (- (* drillDeepMaxData -5) 8) 2 2)) "C" "" "P" "SOLID" "")
-	
-	
+
+
 	(command "line" (strcat "-387," (rtos (- (* drillDeepMaxData -5) 6.5) 2 2)) (strcat "-385.5," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) "")
 	(command "line" (strcat "-386.5," (rtos (- (* drillDeepMaxData -5) 7.5) 2 2)) (strcat "-383.5," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) "")
 	(command "line" (strcat "-386," (rtos (- (* drillDeepMaxData -5) 7.165) 2 2)) "@1.5<300" "")
 	(command "line" (strcat "-385," (rtos (- (* drillDeepMaxData -5) 6.5) 2 2)) "@1.5<300" "")
 	(command "-hatch" "W" "Y" (strcat "-380.5," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) (strcat "-382.5," (rtos (- (* drillDeepMaxData -5) 5.5) 2 2)) (strcat "-381.5," (rtos (- (* drillDeepMaxData -5) 8) 2 2)) "C" "" "P" "SOLID" "")
 	(vla-Update (vlax-ename->vla-object (entlast)))
-) 
+)
 
 (defun drawHuangTuCengBottom()
 	(command "Rectang" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
@@ -3582,13 +3594,13 @@
 )
 
 (defun drawHuangTuCengBottomLineWithRockThinkness()
-	(command "line" (strcat (strcat (rtos (- RockHatchXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
+	(command "line" (strcat (strcat (rtos (- RockHatchXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "")
 	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 40 ))
-	(command "line" (strcat (strcat (rtos (- RockHatchXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
+	(command "line" (strcat (strcat (rtos (- RockHatchXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "")
 	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 40 ))
-	(command "line" (strcat (strcat (rtos (+ RockHatchXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
+	(command "line" (strcat (strcat (rtos (+ RockHatchXOffset 1.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "")
 	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 40 ))
-	(command "line" (strcat (strcat (rtos (+ RockHatchXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "") 
+	(command "line" (strcat (strcat (rtos (+ RockHatchXOffset 4.5) 2 2) ",") (rtos (* (- rockDeep (- rockThickness 0.8)) -5) 2 2)) (strcat (strcat "@" (rtos (* (- rockThickness 0.8) 5) 2 2)) "<270") "")
 	(if (= isMutiColor 1) (Vlax-Put-Property (Vlax-Ename->Vla-Object (cdr (car (entget (entlast))))) 'Color 40 ))
 	(vla-Update (vlax-ename->vla-object (entlast)))
 )
@@ -3706,7 +3718,7 @@
 	(setq wlcdDataOfYRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "测井柱状图" "A"))
 	(setq wlcdDataThicknessRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "测井柱状图" "B"))
 	(setq wlcdDataNameRange (getBaseDataRangeForMaxRowWithSheetNameAndRowName "测井柱状图" "C"))
-	
+
 )
 
 ;钻井柱状图数据
@@ -3728,10 +3740,10 @@
 
 ;完井结构数据
 (defun configDrillStructureData()
-	(setq holeNum (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B1")) 
+	(setq holeNum (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B1"))
 	(setq holeOneDrillDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B2"))
 	(setq holeOneDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B3"))
-	(setq holeOneBushDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B4")) 	
+	(setq holeOneBushDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B4"))
 	(setq holeOneBushDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B5") )
 	(setq holeOneCementHign  (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B6"))
 	(setq holeTwoDrillDiameterStr (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B7"))
@@ -3747,16 +3759,16 @@
 	(setq holeThreeBushDiameter (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B14"))
 	(setq holeThreeBushDeep (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B15"))
 	(setq holeThreeCementHign (getBaseDataCellValueWithSheetNameAndRowName "完井结构" "B16"))
-	(cond ((= holeNum 2.0)  
+	(cond ((= holeNum 2.0)
 					(progn
 					  	(setq HoleNumFactor 1)
-					) 
+					)
 				)
 			   ((= holeNum 3.0)
-					(progn 
+					(progn
 						(setq HoleNumFactor 2)
 					)
-				)	 
+				)
 	)
 )
 
@@ -3769,9 +3781,8 @@
 
 ;Data-UserClient
 (defun checkLoginState()
-	(setq loginSuccess 0)
 	(loginWithUsernameAndPassword username password)
-	(if (= responseStatus 200) 
+	(if (= responseStatus 200)
 		(progn
 			(setq loginSuccess 1)
 			(alert "登录成功！！！外挂即将启动！！！")
@@ -3822,15 +3833,15 @@
 )
 
 (defun caculateMaxNum(num);计算最高位数的最高值
-  	
+
   	(setq numDivTen (/ num 10))
-	(cond 
-		((and (>= numDivTen 10) (< numDivTen 100)) 
+	(cond
+		((and (>= numDivTen 10) (< numDivTen 100))
 			(progn
 				(setq numStr (rtos numDivTen 2 5));取出十位数并加1，并计算出单位一的因子数
 				(setq numStr1 (substr numStr 2 1))
 				(setq maxNumOfTen (* 10 (+ 1 (atof numStr1))))
-			
+
 				(setq numStr2 (substr numStr 1 1))
 				(setq maxNumOfHundred (* 100 (atof numStr2)))
 				(setq maxNumDivFive (/ (+ maxNumOfHundred maxNumOfTen) 5))
@@ -3842,10 +3853,10 @@
 					(setq numStr (rtos numDivTen 2 5));取出十位数并加1，并计算出单位一的因子数
 					(setq numStr1 (substr numStr 1 1))
 					(setq maxNum (* 10 (+ 1 (atof numStr1))))
-					(setq maxNumDivFive (/ maxNum 5))	
+					(setq maxNumDivFive (/ maxNum 5))
 				)
 		)
-	
+
 		((and (>= numDivTen 0) (< numDivTen 0.1))
 				(progn
 					(setq numStr (rtos numDivTen 2 5));取出十位数并加1，并计算出单位一的因子数
@@ -3859,13 +3870,13 @@
 
 
 (defun caculateFactor(num divnum);注意参数要是实数，若为整形计算值错误
-	(setq factor (/ num divnum))							  		
+	(setq factor (/ num divnum))
 )
 
 (defun refresh()
 	(command "regen")
  )
- 
+
  (defun configNormalLineType()
 	(command "LineType" "s" "ByLayer" "")
 	(command "lweight" "ByLayer")
@@ -3875,12 +3886,12 @@
  (defun configRatherDelayToShowOffOrNot()
 	(if (= isDemonstration 1) (command "delay" "1500"))
  )
- 
+
  (defun eraseLastEnt()
 	(setq entName (cdr (car (entget (entlast)))))
 	(command "erase" entName "")
  )
- 
+
  ;单独删除多段线
  (defun eraseLine()
 	(command "zoom" "A")
@@ -3888,7 +3899,7 @@
 	(command "erase" "C" (list -440 -5) (list -390 (+ (* drillDeepMaxData -5) 5)) "")
 	(command "erase" "C" (list -380 -5) (list -340 (+ (* drillDeepMaxData -5) 5)) "")
  )
- 
+
  ;删除全图
  (defun eraseHolePicture()
 	(command "zoom" "A")
@@ -3914,14 +3925,14 @@
 				)
 	)
  )
- 
+
  (defun eraseXi()
  	(command "zoom" "A")
 	(command "erase" "F" (list -330 -1) (list -330 (+ (* drillDeepMaxData -5) 1)) "" "")
 	(command "erase" "F" (list -330.25 -1) (list -330.25 (+ (* drillDeepMaxData -5) 1)) "" "")
 	(command "erase" "F" (list -329.75 -1) (list -329.75 (+ (* drillDeepMaxData -5) 1)) "" "")
  )
- 
+
   (defun eraseTong()
   	(command "zoom" "A")
 	(command "erase" "F" (list -320 -1) (list -320 (+ (* drillDeepMaxData -5) 1)) "" "")
@@ -3929,7 +3940,7 @@
 	(command "erase" "F" (list -319.75 -1) (list -319.75 (+ (* drillDeepMaxData -5) 1)) "" "")
 
  )
- 
+
  (defun eraseZu()
  	(command "zoom" "A")
 	(command "erase" "F" (list -310 -1) (list -310 (+ (* drillDeepMaxData -5) 1)) "" "")
@@ -3938,10 +3949,10 @@
  )
  ;单独删除柱状图
  (defun eraseWellColumnarDiagram()
-	(eraseWellDrillingColumnarDiagram) 
+	(eraseWellDrillingColumnarDiagram)
 	(eraseWellLoggingColumnarDiagram)
  )
- 
+
   ;删除已画钻井柱状图
  (defun eraseWellDrillingColumnarDiagram()
 	(command "zoom" "A")
@@ -3955,7 +3966,7 @@
 	;(command "erase" "F" (list -210 (- (* drillDeepMaxData -5) 1)) (list -193.5 (+ (* drillDeepMaxData -5) 1)) "" "")
 
  )
- 
+
  ;删除已画测井柱状图
  (defun eraseWellLoggingColumnarDiagram()
 	(command "zoom" "A")
@@ -3964,160 +3975,160 @@
 	(command "erase" "F" (list -272.5 -5) (list -272.5 (+ (* drillDeepMaxData -5) 5)) "" "")
 	(command "erase" "C" (list -265 -5) (list -261 (+ (* drillDeepMaxData -5) 5)) "")
  )
- 
+
  (defun eraseRockSign()
 	(command "zoom" "A")
 	(command "erase" "F" (list -250 -5) (list -250 (+ (* drillDeepMaxData -5) 5)) "" "")
 	(command "erase" "F" (list -250.25 -5) (list -250.25 (+ (* drillDeepMaxData -5) 5)) "" "")
 	(command "erase" "F" (list -249.75 -5) (list -249.75 (+ (* drillDeepMaxData -5) 5)) "" "")
  )
- 
+
  ;删除已画完井结构
  (defun EraseDrillCompletionStructure()
 	(command "zoom" "A")
 	(command "erase" "C" (list -55 -5) (list -5 (+ (* drillDeepMaxData -5) 5)) "")
  )
- 
+
  ;删除已画井斜方位角
  (defun eraseEraseDrillDeviation()
  	(command "zoom" "A")
 	(command "erase" "C" (list 5 -5) (list 20 (+ (* drillDeepMaxData -5) 5)) "")
  )
- 
- ;更改各种块的颜色 
+
+ ;更改各种块的颜色
  (defun c:tt()
 	(setq ent (car (entsel)))
 	(setq blk_name (cdr (assoc 2 (entget ent))))
 	(blk_modifyColor blk_name 200)
 	(entupd ent)
  )
- 
+
  (defun modifyLastBlockColor(blkName)
  	(setq ent (cdr (car (entget (entlast)))))
 	(setq blk_name (cdr (assoc 2 (entget (entlast)))))
-	
-	(cond ((= blkName "黄土")  
+
+	(cond ((= blkName "黄土")
 				(progn
 					;土黄色
 					(blk_modifyColor blk_name 40)
 				)
 			   )
 			((= blkName "表层套管")
-				(progn 
+				(progn
 					(print "表层套管")
 				)
-			)  
+			)
 		   ((= blkName "粉砂岩")
-				(progn 
+				(progn
 					;浅灰色
-					(blk_modifyColor blk_name 10)					
+					(blk_modifyColor blk_name 10)
 				)
-			)  
+			)
 			((= blkName "细粒砂岩")
-				(progn 
+				(progn
 					;浅灰色
-					(blk_modifyColor blk_name 30)					
+					(blk_modifyColor blk_name 30)
 				)
-			)  
+			)
 			((= blkName "中粒砂岩")
-				(progn 
+				(progn
 					;灰白色
-					(blk_modifyColor blk_name 210)					
+					(blk_modifyColor blk_name 210)
 				)
-			)  
+			)
 			((= blkName "粗粒砂岩")
-				(progn 
+				(progn
 					;灰色
-					(blk_modifyColor blk_name 241)					
+					(blk_modifyColor blk_name 241)
 				)
-			)  
+			)
 			((= blkName "粉砂质泥岩")
-				(progn 
+				(progn
 					;?????????????
 					(blk_modifyColor blk_name 34)
 				)
-			)  
+			)
 			((= blkName "泥质粉砂岩")
-				(progn 
+				(progn
 					;???????????
 					(blk_modifyColor blk_name 34)
 
 				)
-			)  
+			)
 			((= blkName "砂砾岩")
-				(progn 
+				(progn
 					;浅棕红
-					(blk_modifyColor blk_name 242)					
-					
-				) 
-			)					
+					(blk_modifyColor blk_name 242)
+
+				)
+			)
 			((= blkName "泥岩")
-				(progn 
+				(progn
 					;灰黑色
-					(blk_modifyColor blk_name 55)					
+					(blk_modifyColor blk_name 55)
 				)
-			)  
+			)
 			((= blkName "煤层")
-				(progn 
+				(progn
 					;黑色
-					(blk_modifyColor blk_name 250)					
+					(blk_modifyColor blk_name 250)
 				)
-			)  
+			)
 			((= blkName "炭质泥岩")
-				(progn 
+				(progn
 					;浅黑色
 					(blk_modifyColor blk_name 48)
 				)
-			)  
+			)
 			((= blkName "砂质泥岩")
-				(progn 
+				(progn
 					;灰绿色
 					(blk_modifyColor blk_name 120)
 				)
-			)  
+			)
 			((= blkName "泥质砂岩")
-				(progn 
+				(progn
 					;浅棕红色
 					(blk_modifyColor blk_name 34)
 
 				)
-			)  
+			)
 			((= blkName "石灰岩")
-				(progn 
+				(progn
 					;灰色
 					(blk_modifyColor blk_name 62)
 				)
-			)  
+			)
 			((= blkName "泥质灰岩")
-				(progn 
+				(progn
 					;棕红色
 					(blk_modifyColor blk_name 24)
 				)
-			)  
+			)
 			((= blkName "铝质泥岩")
-				(progn 
-					(blk_modifyColor blk_name 15)			
+				(progn
+					(blk_modifyColor blk_name 15)
 				)
-			)  
+			)
 			((= blkName "假整合")
-				(progn 
+				(progn
 
 				)
-			)  
+			)
 			((= blkName "角度不整合")
-				(progn 
+				(progn
 
 				)
-			)  
+			)
 	)
-	
+
 	(entupd ent)
  )
 
  (defun blk_modifyColor(blk_name colorNum)
 
 	(setq blk (Vlax-Invoke-Method (Vlax-Get (Vlax-Get (Vlax-Get-Acad-Object) 'ActiveDocument) 'Blocks) 'Item blk_name))
-	(vlax-for item blk 
+	(vlax-for item blk
 		(setq typ (Vlax-Get item 'ObjectName))
 		(cond
 			((= typ "AcDbBlockReference")
@@ -4133,15 +4144,32 @@
 			)
 		)
 	)
-	
+
  )
- 
+
  ;----------------------------透明命令------------------------------
  (defun loadDiaphanousZoomingCommandForWLCD()
 	(defun dynamicZoomingForWLCD()
 		;(vla-regen (vla-get-ActiveDocument (VLAX-GET-ACAD-OBJECT)) acAllViewports)
 		;(vla-Update (vlax-ename->vla-object (entlast)))
-		(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -262.5 (* (- wlcdRockDeep (/ wlcdThickness 2)) -5) 0)) 300)
+		(setq indexZoomingWLCD wlcdRockDeep)
+		(while (<= indexZoomingWLCD drillDeepMaxData)
+				(if (> indexZoomingWLCD 0)
+					(progn
+						(vla-Update (vlax-ename->vla-object (entlast)))
+						(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -222.5 (* (- indexZoomingWLCD (/ wlcdThickness 2)) -5) 0)) 300)
+						(vla-Update (vlax-ename->vla-object (entlast)))
+					)
+				)
+				(if (> (+ indexZoomingWLCD 20) drillDeepMaxData)
+					(progn
+						(vla-Update (vlax-ename->vla-object (entlast)))
+						(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -222.5 (* drillDeepMaxData -5) 0)) 300)
+						(vla-Update (vlax-ename->vla-object (entlast)))
+					)
+				)
+				(setq indexZoomingWLCD (+ 20 indexZoomingWLCD))
+		)
 	)
 	(vlax-add-cmd "loadDiaphanousZoomingCommandForWLCD" 'dynamicZoomingForWLCD "loadDiaphanousZoomingCommandForWLCDX" acrx_cmd_transparent)
 )
@@ -4150,9 +4178,9 @@
 	;WHIPTHREAD
 	 (vlax-remove-cmd "loadDiaphanousZoomingCommandForWLCD")
 )
- 
- 
- 
+
+
+
 (defun loadDiaphanousZoomingCommandForWDCD()
 	(defun dynamicZoomingForWDCD()
 		;(vla-regen (vla-get-ActiveDocument (VLAX-GET-ACAD-OBJECT)) acAllViewports)
@@ -4166,7 +4194,7 @@
 						(vla-Update (vlax-ename->vla-object (entlast)))
 					)
 				)
-				(if (> (+ indexZoomingWDCD 20) drillDeepMaxData)  
+				(if (> (+ indexZoomingWDCD 20) drillDeepMaxData)
 					(progn
 						(vla-Update (vlax-ename->vla-object (entlast)))
 						(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -222.5 (* drillDeepMaxData -5) 0)) 300)
@@ -4184,14 +4212,14 @@
 	;WHIPTHREAD
 	 (vlax-remove-cmd "loadDiaphanousZoomingCommandForWDCD")
 )
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
  ;---------------------------------------测试多线程--------------------------------------------------
- 
+
 (defun Loop nil nil)
 (defun Loop_stop nil nil)
 ;nonsmall 作品: Visual DCL 对话框自动连接程序
@@ -4203,7 +4231,7 @@
 
 	(princ);防止函数回显
 )
-(defun Loop_init()	
+(defun Loop_init()
 	(setq ob_shell (vlax-create-object "WScript.Shell"))
 	(if Vbs_File (vl-file-delete Vbs_File))
 	(setq Vbs_File (vl-filename-mktemp nil nil ".Vbs"))
@@ -4216,22 +4244,21 @@
 	(vlax-invoke-method ob_shell 'run Vbs_File 0)
 )
 
-(defun kill_wscript( / )  
-	(setq WMI (vlax-create-object "WbemScripting.SWbemLocator") 
-	con (vlax-invoke WMI 'ConnectServer nil nil nil nil nil nil nil nil) 
+(defun kill_wscript( / )
+	(setq WMI (vlax-create-object "WbemScripting.SWbemLocator")
+	con (vlax-invoke WMI 'ConnectServer nil nil nil nil nil nil nil nil)
 	Win32_Process (vlax-invoke con 'ExecQuery "Select * from Win32_Process"))
-	(vlax-for item Win32_Process 
+	(vlax-for item Win32_Process
 		(if (= "wscript.exe" (vlax-get item 'name))
    	     	(vlax-invoke item 'terminate)
-    	) 
+    	)
   	)
 	(vlax-release-object WMI )
 	(vl-file-delete Vbs_File)
 )
 
 (defun Loop_Start()
-	
-	(if (null wdcdRockDeep) 
+ 	(if (null wdcdRockDeep)
 			(progn
 						(print "11111111111111")
 
@@ -4239,10 +4266,10 @@
 			(progn
 						(print "2222222222222222")
 						(print (rtos wdcdRockDeep 2 2))
-						;(command "zoom" "C" (list -222.5 (* wdcdRockDeep -5)) "250")		
+						;(command "zoom" "C" (list -222.5 (* wdcdRockDeep -5)) "250")
 			)
 		)
 
 )
 
-
+(princ)
