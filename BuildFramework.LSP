@@ -32,8 +32,8 @@
 ;Data
 (defun DCLAndDataHandler()
 	(setq std 0)
-	(setq isMutiColor 0)
-	(setq isDemonstration 0)
+	(if (null isMutiColor) (setq isMutiColor 0))
+	(if (null isDemonstration) (setq isDemonstration 0))
   	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\AutoBuildFrameworkSimpleDCL.DCL"));BuildFrameWorkDCL testDCL Login AutoBuildFrameworkDCL
 	(if (not (new_dialog "framework" id)) (exit))
 	;配置启动按钮
@@ -250,17 +250,18 @@
 	;配置-hatch命令初始值
 	(command "zoom" "w" (strcat "-150," (rtos (- (* 100 -5) 40) 2 2)) (strcat "-125," (rtos (- (* 100 -5) 50) 2 2)) )
 	(command "circle" (strcat "-137.5," (rtos (- (* 100 -5) 41.25) 2 2)) 0.10)
-	(command "-hatch" "S" (ssget "W" (list -138 (- (* 100 -5) 40.75)) (list -137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "." "")
+	;(command "-hatch" "S" (ssget "W" (list -138 (- (* 100 -5) 40.75)) (list -137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO" "ByLayer" "." "")
+	(command "-hatch" "S" (ssget "W" (list -138 (- (* 100 -5) 40.75)) (list -137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "")
 	(eraseLastEntTool)
 	(eraseLastEntTool)
 	(setq initSuccessValue 1)
 )
 
 (defun resetHatchConfiguration()
-	(command "zoom" "w" (strcat "-150," (rtos (- (* 100 -5) 40) 2 2)) (strcat "-125," (rtos (- (* 100 -5) 50) 2 2)) )
-	(command "circle" (strcat "-137.5," (rtos (- (* 100 -5) 41.25) 2 2)) 0.10)
+	(command "zoom" "w" (strcat "-1150," (rtos (- (* 100 -5) 40) 2 2)) (strcat "-1125," (rtos (- (* 100 -5) 50) 2 2)) )
+	(command "circle" (strcat "-1137.5," (rtos (- (* 100 -5) 41.25) 2 2)) 0.10)
 	;(command "-hatch" "S" (ssget "W" (list -138 (- (* 100 -5) 40.75)) (list -137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO"  "T" "255,255,255" "" "")
-	(command "-hatch" "S" (ssget "W" (list -138 (- (* 100 -5) 40.75)) (list -137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO"   "ByLayer" "" "")
+	(command "-hatch" "S" (ssget "W" (list -1138 (- (* 100 -5) 40.75)) (list -1137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO" "." "")
 	(eraseLastEntTool)
 	(eraseLastEntTool)
 )
@@ -780,7 +781,7 @@
 
   	(command "line" "-230,0" (strcat "-230," strThinTopPy) "");钻井柱状分界线
 
-	(command "lweight" "ByLayer")
+	(command "lweight" "ByLayer")+
 	(command "line" "-270,30" (strcat "-270," "0") "");空白分界线
 
   	(command "line" "-255,30" (strcat "-255," "0") "");测井柱状分界线
@@ -1268,7 +1269,7 @@
 									(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
 									(if (> mtextHeight 5)
 										(progn
-											(command "move" mtextEName "" "D" "0,5.5,0" "")
+											(command "move" mtextEName "" "D" "0,5.5,0")
 										)
 									)
 								)
@@ -1297,7 +1298,7 @@
 																					(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
 																					(if (> mtextHeight 5)
 																						(progn
-																							(command "move" mtextEName "" "D" "0,5.5,0" "")
+																							(command "move" mtextEName "" "D" "0,5.5,0")
 																						)
 																					)
 																			)
@@ -1321,7 +1322,7 @@
 																					(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
 																					(if (> mtextHeight 5)
 																						(progn
-																							(command "move" mtextEName "" "D" "0,5.5,0" "")
+																							(command "move" mtextEName "" "D" "0,5.5,0")
 																						)
 																					)
 																			)
@@ -1349,7 +1350,7 @@
 																					(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
 																					(if (> mtextHeight 5)
 																						(progn
-																							(command "move" mtextEName "" "D" "0,5.5,0" "")
+																							(command "move" mtextEName "" "D" "0,5.5,0")
 																						)
 																					)
 																			)
@@ -1370,7 +1371,7 @@
 																					(setq mtextHeight (cdr (assoc 43 (entget (entlast)))))
 																					(if (> mtextHeight 5)
 																						(progn
-																							(command "move" mtextEName "" "D" "0,5.5,0" "")
+																							(command "move" mtextEName "" "D" "0,5.5,0")
 																						)
 																					)
 
@@ -1653,6 +1654,7 @@
 
 ;UI-Hatch
 (defun drawFrameBaseBlock()
+	(resetHatchConfiguration)
 	(drawShaZhiNiYan)
 	(drawShaLiYan)
 	(drawXiLiShaYan)
@@ -2401,7 +2403,7 @@
 
 	(command "circle" (strcat "-343.5," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) 0.10)
 
-   	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂砾岩" "")
+   	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂砾岩")
 
 
 	(command "-hatch" "S" (ssget "W" (list -338.5 (- (* drillDeepMaxData -5) 48.25)) (list -336.5 (- (* drillDeepMaxData -5) 49.25))) "" "P" "SOLID" "CO" "ByLayer" "")
@@ -2497,7 +2499,7 @@
 	(command "-hatch" "S" (ssget "W" (list -141.5 (- (* drillDeepMaxData -5) 49.25)) (list -139.5 (- (* drillDeepMaxData -5) 48.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 
 
-	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂质泥岩" "")
+	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "砂质泥岩")
    	(updateEnlastBasedOnCurrentWorkingMode)
 )
 
@@ -2609,7 +2611,7 @@
 	(command "-hatch" "S" (ssget "W" (list -292.5 (- (* drillDeepMaxData -5) 11.75)) (list -282.5 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 
 
-	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "细粒砂岩" "")
+	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "细粒砂岩")
    	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -2719,7 +2721,7 @@
 
 	(command "-hatch" "S" (ssget "W" (list -344 (- (* drillDeepMaxData -5) 11.75)) (list -331 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 
-	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂岩" "")
+	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -2793,7 +2795,7 @@
 
 	(command "-hatch" "S" (ssget "W" (list -244 (- (* drillDeepMaxData -5) 11.75)) (list -231 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 
-	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "中粒砂岩" "")
+	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "中粒砂岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -2854,7 +2856,7 @@
 
 	(command "-hatch" "S" (ssget "W" (list -194 (- (* drillDeepMaxData -5) 11.75)) (list -181 (- (* drillDeepMaxData -5) 12.75))) "" "P" "SOLID" "CO" "ByLayer" "")
 
-	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粗粒砂岩" "")
+	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粗粒砂岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -2966,7 +2968,7 @@
 	(command "line" (strcat "-132.25," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) (strcat "-130.75," (rtos (- (* drillDeepMaxData -5) 13.75) 2 2)) "")
 	(command "-hatch" "S" (ssget "W" (list -144 (- (* drillDeepMaxData -5) 10.75)) (list -131 (- (* drillDeepMaxData -5) 14.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 
-	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂质泥岩" "")
+	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "粉砂质泥岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -3091,7 +3093,7 @@
 
 	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 45.75)) (list -380.25 (- (* drillDeepMaxData -5) 50.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 
-	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥质粉砂岩" "")
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥质粉砂岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -3189,7 +3191,7 @@
 
 	(command "-hatch" "S" (ssget "W" (list -394.75 (- (* drillDeepMaxData -5) 80.75)) (list -380.25 (- (* drillDeepMaxData -5) 85.25))) "" "P" "SOLID" "CO" "ByLayer" "")
 
-	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质砂岩" "")
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质砂岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -3246,7 +3248,7 @@
 	(command "line" (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-338.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	(command "line" (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-342.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 
-	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "石灰岩" "")
+	(command "text" "J" "C" (list -337.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "石灰岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -3309,7 +3311,7 @@
 	(command "line" (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-285.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 	(command "line" (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 82.5) 2 2)) (strcat "-281.5," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) "")
 
-	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质灰岩" "")
+	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "泥质灰岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -3360,7 +3362,7 @@
 	(command "line" (strcat "-292.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-293.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 	(command "line" (strcat "-282.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-281.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 
-	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥岩" "")
+	(command "text" "J" "C" (list -287.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "泥岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -3434,7 +3436,7 @@
 	(command "circle" (strcat "-234.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) 1.0)
 	(command "line" (strcat "-232.75," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) (strcat "-231.25," (rtos (- (* drillDeepMaxData -5) 83.75) 2 2)) "")
 
-	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "铝质泥岩" "")
+	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "铝质泥岩")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -3500,7 +3502,7 @@
 	(command "line" (strcat "-182.75," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) (strcat "-181.25," (rtos (- (* drillDeepMaxData -5) 48.75) 2 2)) "")
 
 
-	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "炭质泥岩" "")
+	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "炭质泥岩")
    	(updateEnlastBasedOnCurrentWorkingMode)
 )
 
@@ -3509,7 +3511,7 @@
  (defun drawMeiCeng()
 	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "-hatch" "W" "Y" (strcat "-245," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 40) 2 2)) (strcat "-230," (rtos (- (* drillDeepMaxData -5) 50) 2 2))  (strcat "-245," (rtos (- (* drillDeepMaxData -5) 50) 2 2)) "C" "" "P" "SOLID" "")
-	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "煤层" "")
+	(command "text" "J" "C" (list -237.5 (- (* drillDeepMaxData -5) 56.5)) 3 0 "煤层")
 	(updateEnlastBasedOnCurrentWorkingMode)
  )
 
@@ -3522,7 +3524,7 @@
 	(command "line" (strcat "-186.4," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-184.25," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
 	(command "line" (strcat "-182.1," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) (strcat "-180," (rtos (- (* drillDeepMaxData -5) 80) 2 2)) "")
 
-	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "假整合" "")
+	(command "text" "J" "C" (list -187.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "假整合")
 	(updateEnlastBasedOnCurrentWorkingMode)
 )
 
@@ -3531,7 +3533,7 @@
 	(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
 	(command "Rectang" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 75) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 85) 2 2)) " ")
 	(command "SPLine" (strcat "-145," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-143," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) (strcat "-141," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-139," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) (strcat "-137," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-135," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) (strcat "-133," (rtos (- (* drillDeepMaxData -5) 79) 2 2)) (strcat "-130," (rtos (- (* drillDeepMaxData -5) 81) 2 2)) "" "" "")
-	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "角度不整合" "")
+	(command "text" "J" "C" (list -137.5 (- (* drillDeepMaxData -5) 91.5)) 3 0 "角度不整合")
 	(updateEnlastBasedOnCurrentWorkingMode)
 )
 
@@ -3560,7 +3562,7 @@
 
 (defun drawHuangTuCengBottom()
 	(command "Rectang" (strcat "-395," (rtos (- (* drillDeepMaxData -5) 5) 2 2)) (strcat "-380," (rtos (- (* drillDeepMaxData -5) 15) 2 2)) " ")
-	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "黄土" "")
+	(command "text" "J" "C" (list -387.5 (- (* drillDeepMaxData -5) 21.5)) 3 0 "黄土")
 	(command "line" (strcat "-393.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
 	(command "line" (strcat "-390.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
 	(command "line" (strcat "-387.5," (rtos (- (* drillDeepMaxData -5) 9) 2 2)) "@5.5<270" "")
@@ -3875,7 +3877,7 @@
  ;单独删除多段线
  (defun eraseLine()
 	(command "zoom" "A")
-	;erase 床交时能识别的最近距离为5！！！
+	;erase 窗交时能识别的最近距离为5！！！
 	(command "erase" "C" (list -440 -5) (list -390 (+ (* drillDeepMaxData -5) 5)) "")
 	(command "erase" "C" (list -380 -5) (list -340 (+ (* drillDeepMaxData -5) 5)) "")
  )
@@ -4336,6 +4338,29 @@
 
 (defun c:AutoBuildFrameworkODCL/mainFunctionForm/eraseBtn#OnClicked (/)
 	(alert "这是删除按钮")
+)
+
+;开启关闭监视模式
+(defun c:AutoBuildFrameworkODCL/mainFunctionForm/startMon#OnClicked (/)
+  (if (null startMon)
+		(progn
+			(setq startMon 1)
+		)
+		(progn
+			(if (= startMon 1)
+				(progn
+					(setq startMon 0)
+					(setq isDemonstration 1)
+					(dcl-Control-SetCaption AutoBuildFrameworkODCL/mainFunctionForm/startMon "关 闭 监 视 模 式")
+				)
+				(progn
+					(setq startMon 1)
+					(setq isDemonstration 0)
+					(dcl-Control-SetCaption AutoBuildFrameworkODCL/mainFunctionForm/startMon "开 启 监 视 模 式")
+				)
+			)
+		)
+  )
 )
 
 
