@@ -400,7 +400,7 @@
 							(progn
 								(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -222.5 (* (- wlcdRockDeep (/ wlcdThickness 2)) -5) 0)) 300)
 								(updateEnlastBasedOnCurrentWorkingMode)
-								(command "DELAY" "1500")
+								(command "DELAY" (itoa observerSpeed))
 								;---------------------动态zoom-------------------------------
 								(command "'loadDiaphanousZoomingCommandForWLCD")
 								;---------------------动态zoom-------------------------------
@@ -451,7 +451,7 @@
 							(progn
 								(Vlax-Invoke-Method (Vlax-Get-Acad-Object) 'ZoomCenter (Vlax-3d-Point (list -222.5 (* (- wdcdRockDeep (/ wdcdThickness 2)) -5) 0)) 300)
 								(updateEnlastBasedOnCurrentWorkingMode)
-								(command "DELAY" "1500")
+								(command "DELAY" (itoa observerSpeed))
 								;---------------------动态zoom-------------------------------
 								(command "'loadDiaphanousZoomingCommandForWDCD")
 								;---------------------动态zoom-------------------------------
@@ -818,6 +818,14 @@
 	(setq holeNameLength (/ (strlen  rockStructureHoleName) 2)) ;strlen中文单位为2
 	(setq indexRockStructure 1.0)
 	(setq rockStructureindexA 1.0)
+	(if (= rockStructureSimpleName "Q")
+		(progn
+			(command "line" (strcat (strcat (rtos (- RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) (strcat (strcat (rtos (+ RockStructureXOffset 25) 2 2) ",") (rtos pyA 2 2)) "")
+		)
+		(progn
+			(command "line" (strcat (strcat (rtos (- RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) (strcat (strcat (rtos (+ RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) "")
+		)
+	)
 	(command "line" (strcat (strcat (rtos (- RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) (strcat (strcat (rtos (+ RockStructureXOffset 5) 2 2) ",") (rtos pyA 2 2)) "")
 
 	(if (<= rockStructureThickness (* (+ holeNameLength 2) 4))
@@ -3866,7 +3874,7 @@
 
  ;delay
  (defun configRatherDelayToShowOffOrNot()
-	(if (= isDemonstration 1) (command "delay" "1500"))
+	(if (= isDemonstration 1) (command "delay" (itoa observerSpeed)))
  )
 
  (defun eraseLastEntTool()
@@ -4340,8 +4348,30 @@
 	(alert "这是删除按钮")
 )
 
+;观察者模式减速按钮
+(defun c:AutoBuildFrameworkODCL/mainFunctionForm/reSBtn#OnClicked (/)
+	(if (< observerSpeed 0)
+		(progn
+			(setq observerSpeed 0)
+		)
+		(progn
+			(setq observerSpeed (- observerSpeed 100))
+		)
+	)
+	(dcl-Control-SetCaption AutoBuildFrameworkODCL/mainFunctionForm/speedTxtBox (rtos (/ observerSpeed 1000.0) 2 1))
+)
+
+;观察者模式加速按钮
+(defun c:AutoBuildFrameworkODCL/mainFunctionForm/inSBtn#OnClicked (/)
+	(setq observerSpeed (+ observerSpeed 100))
+	(dcl-Control-SetCaption AutoBuildFrameworkODCL/mainFunctionForm/speedTxtBox (rtos (/ observerSpeed 1000.0) 2 1))
+)
+
+
+
 ;开启关闭监视模式
 (defun c:AutoBuildFrameworkODCL/mainFunctionForm/startMon#OnClicked (/)
+  (setq observerSpeed 1500)
   (if (null startMon)
 		(progn
 			(setq startMon 1)
