@@ -262,6 +262,7 @@
 	(command "circle" (strcat "-1137.5," (rtos (- (* 100 -5) 41.25) 2 2)) 0.10)
 	;(command "-hatch" "S" (ssget "W" (list -138 (- (* 100 -5) 40.75)) (list -137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO"  "T" "255,255,255" "" "")
 	(command "-hatch" "S" (ssget "W" (list -1138 (- (* 100 -5) 40.75)) (list -1137 (- (* 100 -5) 41.75))) "" "P" "SOLID" "CO" "." "")
+	(command)
 	(eraseLastEntTool)
 	(eraseLastEntTool)
 )
@@ -1056,6 +1057,8 @@
 												(command "text" "J" "C" (list (+ pxA 7.5)  (+ (* rockDeep -5) 8)) 3 0 "管")
 										)
 										(progn
+												(command "text" "J" "L" (list -289 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
+												(command "text" "J" "L" (list -304 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
 												(command "text" "J" "C" (list (+ pxA 7.5) (* (- rockDeep  (/ rockThickness 2)) -5)) 2 0 "表层套管")
 
 										)
@@ -1168,6 +1171,8 @@
 													(command "text" "J" "C" (list (+ pxA 7.5)  (+ (* wlcdRockDeep -5) 8)) 3 0 "管")
 											)
 											(progn
+													(command "text" "J" "L" (list -289 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdRockDeep 2 2))
+													(command "text" "J" "L" (list -304 (+ (* wlcdRockDeep -5) 0.5)) rockTextSize 0 (rtos wlcdThickness 2 2))
 													(command "text" "J" "C" (list (+ pxA 7.5) (* (- wlcdRockDeep  (/ wlcdThickness 2)) -5)) 2 0 "表层套管")
 
 											)
@@ -3821,6 +3826,7 @@
 (defun caculateMaxNum(num);计算最高位数的最高值
 
   	(setq numDivTen (/ num 10))
+	(setq numDivHundred (/ num 100))
 	(cond
 		((and (>= numDivTen 10) (< numDivTen 100))
 			(progn
@@ -3833,8 +3839,7 @@
 				(setq maxNumDivFive (/ (+ maxNumOfHundred maxNumOfTen) 5))
 			)
 		)
-
-		((and (>= numDivTen 0.1) (< numDivTen 10))
+		((and (>= numDivTen 1) (< numDivTen 10))
 				(progn
 					(setq numStr (rtos numDivTen 2 5));取出十位数并加1，并计算出单位一的因子数
 					(setq numStr1 (substr numStr 1 1))
@@ -3842,12 +3847,24 @@
 					(setq maxNumDivFive (/ maxNum 5))
 				)
 		)
+		((and (>= numDivTen 0.1) (< numDivTen 1))
+				(progn
+					(setq numStr (rtos numDivTen 2 5));取出十位数并加1，并计算出单位一的因子数
+					(setq numStr1 (substr numStr 3 1))
+					(setq maxNum (+ 1 (atof numStr1)))
+					(setq maxNumDivFive (/ maxNum 5))
+				)
+		)
 
 		((and (>= numDivTen 0) (< numDivTen 0.1))
 				(progn
-					(setq numStr (rtos numDivTen 2 5));取出十位数并加1，并计算出单位一的因子数
-					(setq numStr1 (substr numStr 4 1))
-					(setq maxNum (/ (+ 1 (atof numStr1)) 10))
+					;(setq numStr (rtos numDivTen 2 5));取出十位数并加1，并计算出单位一的因子数
+					;(setq numStr1 (substr numStr 4 1))
+					;(setq maxNum (/ (+ 1 (atof numStr1)) 10))
+					;(setq maxNumDivFive (/ maxNum 5))
+					(setq numStr (rtos numDivHundred 2 5))
+					(setq numStr1 (substr numStr 3 1))
+					(setq maxNum (+ 1 (atof numStr1)))
 					(setq maxNumDivFive (/ maxNum 5))
 				)
 		)
@@ -3948,6 +3965,7 @@
 	(command "zoom" "A")
 	;erase 床交时能识别的最近距离为5！！！
 	(command "erase" "C" (list -240 -5) (list -235 (+ (* drillDeepMaxData -5) 5)) "")
+	(command "erase" "F" (list -227.5 -5) (list -227.5 (+ (* drillDeepMaxData -5) 1)) "" "")
 	(command "erase" "C" (list -220 -5) (list -215 (+ (* drillDeepMaxData -5) 5)) "")
 	(command "erase" "C" (list -205 -5) (list -200 (+ (* drillDeepMaxData -5) 5)) "")
 	(command "erase" "F" (list -193.5 -5) (list -193.5 (+ (* drillDeepMaxData -5) 1)) "" "")
@@ -4345,7 +4363,64 @@
 )
 
 (defun c:AutoBuildFrameworkODCL/mainFunctionForm/eraseBtn#OnClicked (/)
-	(alert "这是删除按钮")
+	(setq FrameCheckBoxValue (dcl-Control-GetValue AutoBuildFrameworkODCL/mainFunctionForm/FrameCheckBox))
+	(setq PLCheckBoxValue (dcl-Control-GetValue AutoBuildFrameworkODCL/mainFunctionForm/PLCheckBox))
+	(setq RSCheckBoxValue (dcl-Control-GetValue AutoBuildFrameworkODCL/mainFunctionForm/RSCheckBox))
+	(setq WDCDCheckBoxValue (dcl-Control-GetValue AutoBuildFrameworkODCL/mainFunctionForm/WDCDCheckBox))
+	(setq WLCDCheckBoxValue (dcl-Control-GetValue AutoBuildFrameworkODCL/mainFunctionForm/WLCDCheckBox))
+	(setq RSignCheckBoxValue (dcl-Control-GetValue AutoBuildFrameworkODCL/mainFunctionForm/RSignCheckBox))
+	(setq DCSCheckBoxValue (dcl-Control-GetValue AutoBuildFrameworkODCL/mainFunctionForm/DCSCheckBox))
+	(setq DDCheckBoxValue (dcl-Control-GetValue AutoBuildFrameworkODCL/mainFunctionForm/DDCheckBox))
+	(setq FBBCheckBoxValue (dcl-Control-GetValue AutoBuildFrameworkODCL/mainFunctionForm/FBBCheckBox))
+
+		(if (= FrameCheckBoxValue 1)
+				(progn
+					(eraseHolePicture)
+				)
+		)
+		(if (= PLCheckBoxValue 1)
+				(progn
+					(eraseLine)
+				)
+		)
+		(if (= RSCheckBoxValue 1)
+				(progn
+					(eraseXi)
+					(eraseTong)
+					(eraseZu)
+				)
+		)
+		(if (= WDCDCheckBoxValue 1)
+				(progn
+					(eraseWellDrillingColumnarDiagram)
+				)
+		)
+		(if (= WLCDCheckBoxValue 1)
+				(progn
+					(eraseWellLoggingColumnarDiagram)
+				)
+		)
+		(if (= RSignCheckBoxValue 1)
+				(progn
+					(eraseRockSign)
+				)
+		)
+		(if (= DCSCheckBoxValue 1)
+				(progn
+					(eraseDrillCompletionStructure)
+				)
+		)
+		(if (= DDCheckBoxValue 1)
+				(progn
+					(eraseEraseDrillDeviation)
+				)
+		)
+		(if (= FBBCheckBoxValue 1)
+				(progn
+					(alert "这是删除基础参照块的判断框")
+				)
+		)
+
 )
 
 ;观察者模式减速按钮
