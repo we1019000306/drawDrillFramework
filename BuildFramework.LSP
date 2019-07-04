@@ -392,8 +392,26 @@
 						(setq wlcdName (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataNameRange 'Item wlcdIndexA)) 'Value2))
 
 						(setq wlcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wlcdDataOfYRange 'Item wlcdIndexA)) 'Value2))
+						;对excel表里数字设置格式不正确为字符串的数据进行强制转换
+						(if (= (type wlcdRockDeep) 'STR)
+							(progn
+								(setq wlcdRockDeep (atof wlcdRockDeep))
+							)
+						)
+						(if (= (type wlcdThickness) 'STR)
+							(progn
+								(setq wlcdThickness (atof wlcdThickness))
+							)
+						)
+						(if (= (type wlcdPyA) 'STR)
+							(progn
+								(setq wlcdPyA (atof wlcdPyA))
+							)
+						)
 						(drawWLCDLineAndTextLabel)
 						(setq BlockCodeName (strcat (strcat (strcat wlcdName (itoa wlcdIndexA)) "测井柱状图") (rtos (getvar "CDATE") 2 10)))
+
+
 						(hatchRock wlcdName wlcdRockDeep wlcdThickness -262.5)
 
 						;---------------------动态zoom-------------------------------
@@ -444,9 +462,26 @@
 						(setq wdcdDescription (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataDescription 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdNumber (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataNumber 'Item wdcdIndexA)) 'Value2))
 						(setq wdcdPyA (Vlax-Get (vlax-variant-value (Vlax-Get-Property wdcdDataOfYRange 'Item wdcdIndexA)) 'Value2))
+						;对excel表里数字设置格式不正确为字符串的数据进行强制转换
+						(if (= (type wdcdRockDeep) 'STR)
+							(progn
+								(setq wdcdRockDeep (atof wdcdRockDeep))
+							)
+						)
+						(if (= (type wdcdThickness) 'STR)
+							(progn
+								(setq wdcdThickness (atof wdcdThickness))
+							)
+						)
+						(if (= (type wdcdPyA) 'STR)
+							(progn
+								(setq wdcdPyA (atof wdcdPyA))
+							)
+						)
 						(drawWDCDLineAndTextLabel)
 						(setq BlockCodeName (strcat (strcat (strcat wdcdName (itoa wdcdIndexA)) "钻井柱状图") (rtos (getvar "CDATE") 2 10)))
 						(command "zoom" "C" (list -222.5 (* drillDeepMaxData -5)) "300")
+
 						(hatchRock wdcdName wdcdRockDeep wdcdThickness -237.5)
 						(if (= isDemonstration 1)
 							(progn
@@ -475,7 +510,7 @@
 )
 
 
-;绘制系统组
+;绘制标志层代号
 (defun drawRockSign()
 		(configNormalLineType)
 
@@ -1148,10 +1183,32 @@
 ;测井柱状图
 (defun drawWLCDLineAndTextLabel()
 	(setq pyA (* wlcdPyA -5))
+
 	(setq RockXOffset -255)
 	(setq pxA  RockXOffset)
 	(if (= wlcdName "表层套管")
 									(progn
+											;对excel表里数字设置格式不正确为字符串的数据进行强制转换
+											(if (= (type pyA) 'STR)
+												(progn
+													(setq pyA (atof pyA))
+												)
+											)
+											(if (= (type pxA) 'STR)
+												(progn
+													(setq pxA (atof pxA))
+												)
+											)
+											(if (= (type wlcdRockDeep) 'STR)
+												(progn
+													(setq wlcdRockDeep (atof wlcdRockDeep))
+												)
+											)
+											(if (= (type wlcdThickness) 'STR)
+												(progn
+													(setq wlcdThickness (atof wlcdThickness))
+												)
+											)
 										;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
 										(setq rockLineDeep 0)
 										(setq rockLineDeep wlcdRockDeep)
