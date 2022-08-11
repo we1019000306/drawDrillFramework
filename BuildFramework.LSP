@@ -3,8 +3,8 @@
 )
 
 (defun loginStateDataHandler()
-		(setq loginSdt 0)
-	  	(setq loginId (load_dialog "G:\\工程二处\\drawDrillFramework\\LoginView.DCL"));BuildFrameWorkDCL testDCL Login
+		(setq loginSdt 1)
+	  	(setq loginId (load_dialog "D:\\drawDrillFramework\\drawDrillFramework\\LoginView.DCL"));BuildFrameWorkDCL testDCL Login
 		(if (not (new_dialog "login" loginId)) (exit))
 		(action_tile "loginBtn" "(configLoginBtn) (done_dialog 1)")
 		(action_tile "closeBtn" "(done_dialog -1)")
@@ -13,7 +13,8 @@
 		(cond 
 						((= loginSdt 1)
 								(progn
-									(checkLoginState)
+									;(checkLoginState)
+									(DCLAndDataHandler)
 							)
 						)
 		  
@@ -29,7 +30,7 @@
 ;Data
 (defun DCLAndDataHandler()
 	(setq std 0)
-  	(setq id(load_dialog "G:\\工程二处\\drawDrillFramework\\BuildFrameWorkDCL.DCL"));BuildFrameWorkDCL testDCL Login
+  	(setq id(load_dialog "D:\\drawDrillFramework\\drawDrillFramework\\BuildFrameWorkDCL.DCL"));BuildFrameWorkDCL testDCL Login
 	(if (not (new_dialog "framework" id)) (exit))
 	;配置启动按钮
   	(action_tile "startBtn" "(configStartBtn) (done_dialog 1)")
@@ -707,7 +708,7 @@
 						(mode_tile  "columnRockThree" 0)
 						(mode_tile  "columnRockFour" 1)
 						(mode_tile  "columnRockFive" 1)
-						(setq RockTypeName "钻井柱状图")
+						(setq RockTypeName "测井柱状图")
 					)
 				)
 		       ((= rockTypeNum 2)  
@@ -1097,10 +1098,10 @@
 									(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
 									(command "line" ptA ptB "")	
 									
-									(command "text" "J" "L" (list -224 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
-									(command "text" "J" "L" (list -209 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
-									(command "text" "J" "L" (list -194 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
-									(command "text" "J" "L" (list -184 (+ (* rockDeep -5) 0.5)) rockTextSize 0 rockName)
+									(command "text" "J" "ML" (list -224 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
+									(command "text" "J" "ML" (list -209 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
+									(command "text" "J" "ML" (list -194 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
+									(command "text" "J" "ML" (list -184 (+ (* rockDeep -5) 0.5)) rockTextSize 0 rockName)
 									(command "mtext" (list -159 (+ (* rockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
 								) 
 							
@@ -1119,11 +1120,12 @@
 																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
 																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")	
 																					
-																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
-																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
-																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
-																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 rockName)
+																					(command "text" "J" "ML" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
+																					(command "text" "J" "ML" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
+																					(command "text" "J" "ML" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
+																					(command "text" "J" "ML" (list -184 (+ pyA 0.5)) rockTextSize 0 rockName)
 																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
+																					;(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "J" "MC" "L" "A" "1.0417" "S" "" "H" "3" "D" "H" "W" "98" rockDescription "")
 																			)
 																			(progn
 																			;设计一个标记量来记录当前岩石描述线条深度与实际深度的区别
@@ -1136,11 +1138,12 @@
 																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
 																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")		
 																					
-																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
-																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
-																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
-																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 rockName)
-																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
+																					(command "text" "J" "ML" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
+																					(command "text" "J" "ML" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
+																					(command "text" "J" "ML" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
+																					(command "text" "J" "ML" (list -184 (+ pyA 0.5)) rockTextSize 0 rockName)
+																					;(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
+																					;(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "J" "MC" "L" "A" "1.0417" "S" "" "H" "3" "D" "H" "W" "98" rockDescription "")
 																		
 																			)
 																	)
@@ -1158,12 +1161,13 @@
 																					(command "line" ptA (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")			
 																					(command "line"  (strcat (strcat (rtos RockXOffset 2 6) ",") (rtos (* rockDeep -5) 2 6)) (strcat (strcat (rtos (+ RockXOffset 15) 2 6) ",") (rtos (* rockDeep -5) 2 6)) "")	
 																					
-																					(command "text" "J" "L" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
-																					(command "text" "J" "L" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
-																					(command "text" "J" "L" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
-																					(command "text" "J" "L" (list -184 (+ pyA 0.5)) rockTextSize 0 rockName)
-																					(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
-																		
+																					(command "text" "J" "ML" (list -224 (+ pyA 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
+																					(command "text" "J" "ML" (list -209 (+ pyA 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
+																					(command "text" "J" "ML" (list -194 (+ pyA 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
+																					(command "text" "J" "ML" (list -184 (+ pyA 0.5)) rockTextSize 0 rockName)
+																					;(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
+																					;(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "J" "MC" "L" "A" "1.0417" "S" "" "H" "3" "D" "H" "W" "98" rockDescription "")
+
 																			)
 																			;当下一层岩性深度大于或等于已调整后的上一层最大显示的文本框的岩性深度，则根据当前深度正常计算
 																			(progn
@@ -1173,11 +1177,12 @@
 																					(setq ptA (strcat (strcat (rtos pxA 2 6) ",") (rtos pyA 2 6)))
 																					(setq ptB (strcat (strcat (rtos pxB 2 6) ",") (rtos pyA 2 6)))
 																					(command "line" ptA ptB "")	
-																					(command "text" "J" "L" (list -224 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
-																					(command "text" "J" "L" (list -209 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
-																					(command "text" "J" "L" (list -194 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
-																					(command "text" "J" "L" (list -184 (+ (* rockDeep -5) 0.5)) rockTextSize 0 rockName)
-																					(command "mtext" (list -159 (+ (* rockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
+																					(command "text" "J" "ML" (list -224 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockDeep 2 2))
+																					(command "text" "J" "ML" (list -209 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockThickness 2 2))
+																					(command "text" "J" "ML" (list -194 (+ (* rockDeep -5) 0.5)) rockTextSize 0 (rtos rockNumber 2 0))
+																					(command "text" "J" "ML" (list -184 (+ (* rockDeep -5) 0.5)) rockTextSize 0 rockName)
+																					;(command "mtext" (list -159 (+ (* rockDeep -5) (* rockTextSize 1.5))) "h" (rtos rockTextSize 2 2) "w" "98" rockDescription "")
+																					;(command "mtext" (list -159 (+ pyA (* rockTextSize 1.5))) "J" "MC" "L" "A" "1.0417" "S" "" "H" "3" "D" "H" "W" "98" rockDescription "")
 								
 																			)
 																	)	
@@ -1976,7 +1981,7 @@
 			(vl-load-com)  ;加载Vlisp函数  
 			;选择加密对象
  			(command "zoom" "C" (list -222.5 (* d -5)) "250")
-			(if (= rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1) (command "minsert" BlockCodeName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace))
+			(if (= rowCount 1) (command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1) (command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace))
 			;(command "minsert" BlockName InsertPoint  xFactor  yFactor 0 rowCount 1 rowSpace);用block命令制作块，然后用minsert命令制作多重引用块
 		  ;将多用引用块改成匿名多重引用块。匿名块不是无名块，它是以*U命名的，在块 ;编辑框中不现实匿名块的块名，从而无法编辑。
 			;(command "minsert"   BlockName BasicPoint 1 1 0 1 1 0 )
@@ -1992,7 +1997,7 @@
 	 (if Selectionset  ;选择加密对象 
 			(progn    ;以当前时间作为块名  ;因为我们要用多重引用块进行加密，在制作多重引用块之前我们必须将我们需要 ;加密的图元制作成块，为避免与图档内块名冲突，引用了当前时间作为块名 
 				(command "zoom" "C" (list -222.5 (* d -5)) "250")
-				(command "block" BlockCodeName BasicPoint Selectionset "")
+				(command "block" BlockName BasicPoint Selectionset "")
 			) 
 			 (princ "\n没有选中图元")  
 			
@@ -3592,7 +3597,7 @@
 
 ;UserClient
 (defun checkLoginState()
-	(setq loginSuccess 0)
+	(setq loginSuccess 1)
 	(loginWithUsernameAndPassword username password)
 	(if (= responseStatus 200) 
 		(progn
@@ -3601,7 +3606,7 @@
 			(DCLAndDataHandler)
 		)
 		(progn
-			(setq loginSuccess 0)
+			(setq loginSuccess 1)
 			(alert "登录失败，请检查账号密码是否正确！！！如确认无错误，请与开发者联系，邮箱we1019000306@gmail.com")
 			(loginStateDataHandler)
 		)

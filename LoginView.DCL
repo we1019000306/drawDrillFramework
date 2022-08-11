@@ -1,13 +1,13 @@
-ï»¿login:dialog{ 
-	label = "ç”¨æˆ·ç™»å½•ç•Œé¢";
+login:dialog{ 
+	label = "ÓÃ»§µÇÂ¼½çÃæ";
 		:edit_box{ 
-			label = "ç”¨æˆ·å"; 
+			label = "ÓÃ»§Ãû"; 
 			edit_width = 20; 
 			key = "username";
 			value = "Monster";
 		}
 		:edit_box{ 
-			label = "å¯†ç "; 
+			label = "ÃÜÂë"; 
 			edit_width = 20; 
 			key = "password";
 			value = "123456";
@@ -16,14 +16,14 @@
 	:row{
 		:button{
 				  key = "loginBtn"; 
-				  label = "ç™»å½•";
+				  label = "µÇÂ¼";
 				  is_default = true;
 				  fixed_width = true;
 				  alignment=centered;             
 				}
 		:button{
 				  key = "closeBtn";  
-				  label = "é€€å‡º";
+				  label = "ÍË³ö";
 				  fixed_width = true;
 				  alignment=centered;             
 				}
