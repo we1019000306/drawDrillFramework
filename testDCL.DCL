@@ -11,7 +11,6 @@ framework:dialog{ //定义名字为yuan的对话框
      			mnemonic = "D";//编辑框1的热键
      			value = 100;
         	}//编辑框1引用结束
-
         	:edit_box{ //引用编辑框2
       			label = "消耗量Max："; //编辑框2的标签&之后的字符是热键Maximum Consumption
       			edit_width = 8; //编辑框2的宽度
